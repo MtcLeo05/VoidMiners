@@ -159,11 +159,7 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     implementation fg.deobf("curse.maven:mangos-multiblock-library-966061:5144465")
-    implementation fg.deobf("curse.maven:pipez-443900:4916633")
-    implementation fg.deobf("curse.maven:jade-324717:5390389")
-    implementation fg.deobf("curse.maven:mekanism-268560:5395221")
     implementation fg.deobf("curse.maven:jei-238222:5101366")
-    implementation fg.deobf("curse.maven:athena-841890:4764357")
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
