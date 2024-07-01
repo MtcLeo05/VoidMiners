@@ -1,0 +1,14 @@
+{
+  "values": [
+    "voidminers:rubetine_energy_modifier",
+    "voidminers:rubetine_speed_modifier",
+    "voidminers:rubetine_item_modifier",
+    "voidminers:aurantium_energy_modifier",
+    "voidminers:aurantium_speed_modifier",
+    "voidminers:aurantium_item_modifier",
+    "voidminers:citrinetine_energy_modifier",
+    "voidminers:citrinetine_speed_modifier",
+    "voidminers:citrinetine_item_modifier",
+    "voidminers:null_modifier"
+  ]
+}

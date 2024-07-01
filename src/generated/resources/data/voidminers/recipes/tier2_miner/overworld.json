@@ -1,0 +1,11 @@
+{
+  "type": "voidminers:miner",
+  "dimension": "minecraft:overworld",
+  "minTier": 2,
+  "outputs": [
+    {
+      "item": "voidminers:citrinetine",
+      "weight": 2.0
+    }
+  ]
+}

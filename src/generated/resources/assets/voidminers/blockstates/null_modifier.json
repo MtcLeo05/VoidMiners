@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "voidminers:block/null_modifier"
+    }
+  }
+}

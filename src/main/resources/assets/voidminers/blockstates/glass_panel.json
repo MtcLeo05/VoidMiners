@@ -1,0 +1,15 @@
+{
+    "variants": {
+        "": {
+            "model": "voidminers:block/glass_panel"
+        }
+    },
+    "athena:loader": "athena:ctm",
+    "ctm_textures": {
+        "center": "voidminers:block/ctm/glass_panel/center",
+        "empty": "voidminers:block/ctm/glass_panel/empty",
+        "horizontal": "voidminers:block/ctm/glass_panel/horizontal",
+        "particle": "voidminers:block/glass_panel",
+        "vertical": "voidminers:block/ctm/glass_panel/vertical"
+    }
+}

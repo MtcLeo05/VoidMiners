@@ -1,0 +1,15 @@
+{
+    "variants": {
+        "": {
+            "model": "voidminers:block/frame_base"
+        }
+    },
+    "athena:loader": "athena:ctm",
+    "ctm_textures": {
+        "center": "voidminers:block/ctm/frame_base/center",
+        "empty": "voidminers:block/ctm/frame_base/empty",
+        "horizontal": "voidminers:block/ctm/frame_base/horizontal",
+        "particle": "voidminers:block/frame_base",
+        "vertical": "voidminers:block/ctm/frame_base/vertical"
+    }
+}

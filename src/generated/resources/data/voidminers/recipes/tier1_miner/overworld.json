@@ -1,0 +1,47 @@
+{
+  "type": "voidminers:miner",
+  "dimension": "minecraft:overworld",
+  "minTier": 1,
+  "outputs": [
+    {
+      "item": "minecraft:emerald_ore",
+      "weight": 1.0
+    },
+    {
+      "item": "minecraft:diamond_ore",
+      "weight": 2.0
+    },
+    {
+      "item": "minecraft:gold_ore",
+      "weight": 4.0
+    },
+    {
+      "item": "minecraft:redstone_ore",
+      "weight": 6.0
+    },
+    {
+      "item": "minecraft:lapis_ore",
+      "weight": 6.0
+    },
+    {
+      "item": "minecraft:iron_ore",
+      "weight": 8.0
+    },
+    {
+      "item": "minecraft:copper_ore",
+      "weight": 12.0
+    },
+    {
+      "item": "minecraft:coal_ore",
+      "weight": 16.0
+    },
+    {
+      "item": "voidminers:rubetine",
+      "weight": 2.0
+    },
+    {
+      "item": "voidminers:aurantium",
+      "weight": 2.0
+    }
+  ]
+}
