@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "voidminers:aurantium"
+    },
+    {
+      "item": "voidminers:aurantium"
+    },
+    {
+      "item": "voidminers:aurantium"
+    },
+    {
+      "item": "voidminers:aurantium"
+    },
+    {
+      "item": "voidminers:aurantium"
+    },
+    {
+      "item": "voidminers:aurantium"
+    },
+    {
+      "item": "voidminers:aurantium"
+    },
+    {
+      "item": "voidminers:aurantium"
+    },
+    {
+      "item": "voidminers:aurantium"
+    }
+  ],
+  "result": {
+    "item": "voidminers:aurantium_block"
+  }
+}

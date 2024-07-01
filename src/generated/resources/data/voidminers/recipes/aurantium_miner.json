@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "voidminers:aurantium_block"
+    },
+    "C": {
+      "item": "voidminers:rubetine_miner"
+    },
+    "G": {
+      "tag": "forge:glass"
+    },
+    "O": {
+      "item": "minecraft:obsidian"
+    }
+  },
+  "pattern": [
+    "GGG",
+    "GCG",
+    "BOB"
+  ],
+  "result": {
+    "item": "voidminers:aurantium_miner"
+  },
+  "show_notification": true
+}

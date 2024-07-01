@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "voidminers:rubetine"
+    },
+    {
+      "item": "voidminers:rubetine"
+    },
+    {
+      "item": "voidminers:rubetine"
+    },
+    {
+      "item": "voidminers:rubetine"
+    },
+    {
+      "item": "voidminers:rubetine"
+    },
+    {
+      "item": "voidminers:rubetine"
+    },
+    {
+      "item": "voidminers:rubetine"
+    },
+    {
+      "item": "voidminers:rubetine"
+    },
+    {
+      "item": "voidminers:rubetine"
+    }
+  ],
+  "result": {
+    "item": "voidminers:rubetine_block"
+  }
+}

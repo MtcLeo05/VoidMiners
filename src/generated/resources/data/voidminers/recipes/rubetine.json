@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "minecraft:blaze_powder"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "pattern": [
+    "RBR",
+    "BDB",
+    "RBR"
+  ],
+  "result": {
+    "count": 4,
+    "item": "voidminers:rubetine"
+  },
+  "show_notification": true
+}

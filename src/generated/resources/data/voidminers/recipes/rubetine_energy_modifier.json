@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "voidminers:rubetine"
+    },
+    "M": {
+      "item": "voidminers:null_modifier"
+    },
+    "c": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "pattern": [
+    "CcC",
+    "cMc",
+    "CcC"
+  ],
+  "result": {
+    "item": "voidminers:rubetine_energy_modifier"
+  },
+  "show_notification": true
+}
