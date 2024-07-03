@@ -45,7 +45,7 @@ public class MinerMultiblocks {
                 'M', a -> a.getState().is(ModBlockTagGenerator.MODIFIERS)
             ),
             Map.of(
-                'P', ModBlocks.STRUCTURE_PANEL.get()::defaultBlockState,
+                'P', ModBlocks.GLASS_PANEL.get()::defaultBlockState,
                 'F', CrystalSet.RUBETINE.FRAME.get()::defaultBlockState,
                 'M', ModBlocks.NULL_MOD.get()::defaultBlockState
             )
@@ -78,7 +78,7 @@ public class MinerMultiblocks {
                 'M', a -> a.getState().is(ModBlockTagGenerator.MODIFIERS)
             ),
             Map.of(
-                'P', ModBlocks.STRUCTURE_PANEL.get()::defaultBlockState,
+                'P', ModBlocks.GLASS_PANEL.get()::defaultBlockState,
                 'F', CrystalSet.AURANTIUM.FRAME.get()::defaultBlockState,
                 'M', ModBlocks.NULL_MOD.get()::defaultBlockState
             )
@@ -114,7 +114,7 @@ public class MinerMultiblocks {
                 'M', a -> a.getState().is(ModBlockTagGenerator.MODIFIERS)
             ),
             Map.of(
-                'P', ModBlocks.STRUCTURE_PANEL.get()::defaultBlockState,
+                'P', ModBlocks.GLASS_PANEL.get()::defaultBlockState,
                 'F', CrystalSet.CITRINETINE.FRAME.get()::defaultBlockState,
                 'M', ModBlocks.NULL_MOD.get()::defaultBlockState
             )

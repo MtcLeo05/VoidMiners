@@ -160,6 +160,8 @@ dependencies {
 
     implementation fg.deobf("curse.maven:mangos-multiblock-library-966061:5144465")
     implementation fg.deobf("curse.maven:jei-238222:5101366")
+    implementation fg.deobf("curse.maven:athena-841890:5176879")
+    implementation fg.deobf("curse.maven:jade-324717:5493390")
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }

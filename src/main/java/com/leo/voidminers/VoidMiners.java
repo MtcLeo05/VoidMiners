@@ -1,5 +1,6 @@
 package com.leo.voidminers;
 
+import com.leo.voidminers.config.ServerConfig;
 import com.leo.voidminers.init.*;
 import com.leo.voidminers.item.CrystalSet;
 import com.mojang.logging.LogUtils;
@@ -7,7 +8,9 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
@@ -34,6 +37,8 @@ public class VoidMiners {
         ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
 
         modEventBus.addListener(VoidMiners::clientSetup);
+
+        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ServerConfig.SPEC, MODID + "-server.toml");
     }
 
     private static void clientSetup(final FMLClientSetupEvent event) {

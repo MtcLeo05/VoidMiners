@@ -3,6 +3,7 @@ package com.leo.voidminers.item;
 import com.leo.voidminers.VoidMiners;
 import com.leo.voidminers.block.ControllerBaseBlock;
 import com.leo.voidminers.block.ModifierBlock;
+import com.leo.voidminers.block.entity.ModifierBE;
 import com.leo.voidminers.init.ModBlocks;
 import com.leo.voidminers.init.ModItems;
 import com.leo.voidminers.init.ModRarities;
@@ -57,48 +58,48 @@ public class CrystalSet {
         );
     }
 
-    public static RegistryObject<Block> fastCreateModifier(String name, float hardness, float resistance, Rarity rarity, float energy, float speed, float item) {
-        return ModBlocks.registerBlock(name,
+    public static RegistryObject<Block> fastCreateModifier(String name, float hardness, float resistance, Rarity rarity, ModifierBE.ModifierType type) {
+        return ModBlocks.registerBlock(name + "_" + type.type + "_modifier",
             () -> new ModifierBlock(
                 BlockBehaviour.Properties.of()
                     .strength(hardness, resistance)
                     .requiresCorrectToolForDrops(),
-                new float[]{energy, speed, item}
+                name,
+                type
             ),
             rarity
         );
     }
 
-    public static RegistryObject<Block> fastCreateController(String name, float hardness, float resistance, Rarity rarity, ResourceLocation structure, int duration, int rfTick) {
-        return ModBlocks.registerBlock(name,
+    public static RegistryObject<Block> fastCreateController(String name, float hardness, float resistance, Rarity rarity, ResourceLocation structure) {
+        return ModBlocks.registerBlock(name + "_miner",
             () -> new ControllerBaseBlock(
                 BlockBehaviour.Properties.of()
                     .strength(hardness, resistance)
                     .requiresCorrectToolForDrops(),
                 structure,
-                duration,
-                rfTick
+                name
             ),
             rarity
         );
     }
 
     public static void initSets() {
-        RUBETINE = createSet("rubetine", ModRarities.RUBETINE, 2500, 300, new float[]{0.90f, 1f, 1f}, new float[]{1.1f, 0.95f, 1f}, new float[]{1.2f, 1f, 1.75f});
-        AURANTIUM = createSet("aurantium", ModRarities.AURANTIUM, 2250, 350, new float[]{0.80f, 1f, 1f}, new float[]{1.2f, 0.9f, 1f}, new float[]{1.3f, 1f, 2f});
-        CITRINETINE = createSet("citrinetine", ModRarities.CITRINETINE, 2150, 375, new float[]{0.70f, 1f, 1f}, new float[]{1.3f, 0.85f, 1f}, new float[]{1.4f, 1f, 2.25f});
+        RUBETINE = createSet("rubetine", ModRarities.RUBETINE);
+        AURANTIUM = createSet("aurantium", ModRarities.AURANTIUM);
+        CITRINETINE = createSet("citrinetine", ModRarities.CITRINETINE);
     }
 
-    public static CrystalSet createSet(String name, Rarity rarity, int duration, int rfTick, float[] energy, float[] speed, float[] item) {
+    public static CrystalSet createSet(String name, Rarity rarity) {
         return new CrystalSet(
             name,
             fastCreateItem(name, rarity),
             fastCreateBlock(name + "_block", 10, 5, rarity),
-            fastCreateController(name + "_miner", 10, 50, rarity, new ResourceLocation(VoidMiners.MODID, name), duration, rfTick),
+            fastCreateController(name, 10, 50, rarity, new ResourceLocation(VoidMiners.MODID, name)),
             fastCreateBlock(name + "_frame", 10, 50, rarity),
-            fastCreateModifier(name + "_energy_modifier", 10, 50, rarity, energy[0], energy[1], energy[2]),
-            fastCreateModifier(name + "_speed_modifier", 10, 50, rarity, speed[0], speed[1], speed[2]),
-            fastCreateModifier(name + "_item_modifier", 10, 50, rarity, item[0], item[1], item[2])
+            fastCreateModifier(name, 10, 50, rarity, ModifierBE.ModifierType.ENERGY),
+            fastCreateModifier(name, 10, 50, rarity, ModifierBE.ModifierType.SPEED),
+            fastCreateModifier(name, 10, 50, rarity, ModifierBE.ModifierType.ITEM)
         );
     }
 

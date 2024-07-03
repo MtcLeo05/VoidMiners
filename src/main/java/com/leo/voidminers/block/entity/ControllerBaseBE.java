@@ -2,6 +2,7 @@ package com.leo.voidminers.block.entity;
 
 import com.leo.voidminers.VoidMiners;
 import com.leo.voidminers.block.ModifierBlock;
+import com.leo.voidminers.config.ServerConfig;
 import com.leo.voidminers.energy.ModEnergyStorage;
 import com.leo.voidminers.init.ModBlockEntities;
 import com.leo.voidminers.recipe.MinerRecipe;
@@ -56,14 +57,13 @@ public class ControllerBaseBE extends BlockEntity {
 
     public boolean foundStructure = false;
     private int progress = 0;
-    private int maxProgress = 15;
-    private int rfTick = 0;
 
     public boolean showStructure = false;
 
-    private final Map<BlockInWorld, float[]> modifierMap = new HashMap<>();
+    private final Map<BlockInWorld, Float[]> modifierMap = new HashMap<>();
 
     private ResourceLocation structure;
+    private String name;
 
     public boolean active;
     public boolean working;
@@ -75,10 +75,9 @@ public class ControllerBaseBE extends BlockEntity {
         super(ModBlockEntities.CONTROLLER_BASE_BE.get(), pPos, pBlockState);
     }
 
-    public void setup(ResourceLocation structure, int duration, int rfTick) {
+    public void setup(ResourceLocation structure, String name) {
         this.structure = structure;
-        this.maxProgress = duration;
-        this.rfTick = rfTick;
+        this.name = name;
     }
 
     public int getBeamColor() {
@@ -135,8 +134,7 @@ public class ControllerBaseBE extends BlockEntity {
         data.put("energy", energyHandler.serializeNBT());
         data.put("items", itemHandler.serializeNBT());
         data.putInt("progress", this.progress);
-        data.putInt("maxProgress", this.maxProgress);
-        data.putInt("rfTick", this.rfTick);
+        data.putString("name", this.name);
         data.putBoolean("active", active);
         data.putString("structure", structure.toString());
         data.putBoolean("showStructure", showStructure);
@@ -162,12 +160,8 @@ public class ControllerBaseBE extends BlockEntity {
             progress = data.getInt("progress");
         }
 
-        if (data.contains("maxProgress")) {
-            maxProgress = data.getInt("maxProgress");
-        }
-
-        if (data.contains("rfTick")) {
-            rfTick = data.getInt("rfTick");
+        if (data.contains("name")) {
+            name = data.getString("name");
         }
 
         if (data.contains("active")) {
@@ -247,27 +241,27 @@ public class ControllerBaseBE extends BlockEntity {
     public int getRfTick() {
         float mod = 1;
 
-        for (Map.Entry<BlockInWorld, float[]> entry : modifierMap.entrySet()) {
+        for (Map.Entry<BlockInWorld, Float[]> entry : modifierMap.entrySet()) {
             mod *= entry.getValue()[0];
         }
 
-        return (int) (rfTick * mod);
+        return (int) (ServerConfig.getEnergy(name) * mod);
     }
 
     public int getMaxProgress() {
         float mod = 1;
 
-        for (Map.Entry<BlockInWorld, float[]> entry : modifierMap.entrySet()) {
+        for (Map.Entry<BlockInWorld, Float[]> entry : modifierMap.entrySet()) {
             mod *= entry.getValue()[1];
         }
 
-        return (int) (maxProgress * mod);
+        return (int) (ServerConfig.getDuration(name) * mod);
     }
 
     public ItemStack getBoostedStack(ItemStack base) {
         float mod = 1;
 
-        for (Map.Entry<BlockInWorld, float[]> entry : modifierMap.entrySet()) {
+        for (Map.Entry<BlockInWorld, Float[]> entry : modifierMap.entrySet()) {
             mod *= entry.getValue()[2];
         }
 

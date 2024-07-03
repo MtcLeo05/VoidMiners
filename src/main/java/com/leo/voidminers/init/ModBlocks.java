@@ -3,6 +3,7 @@ package com.leo.voidminers.init;
 import com.leo.voidminers.VoidMiners;
 import com.leo.voidminers.block.BaseTransparentBlock;
 import com.leo.voidminers.block.ModifierBlock;
+import com.leo.voidminers.block.entity.ModifierBE;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
@@ -47,7 +48,8 @@ public class ModBlocks {
             BlockBehaviour.Properties.of()
                 .strength(10, 50)
                 .requiresCorrectToolForDrops(),
-            new float[]{1, 1, 1}
+            "null",
+            ModifierBE.ModifierType.NULL
         )
     );
 

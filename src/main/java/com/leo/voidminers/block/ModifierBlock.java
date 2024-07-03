@@ -12,11 +12,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 public class ModifierBlock extends Block implements EntityBlock {
-    public float[] modifiers;
+    public String name;
+    public ModifierBE.ModifierType type;
 
-    public ModifierBlock(Properties pProperties, float[] modifiers) {
+    public ModifierBlock(Properties pProperties, String name, ModifierBE.ModifierType type) {
         super(pProperties);
-        this.modifiers = modifiers;
+        this.name = name;
+        this.type = type;
     }
 
     @Override
@@ -28,7 +30,7 @@ public class ModifierBlock extends Block implements EntityBlock {
             controller = ((ModifierBE) this.newBlockEntity(pPos, pState));
         }
 
-        controller.setup(modifiers);
+        controller.setup(name, type);
     }
 
     @Nullable

@@ -25,14 +25,12 @@ import org.jetbrains.annotations.Nullable;
 
 public class ControllerBaseBlock extends BaseTransparentBlock implements EntityBlock {
     final ResourceLocation structure;
-    final int duration;
-    final int rfTick;
+    final String name;
 
-    public ControllerBaseBlock(Properties pProperties, ResourceLocation structure, int duration, int rfTick) {
+    public ControllerBaseBlock(Properties pProperties, ResourceLocation structure, String name) {
         super(pProperties);
         this.structure = structure;
-        this.duration = duration;
-        this.rfTick = rfTick;
+        this.name = name;
     }
 
     @Override
@@ -83,7 +81,7 @@ public class ControllerBaseBlock extends BaseTransparentBlock implements EntityB
             controller = ((ControllerBaseBE) this.newBlockEntity(pPos, pState));
         }
 
-        controller.setup(structure, duration, rfTick);
+        controller.setup(structure, name);
     }
 
     @Nullable
