@@ -1,6 +1,6 @@
 package com.leo.voidminers.block.entity;
 
-import com.leo.voidminers.config.ServerConfig;
+import com.leo.voidminers.config.CommonConfig;
 import com.leo.voidminers.init.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -48,7 +48,7 @@ public class ModifierBE extends BlockEntity {
 
     public Float[] getModifiers() {
         if (name != null && type != null) {
-            return ServerConfig.getModifiersFromTypeAndName(name, type);
+            return CommonConfig.getModifiersFromTypeAndName(name, type);
         }
 
         return new Float[]{1f, 1f, 1f};

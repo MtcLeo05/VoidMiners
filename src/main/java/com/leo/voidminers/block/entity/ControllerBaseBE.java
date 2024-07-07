@@ -2,7 +2,8 @@ package com.leo.voidminers.block.entity;
 
 import com.leo.voidminers.VoidMiners;
 import com.leo.voidminers.block.ModifierBlock;
-import com.leo.voidminers.config.ServerConfig;
+import com.leo.voidminers.config.CommonConfig;
+import com.leo.voidminers.config.CommonConfig;
 import com.leo.voidminers.energy.ModEnergyStorage;
 import com.leo.voidminers.init.ModBlockEntities;
 import com.leo.voidminers.recipe.MinerRecipe;
@@ -245,7 +246,7 @@ public class ControllerBaseBE extends BlockEntity {
             mod *= entry.getValue()[0];
         }
 
-        return (int) (ServerConfig.getEnergy(name) * mod);
+        return (int) (CommonConfig.getEnergy(name) * mod);
     }
 
     public int getMaxProgress() {
@@ -255,7 +256,7 @@ public class ControllerBaseBE extends BlockEntity {
             mod *= entry.getValue()[1];
         }
 
-        return (int) (ServerConfig.getDuration(name) * mod);
+        return (int) (CommonConfig.getDuration(name) * mod);
     }
 
     public ItemStack getBoostedStack(ItemStack base) {
@@ -271,7 +272,7 @@ public class ControllerBaseBE extends BlockEntity {
     }
 
     public boolean isActive(BlockPos pos) {
-        active = hasRecipe() && foundStructure && hasViewOnBedrockOrVoid(pos);
+        active = foundStructure && hasViewOnBedrockOrVoid(pos);
         level.sendBlockUpdated(pos, getBlockState(), getBlockState(), 3);
         return active;
     }
@@ -311,7 +312,13 @@ public class ControllerBaseBE extends BlockEntity {
         if (structure != null) {
             return level.getRecipeManager().getAllRecipesFor(MinerRecipe.Type.INSTANCE)
                 .stream()
-                .filter(recipe -> recipe.getMinTier() <= MiscUtil.tierMap.get(structure.getPath()))
+                .filter(recipe -> {
+                    if(CommonConfig.shouldMinePreviousTiers()){
+                        return recipe.getMinTier() <= MiscUtil.tierMap.get(structure.getPath());
+                    } else {
+                        return recipe.getMinTier() == MiscUtil.tierMap.get(structure.getPath());
+                    }
+                })
                 .filter(recipe -> recipe.getDimension().equals(this.level.dimension()))
                 .toList();
         }

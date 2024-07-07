@@ -8,10 +8,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-public class ServerConfig {
+public class CommonConfig {
 
-    public static CommentedConfig configData;
+    public static CommentedConfig commonConfigData;
     public static final ForgeConfigSpec SPEC;
 
     static {
@@ -21,6 +22,10 @@ public class ServerConfig {
     }
 
     private static void setupConfig(ForgeConfigSpec.Builder builder) {
+        builder
+            .comment("Whether miners should mine resources from previous tiers, or only their own.")
+            .define("previousMinerTier", true);
+
         for (CrystalSet set : CrystalSet.getAllSets()) {
             builder.push(set.name);
 
@@ -32,19 +37,30 @@ public class ServerConfig {
 
             builder.pop();
         }
+
+    }
+
+    public static boolean shouldMinePreviousTiers(){
+        if(SPEC.isLoaded() && commonConfigData != null){
+            Optional<Boolean> toRet = Optional.ofNullable(commonConfigData.get("previousMinerTier"));
+
+            return toRet.orElse(true);
+        }
+
+        return true;
     }
 
     public static int getDuration(@NotNull String name) {
-        return SPEC.isLoaded() && configData != null ? configData.getIntOrElse(name + ".duration", 2500) : 2500;
+        return SPEC.isLoaded() && commonConfigData != null ? commonConfigData.getIntOrElse(name + ".duration", 2500) : 2500;
     }
 
     public static int getEnergy(@NotNull String name) {
-        return SPEC.isLoaded() && configData != null ? configData.getIntOrElse(name + ".energy", 350) : 350;
+        return SPEC.isLoaded() && commonConfigData != null ? commonConfigData.getIntOrElse(name + ".energy", 350) : 350;
     }
 
     public static Float[] getModifiersFromTypeAndName(String name, ModifierBE.ModifierType type) {
         if (SPEC.isLoaded() && !type.equals(ModifierBE.ModifierType.NULL)) {
-            List<?> list = configData.get(name + "." + type.type + "Mod");
+            List<?> list = commonConfigData.get(name + "." + type.type + "Mod");
 
             List<Float> values = new ArrayList<>();
 

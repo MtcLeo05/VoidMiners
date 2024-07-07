@@ -2,7 +2,7 @@ package com.leo.voidminers.event;
 
 import com.leo.voidminers.VoidMiners;
 import com.leo.voidminers.block.ModifierBlock;
-import com.leo.voidminers.config.ServerConfig;
+import com.leo.voidminers.config.CommonConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
@@ -24,7 +24,7 @@ public class ForgeBusClientEvent {
 
         if (itemStack.getItem() instanceof BlockItem blockItem) {
             if (blockItem.getBlock() instanceof ModifierBlock mb) {
-                Float[] values = ServerConfig.getModifiersFromTypeAndName(mb.name, mb.type);
+                Float[] values = CommonConfig.getModifiersFromTypeAndName(mb.name, mb.type);
 
                 if(values.length == 3){
                     toolTip.add(

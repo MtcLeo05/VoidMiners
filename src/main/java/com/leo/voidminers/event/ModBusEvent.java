@@ -16,7 +16,7 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.HashSet;
 import java.util.List;
 
-import static com.leo.voidminers.config.ServerConfig.configData;
+import static com.leo.voidminers.config.CommonConfig.commonConfigData;
 
 @Mod.EventBusSubscriber(modid = VoidMiners.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModBusEvent {
@@ -35,11 +35,11 @@ public class ModBusEvent {
 
     @SubscribeEvent
     public static void onConfigLoad(ModConfigEvent.Loading event) {
-        configData = event.getConfig().getConfigData();
+        commonConfigData = event.getConfig().getConfigData();
     }
 
     @SubscribeEvent
     public static void onConfigReload(ModConfigEvent.Reloading event) {
-        configData = event.getConfig().getConfigData();
+        commonConfigData = event.getConfig().getConfigData();
     }
 }

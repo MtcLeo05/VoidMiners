@@ -1,6 +1,6 @@
 package com.leo.voidminers;
 
-import com.leo.voidminers.config.ServerConfig;
+import com.leo.voidminers.config.CommonConfig;
 import com.leo.voidminers.init.*;
 import com.leo.voidminers.item.CrystalSet;
 import com.mojang.logging.LogUtils;
@@ -38,7 +38,7 @@ public class VoidMiners {
 
         modEventBus.addListener(VoidMiners::clientSetup);
 
-        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ServerConfig.SPEC, MODID + "-server.toml");
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CommonConfig.SPEC, MODID + "-common.toml");
     }
 
     private static void clientSetup(final FMLClientSetupEvent event) {
