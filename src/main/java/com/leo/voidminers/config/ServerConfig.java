@@ -60,7 +60,9 @@ public class ServerConfig {
                 }
             }
 
-            return values.toArray(new Float[0]);
+            if(!values.isEmpty()){
+                return values.toArray(new Float[0]);
+            }
         }
 
         return new Float[]{1f, 1f, 1f};
