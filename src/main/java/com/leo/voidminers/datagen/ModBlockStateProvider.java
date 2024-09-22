@@ -23,15 +23,15 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        simpleBlockItem(
+        simpleBlockWithItem(
             ModBlocks.FRAME_BASE
         );
 
-        simpleBlockItem(
+        simpleBlockWithItem(
             ModBlocks.STRUCTURE_PANEL
         );
 
-        simpleAllCubeWithItemNoBlockState(
+        simpleAllCubeWithItem(
             ModBlocks.GLASS_PANEL
         );
 
@@ -43,7 +43,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
                 set.name
             );
 
-            simpleAllCubeWithItemNoBlockState(
+            simpleAllCubeWithItem(
                 set.FRAME,
                 set.name
             );
@@ -77,23 +77,6 @@ public class ModBlockStateProvider extends BlockStateProvider {
     private void simpleAllCubeWithItem(RegistryObject<? extends Block> block) {
         simpleBlockWithItem(block.get(), cubeAll(block.get()));
     }
-
-    private void simpleAllCubeWithItemNoBlockState(RegistryObject<Block> block, String name) {
-        models().getBuilder(block.getId().getPath())
-            .parent(model(new ResourceLocation("block/cube_all")))
-            .texture("all", texture(block, name));
-
-        simpleBlockItem(block.get(), model(block));
-    }
-
-    private void simpleAllCubeWithItemNoBlockState(RegistryObject<Block> block) {
-        models().getBuilder(block.getId().getPath())
-            .parent(model(new ResourceLocation("block/cube_all")))
-            .texture("all", texture(block));
-
-        simpleBlockItem(block.get(), model(block));
-    }
-
     private void simpleBlockWithItem(RegistryObject<? extends Block> block) {
         simpleBlockWithItem(block.get(), new ModelFile.UncheckedModelFile(new ResourceLocation(VoidMiners.MODID, "block/" + block.getId().getPath())));
     }

@@ -290,6 +290,28 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
             2,
             Level.NETHER
         ).save(pWriter);
+
+        MinerRecipe.create(
+            List.of(
+                new WeightedStack(
+                    CrystalSet.VERDIUM.CRYSTAL.get().getDefaultInstance(),
+                    2f
+                )
+            ),
+            3,
+            Level.OVERWORLD
+        ).save(pWriter);
+
+        MinerRecipe.create(
+            List.of(
+                new WeightedStack(
+                    CrystalSet.VERDIUM.CRYSTAL.get().getDefaultInstance(),
+                    4f
+                )
+            ),
+            3,
+            Level.NETHER
+        ).save(pWriter);
     }
 
 }

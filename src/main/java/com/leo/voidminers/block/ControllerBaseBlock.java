@@ -97,13 +97,15 @@ public class ControllerBaseBlock extends BaseTransparentBlock implements EntityB
     @Override
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
         return Shapes.or(
-            ShapeUtil.shapeFromDimension(0, 15, 0, 16, 1, 16),
-            ShapeUtil.shapeFromDimension(1.5f, 2, 1.5f, 13, 13, 13),
             ShapeUtil.shapeFromDimension(0, 0, 0, 16, 2, 16),
-            ShapeUtil.shapeFromDimension(15, 2, 15, 1, 13, 1),
-            ShapeUtil.shapeFromDimension(0, 2, 15, 1, 13, 1),
-            ShapeUtil.shapeFromDimension(15, 2, 0, 1, 13, 1),
-            ShapeUtil.shapeFromDimension(0, 2, 0, 1, 13, 1)
+            ShapeUtil.shapeFromDimension(2, 2, 2, 12, 13, 12),
+            ShapeUtil.shapeFromDimension(7, 0.1f, 1, 2, 15.9f, 14),
+            ShapeUtil.shapeFromDimension(1, 8, 9, 6, 2, 6),
+            ShapeUtil.shapeFromDimension(1, 8, 1, 6, 2, 6),
+            ShapeUtil.shapeFromDimension(9, 8, 9, 6, 2, 6),
+            ShapeUtil.shapeFromDimension(9, 8, 1, 6, 2, 6),
+            ShapeUtil.shapeFromDimension(1, 0.1f, 7, 6, 15.9f, 2),
+            ShapeUtil.shapeFromDimension(9, 0.1f, 7, 6, 15.9f, 2)
         );
     }
 }

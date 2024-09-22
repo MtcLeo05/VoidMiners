@@ -1,0 +1,11 @@
+{
+  "type": "voidminers:miner",
+  "dimension": "minecraft:overworld",
+  "minTier": 3,
+  "outputs": [
+    {
+      "item": "voidminers:verdium",
+      "weight": 2.0
+    }
+  ]
+}

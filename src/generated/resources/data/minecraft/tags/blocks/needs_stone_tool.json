@@ -39,6 +39,18 @@
     "voidminers:citrinetine_frame",
     "voidminers:citrinetine_energy_modifier",
     "voidminers:citrinetine_speed_modifier",
-    "voidminers:citrinetine_item_modifier"
+    "voidminers:citrinetine_item_modifier",
+    "voidminers:verdium_miner",
+    "voidminers:verdium_block",
+    "voidminers:verdium_frame",
+    "voidminers:verdium_energy_modifier",
+    "voidminers:verdium_speed_modifier",
+    "voidminers:verdium_item_modifier",
+    "voidminers:verdium_miner",
+    "voidminers:verdium_block",
+    "voidminers:verdium_frame",
+    "voidminers:verdium_energy_modifier",
+    "voidminers:verdium_speed_modifier",
+    "voidminers:verdium_item_modifier"
   ]
 }

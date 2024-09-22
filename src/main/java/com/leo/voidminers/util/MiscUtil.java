@@ -39,6 +39,11 @@ public class MiscUtil {
             "citrinetine",
             0xFFFFFF00
         );
+
+        colorMap.put(
+            "verdium",
+            0xFF00FF00
+        );
     }
 
 

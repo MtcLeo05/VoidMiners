@@ -21,101 +21,134 @@ public class MinerMultiblocks {
 
     public static final MultiBlockManager MANAGER = MultiBlockManager.getOrCreate(VoidMiners.MODID, "miners");
 
-    public static final SimpleMultiBlockAislePatternBuilder RUBETINE =
-        createAccessiblePattern(
-            VoidMiners.MODID + ":rubetine",
+    public static final SimpleMultiBlockAislePatternBuilder RUBETINE = createAccessiblePattern(
+        VoidMiners.MODID + ":rubetine",
+        List.of(
             List.of(
-                List.of(
-                    "     ", "     ", "  *  ", "     ", "     "
-                ),
-                List.of(
-                    "     ", "  F  ", " F F ", "  F  ", "     "
-                ),
-                List.of(
-                    "  F  ", "     ", "F   F", "     ", "  F  "
-                ),
-                List.of(
-                    " FFF ", "FMPMF", "FPPPF", "FMPMF", " FFF "
-                )
+                "     ", "     ", "  *  ", "     ", "     "
             ),
-            Map.of(
-                '*', a -> a.getState().is(CrystalSet.RUBETINE.MINER_CONTROLLER.get()),
-                'P', a -> a.getState().is(ModBlockTagGenerator.PANELS),
-                'F', a -> a.getState().is(ModBlockTagGenerator.FRAME_1),
-                'M', a -> a.getState().is(ModBlockTagGenerator.MODIFIERS)
+            List.of(
+                "     ", "  F  ", " F F ", "  F  ", "     "
             ),
-            Map.of(
-                'P', ModBlocks.GLASS_PANEL.get()::defaultBlockState,
-                'F', CrystalSet.RUBETINE.FRAME.get()::defaultBlockState,
-                'M', ModBlocks.NULL_MOD.get()::defaultBlockState
+            List.of(
+                "  F  ", "     ", "F   F", "     ", "  F  "
+            ),
+            List.of(
+                " FFF ", "FMPMF", "FPPPF", "FMPMF", " FFF "
             )
-        );
+        ),
+        Map.of(
+            '*', a -> a.getState().is(CrystalSet.RUBETINE.MINER_CONTROLLER.get()),
+            'P', a -> a.getState().is(ModBlockTagGenerator.PANELS),
+            'F', a -> a.getState().is(ModBlockTagGenerator.FRAME_1),
+            'M', a -> a.getState().is(ModBlockTagGenerator.MODIFIERS)
+        ),
+        Map.of(
+            'P', ModBlocks.GLASS_PANEL.get()::defaultBlockState,
+            'F', CrystalSet.RUBETINE.FRAME.get()::defaultBlockState,
+            'M', ModBlocks.NULL_MOD.get()::defaultBlockState
+        )
+    );
 
-    public static final SimpleMultiBlockAislePatternBuilder AURANTIUM =
-        createAccessiblePattern(
-            VoidMiners.MODID + ":aurantium",
+    public static final SimpleMultiBlockAislePatternBuilder AURANTIUM = createAccessiblePattern(
+        VoidMiners.MODID + ":aurantium",
+        List.of(
             List.of(
-                List.of(
-                    "       ", "       ", "       ", "   *   ", "       ", "       ", "       "
-                ),
-                List.of(
-                    "       ", "   F   ", "   F   ", " FF FF ", "   F   ", "   F   ", "       "
-                ),
-                List.of(
-                    "   F   ", "       ", "       ", "F     F", "       ", "       ", "   F   "
-                ),
-                List.of(
-                    "   F   ", "       ", "       ", "F     F", "       ", "       ", "   F   "
-                ),
-                List.of(
-                    " FFFFF ", "FMPMPMF", "FPPPPPF", "FPPPPPF", "FPPPPPF", "FMPMPMF", " FFFFF "
-                )
+                "       ", "       ", "       ", "   *   ", "       ", "       ", "       "
             ),
-            Map.of(
-                '*', a -> a.getState().is(CrystalSet.AURANTIUM.MINER_CONTROLLER.get()),
-                'P', a -> a.getState().is(ModBlockTagGenerator.PANELS),
-                'F', a -> a.getState().is(ModBlockTagGenerator.FRAME_2),
-                'M', a -> a.getState().is(ModBlockTagGenerator.MODIFIERS)
+            List.of(
+                "       ", "   F   ", "   F   ", " FF FF ", "   F   ", "   F   ", "       "
             ),
-            Map.of(
-                'P', ModBlocks.GLASS_PANEL.get()::defaultBlockState,
-                'F', CrystalSet.AURANTIUM.FRAME.get()::defaultBlockState,
-                'M', ModBlocks.NULL_MOD.get()::defaultBlockState
+            List.of(
+                "   F   ", "       ", "       ", "F     F", "       ", "       ", "   F   "
+            ),
+            List.of(
+                "   F   ", "       ", "       ", "F     F", "       ", "       ", "   F   "
+            ),
+            List.of(
+                " FFFFF ", "FMPMPMF", "FPPPPPF", "FPPPPPF", "FPPPPPF", "FMPMPMF", " FFFFF "
             )
-        );
+        ),
+        Map.of(
+            '*', a -> a.getState().is(CrystalSet.AURANTIUM.MINER_CONTROLLER.get()),
+            'P', a -> a.getState().is(ModBlockTagGenerator.PANELS),
+            'F', a -> a.getState().is(ModBlockTagGenerator.FRAME_2),
+            'M', a -> a.getState().is(ModBlockTagGenerator.MODIFIERS)
+        ),
+        Map.of(
+            'P', ModBlocks.GLASS_PANEL.get()::defaultBlockState,
+            'F', CrystalSet.AURANTIUM.FRAME.get()::defaultBlockState,
+            'M', ModBlocks.NULL_MOD.get()::defaultBlockState
+        )
+    );
 
-    public static final SimpleMultiBlockAislePatternBuilder CITRINETINE =
+    public static final SimpleMultiBlockAislePatternBuilder CITRINETINE = createAccessiblePattern(
+        VoidMiners.MODID + ":citrinetine",
+        List.of(
+            List.of(
+                "       ", "       ", "       ", "   *   ", "       ", "       ", "       "
+            ),
+            List.of(
+                "       ", "       ", "   F   ", "  F F  ", "   F   ", "       ", "       "
+            ),
+            List.of(
+                "       ", "   F   ", "       ", " F   F ", "       ", "   F   ", "       "
+            ),
+            List.of(
+                "   F   ", "       ", "       ", "F     F", "       ", "       ", "   F   "
+            ),
+            List.of(
+                "   F   ", "       ", "       ", "F     F", "       ", "       ", "   F   "
+            ),
+            List.of(
+                " FFFFF ", "FMPMPMF", "FPPPPPF", "FMPPPMF", "FPPPPPF", "FMPMPMF", " FFFFF "
+            )
+        ),
+        Map.of(
+            '*', a -> a.getState().is(CrystalSet.CITRINETINE.MINER_CONTROLLER.get()),
+            'P', a -> a.getState().is(ModBlockTagGenerator.PANELS),
+            'F', a -> a.getState().is(ModBlockTagGenerator.FRAME_3),
+            'M', a -> a.getState().is(ModBlockTagGenerator.MODIFIERS)
+        ),
+        Map.of(
+            'P', ModBlocks.GLASS_PANEL.get()::defaultBlockState,
+            'F', CrystalSet.CITRINETINE.FRAME.get()::defaultBlockState,
+            'M', ModBlocks.NULL_MOD.get()::defaultBlockState
+        )
+    );
+
+    public static final SimpleMultiBlockAislePatternBuilder VERDIUM =
         createAccessiblePattern(
-            VoidMiners.MODID + ":citrinetine",
+            VoidMiners.MODID + ":verdium",
             List.of(
                 List.of(
-                    "       ", "       ", "       ", "   *   ", "       ", "       ", "       "
+                    "         ", "         ","         ","         ","    *    ","         ","         ","         ","         "
                 ),
                 List.of(
-                    "       ", "       ", "   F   ", "  F F  ", "   F   ", "       ", "       "
+                    "         ", "         ","    F    ","    F    ","  FF FF  ","    F    ","    F    ","         ","         "
                 ),
                 List.of(
-                    "       ", "   F   ", "       ", " F   F ", "       ", "   F   ", "       "
+                    "         ", "    F    ","         ","         "," F     F ","         ","         ","    F    ","         "
                 ),
                 List.of(
-                    "   F   ", "       ", "       ", "F     F", "       ", "       ", "   F   "
+                    "    F    ", "         ","         ","         ","F       F","         ","         ","         ","    F    "
                 ),
                 List.of(
-                    "   F   ", "       ", "       ", "F     F", "       ", "       ", "   F   "
+                    "    F    ", "         ","         ","         ","F       F","         ","         ","         ","    F    "
                 ),
                 List.of(
-                    " FFFFF ", "FMPMPMF", "FPPPPPF", "FMPPPMF", "FPPPPPF", "FMPMPMF", " FFFFF "
+                    "  FFFFF  ", " FMMPMMF ","FMMPPPMMF","FMPPPPPMF","FPPPPPPPF","FMPPPPPMF","FMMPPPMMF"," FMMPMMF ","  FFFFF  "
                 )
             ),
             Map.of(
-                '*', a -> a.getState().is(CrystalSet.CITRINETINE.MINER_CONTROLLER.get()),
+                '*', a -> a.getState().is(CrystalSet.VERDIUM.MINER_CONTROLLER.get()),
                 'P', a -> a.getState().is(ModBlockTagGenerator.PANELS),
-                'F', a -> a.getState().is(ModBlockTagGenerator.FRAME_3),
+                'F', a -> a.getState().is(ModBlockTagGenerator.FRAME_4),
                 'M', a -> a.getState().is(ModBlockTagGenerator.MODIFIERS)
             ),
             Map.of(
                 'P', ModBlocks.GLASS_PANEL.get()::defaultBlockState,
-                'F', CrystalSet.CITRINETINE.FRAME.get()::defaultBlockState,
+                'F', CrystalSet.VERDIUM.FRAME.get()::defaultBlockState,
                 'M', ModBlocks.NULL_MOD.get()::defaultBlockState
             )
         );
@@ -180,6 +213,7 @@ public class MinerMultiblocks {
         MANAGER.register("rubetine", RUBETINE.build());
         MANAGER.register("aurantium", AURANTIUM.build());
         MANAGER.register("citrinetine", CITRINETINE.build());
+        MANAGER.register("verdium", VERDIUM.build());
     }
 
 }

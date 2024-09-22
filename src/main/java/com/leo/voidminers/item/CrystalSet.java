@@ -18,10 +18,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CrystalSet {
-
     public static CrystalSet RUBETINE;
     public static CrystalSet AURANTIUM;
     public static CrystalSet CITRINETINE;
+    public static CrystalSet VERDIUM;
 
     public final String name;
     public final RegistryObject<Item> CRYSTAL;
@@ -88,6 +88,7 @@ public class CrystalSet {
         RUBETINE = createSet("rubetine", ModRarities.RUBETINE);
         AURANTIUM = createSet("aurantium", ModRarities.AURANTIUM);
         CITRINETINE = createSet("citrinetine", ModRarities.CITRINETINE);
+        VERDIUM = createSet("verdium", ModRarities.VERDIUM);
     }
 
     public static CrystalSet createSet(String name, Rarity rarity) {
@@ -109,6 +110,7 @@ public class CrystalSet {
         sets.add(RUBETINE);
         sets.add(AURANTIUM);
         sets.add(CITRINETINE);
+        sets.add(VERDIUM);
 
         return sets;
     }

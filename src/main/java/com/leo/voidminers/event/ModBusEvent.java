@@ -8,10 +8,10 @@ import com.leo.voidminers.init.ModBlocks;
 import com.leo.voidminers.multiblock.MinerMultiblocks;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.RegistryObject;
+import net.minecraftforge.fml.common.Mod;
 
 import java.util.HashSet;
 import java.util.List;
