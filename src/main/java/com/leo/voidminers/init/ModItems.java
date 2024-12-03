@@ -15,6 +15,4 @@ public class ModItems {
             new Item.Properties()
         )
     );
-
-
 }

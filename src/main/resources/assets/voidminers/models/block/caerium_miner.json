@@ -1,0 +1,6 @@
+{
+    "parent": "voidminers:block/miner_base",
+    "textures": {
+        "1": "voidminers:block/caerium/miner"
+    }
+}

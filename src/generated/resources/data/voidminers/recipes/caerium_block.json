@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "voidminers:caerium"
+    },
+    {
+      "item": "voidminers:caerium"
+    },
+    {
+      "item": "voidminers:caerium"
+    },
+    {
+      "item": "voidminers:caerium"
+    },
+    {
+      "item": "voidminers:caerium"
+    },
+    {
+      "item": "voidminers:caerium"
+    },
+    {
+      "item": "voidminers:caerium"
+    },
+    {
+      "item": "voidminers:caerium"
+    },
+    {
+      "item": "voidminers:caerium"
+    }
+  ],
+  "result": {
+    "item": "voidminers:caerium_block"
+  }
+}

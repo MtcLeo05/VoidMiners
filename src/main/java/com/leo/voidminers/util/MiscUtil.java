@@ -44,6 +44,26 @@ public class MiscUtil {
             "verdium",
             0xFF00FF00
         );
+
+        colorMap.put(
+            "azurine",
+            0xFF00FFFF
+        );
+
+        colorMap.put(
+            "caerium",
+            0xFF0000FF
+        );
+
+        colorMap.put(
+            "amethystine",
+            0xFFAA00FF
+        );
+
+        colorMap.put(
+            "rosarium",
+            0xFFFF00FF
+        );
     }
 
 

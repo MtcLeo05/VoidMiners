@@ -22,6 +22,11 @@ public class CrystalSet {
     public static CrystalSet AURANTIUM;
     public static CrystalSet CITRINETINE;
     public static CrystalSet VERDIUM;
+    public static CrystalSet AZURINE;
+    public static CrystalSet CAERIUM;
+    public static CrystalSet AMETHYSTINE;
+    public static CrystalSet ROSARIUM;
+
 
     public final String name;
     public final RegistryObject<Item> CRYSTAL;
@@ -89,6 +94,10 @@ public class CrystalSet {
         AURANTIUM = createSet("aurantium", ModRarities.AURANTIUM);
         CITRINETINE = createSet("citrinetine", ModRarities.CITRINETINE);
         VERDIUM = createSet("verdium", ModRarities.VERDIUM);
+        AZURINE = createSet("azurine", ModRarities.AZURINE);
+        CAERIUM = createSet("caerium", ModRarities.CAERIUM);
+        AMETHYSTINE = createSet("amethystine", ModRarities.AMETHYSTINE);
+        ROSARIUM = createSet("rosarium", ModRarities.ROSARIUM);
     }
 
     public static CrystalSet createSet(String name, Rarity rarity) {
@@ -111,6 +120,10 @@ public class CrystalSet {
         sets.add(AURANTIUM);
         sets.add(CITRINETINE);
         sets.add(VERDIUM);
+        sets.add(AZURINE);
+        sets.add(CAERIUM);
+        sets.add(AMETHYSTINE);
+        sets.add(ROSARIUM);
 
         return sets;
     }

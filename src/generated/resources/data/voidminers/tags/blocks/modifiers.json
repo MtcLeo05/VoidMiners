@@ -12,6 +12,18 @@
     "voidminers:verdium_energy_modifier",
     "voidminers:verdium_speed_modifier",
     "voidminers:verdium_item_modifier",
+    "voidminers:azurine_energy_modifier",
+    "voidminers:azurine_speed_modifier",
+    "voidminers:azurine_item_modifier",
+    "voidminers:caerium_energy_modifier",
+    "voidminers:caerium_speed_modifier",
+    "voidminers:caerium_item_modifier",
+    "voidminers:amethystine_energy_modifier",
+    "voidminers:amethystine_speed_modifier",
+    "voidminers:amethystine_item_modifier",
+    "voidminers:rosarium_energy_modifier",
+    "voidminers:rosarium_speed_modifier",
+    "voidminers:rosarium_item_modifier",
     "voidminers:null_modifier"
   ]
 }

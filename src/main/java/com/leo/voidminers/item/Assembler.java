@@ -20,24 +20,26 @@ public class Assembler extends Item {
 
     @Override
     public InteractionResult useOn(UseOnContext pContext) {
+        if(pContext.getPlayer() == null) return InteractionResult.PASS;
+
         BlockPos pos = pContext.getClickedPos();
         Level level = pContext.getLevel();
 
-        if (level instanceof ServerLevel) {
-            BlockEntity entity = level.getBlockEntity(pos);
-            if (entity instanceof ControllerBaseBE controller) {
-                ServerPlayer player = ((ServerPlayer) pContext.getPlayer());
-                ResourceLocation structure = controller.getStructure();
-                RegisteredMultiBlockPattern multiBlock = MinerMultiblocks.MANAGER.getStructure(structure);
-                if (player.gameMode.isCreative()) {
-                    multiBlock.pattern().construct(level, pos);
-                }
-                return InteractionResult.CONSUME;
-            } else {
-                return InteractionResult.PASS;
-            }
+        if (!(level instanceof ServerLevel)) {
+            return InteractionResult.PASS;
         }
 
-        return InteractionResult.PASS;
+        BlockEntity entity = level.getBlockEntity(pos);
+
+        if(!(entity instanceof ControllerBaseBE controller)) return InteractionResult.PASS;
+        ResourceLocation structure = controller.getStructure();
+        RegisteredMultiBlockPattern multiBlock = MinerMultiblocks.MANAGER.getStructure(structure);
+
+        if (!((ServerPlayer) pContext.getPlayer()).gameMode.isCreative()) {
+            return InteractionResult.CONSUME;
+        }
+
+        multiBlock.pattern().construct(level, pos);
+        return InteractionResult.CONSUME;
     }
 }

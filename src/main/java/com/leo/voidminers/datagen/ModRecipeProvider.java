@@ -312,6 +312,94 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
             3,
             Level.NETHER
         ).save(pWriter);
+
+        MinerRecipe.create(
+            List.of(
+                new WeightedStack(
+                    CrystalSet.AZURINE.CRYSTAL.get().getDefaultInstance(),
+                    2f
+                )
+            ),
+            4,
+            Level.OVERWORLD
+        ).save(pWriter);
+
+        MinerRecipe.create(
+            List.of(
+                new WeightedStack(
+                    CrystalSet.AZURINE.CRYSTAL.get().getDefaultInstance(),
+                    4f
+                )
+            ),
+            4,
+            Level.NETHER
+        ).save(pWriter);
+
+        MinerRecipe.create(
+            List.of(
+                new WeightedStack(
+                    CrystalSet.CAERIUM.CRYSTAL.get().getDefaultInstance(),
+                    2f
+                )
+            ),
+            5,
+            Level.OVERWORLD
+        ).save(pWriter);
+
+        MinerRecipe.create(
+            List.of(
+                new WeightedStack(
+                    CrystalSet.CAERIUM.CRYSTAL.get().getDefaultInstance(),
+                    4f
+                )
+            ),
+            5,
+            Level.NETHER
+        ).save(pWriter);
+
+        MinerRecipe.create(
+            List.of(
+                new WeightedStack(
+                    CrystalSet.AMETHYSTINE.CRYSTAL.get().getDefaultInstance(),
+                    2f
+                )
+            ),
+            6,
+            Level.OVERWORLD
+        ).save(pWriter);
+
+        MinerRecipe.create(
+            List.of(
+                new WeightedStack(
+                    CrystalSet.AMETHYSTINE.CRYSTAL.get().getDefaultInstance(),
+                    4f
+                )
+            ),
+            6,
+            Level.NETHER
+        ).save(pWriter);
+
+        MinerRecipe.create(
+            List.of(
+                new WeightedStack(
+                    CrystalSet.ROSARIUM.CRYSTAL.get().getDefaultInstance(),
+                    2f
+                )
+            ),
+            7,
+            Level.OVERWORLD
+        ).save(pWriter);
+
+        MinerRecipe.create(
+            List.of(
+                new WeightedStack(
+                    CrystalSet.ROSARIUM.CRYSTAL.get().getDefaultInstance(),
+                    4f
+                )
+            ),
+            7,
+            Level.NETHER
+        ).save(pWriter);
     }
 
 }

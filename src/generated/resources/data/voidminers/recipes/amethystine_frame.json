@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "voidminers:amethystine"
+    },
+    "F": {
+      "item": "voidminers:caerium_frame"
+    },
+    "O": {
+      "item": "minecraft:obsidian"
+    }
+  },
+  "pattern": [
+    "COC",
+    "OFO",
+    "COC"
+  ],
+  "result": {
+    "item": "voidminers:amethystine_frame"
+  },
+  "show_notification": true
+}

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "voidminers:amethystine"
+    },
+    "M": {
+      "item": "voidminers:caerium_item_modifier"
+    },
+    "c": {
+      "item": "minecraft:diamond"
+    }
+  },
+  "pattern": [
+    "CcC",
+    "cMc",
+    "CcC"
+  ],
+  "result": {
+    "item": "voidminers:amethystine_item_modifier"
+  },
+  "show_notification": true
+}

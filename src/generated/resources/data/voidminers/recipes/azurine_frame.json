@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "voidminers:azurine"
+    },
+    "F": {
+      "item": "voidminers:verdium_frame"
+    },
+    "O": {
+      "item": "minecraft:obsidian"
+    }
+  },
+  "pattern": [
+    "COC",
+    "OFO",
+    "COC"
+  ],
+  "result": {
+    "item": "voidminers:azurine_frame"
+  },
+  "show_notification": true
+}

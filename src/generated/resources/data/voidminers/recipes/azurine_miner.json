@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "voidminers:azurine_block"
+    },
+    "C": {
+      "item": "voidminers:verdium_miner"
+    },
+    "G": {
+      "tag": "forge:glass"
+    },
+    "O": {
+      "item": "minecraft:obsidian"
+    }
+  },
+  "pattern": [
+    "GGG",
+    "GCG",
+    "BOB"
+  ],
+  "result": {
+    "item": "voidminers:azurine_miner"
+  },
+  "show_notification": true
+}
