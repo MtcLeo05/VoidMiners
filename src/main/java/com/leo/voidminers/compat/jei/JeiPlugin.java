@@ -2,13 +2,8 @@ package com.leo.voidminers.compat.jei;
 
 import com.leo.voidminers.VoidMiners;
 import com.leo.voidminers.config.CommonConfig;
-import com.leo.voidminers.config.CommonConfig;
 import com.leo.voidminers.item.CrystalSet;
-import com.leo.voidminers.recipe.JeiRecipe;
 import com.leo.voidminers.recipe.MinerRecipe;
-import com.leo.voidminers.recipe.WeightedStack;
-import com.leo.voidminers.util.ListUtil;
-import com.leo.voidminers.util.MiscUtil;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
@@ -19,6 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeManager;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @mezz.jei.api.JeiPlugin
@@ -32,10 +28,9 @@ public class JeiPlugin implements IModPlugin {
 
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
-
-        List<CrystalSet> allSets = CrystalSet.getAllSets();
-        for (int i = 0; i < allSets.size(); i++) {
-            CrystalSet set = allSets.get(i);
+        List<CrystalSet> sets = CrystalSet.sets();
+        for (int i = 0; i < sets.size(); i++) {
+            CrystalSet set = sets.get(i);
             tiers.add(
                 new MinerCategory(
                     registration.getJeiHelpers().getGuiHelper(),
@@ -62,39 +57,33 @@ public class JeiPlugin implements IModPlugin {
     }
 
     public void addRecipeToTier(int tier, List<MinerRecipe> recipes, IRecipeRegistration registration) {
+
+        Comparator<MinerRecipe> alphabetical = Comparator.comparing(MinerRecipe::dimension);
+        Comparator<MinerRecipe> weight = Comparator.comparing((recipe) -> recipe.output().weight);
+        weight = weight.reversed();
+
         List<MinerRecipe> foundRecipes = recipes.stream().filter(
             recipe -> {
                 if(CommonConfig.shouldMinePreviousTiers()){
-                    return recipe.getMinTier() <= tier + 1;
+                    return recipe.minTier() <= tier + 1;
                 } else {
-                    return recipe.getMinTier() == tier + 1;
+                    return recipe.minTier() == tier + 1;
                 }
             }
-        ).toList();
-
-        List<JeiRecipe> jeiRecipes = new ArrayList<>();
-        for (MinerRecipe recipe : foundRecipes) {
-            for (WeightedStack output : recipe.getOutputs()) {
-                jeiRecipes.add(
-                    new JeiRecipe(
-                        output,
-                        recipe.getDimension(),
-                        ListUtil.getMaxWeightForDimension(foundRecipes).getOrDefault(recipe.getDimension(), 0f)
-                    )
-                );
-            }
-        }
+        ).sorted(
+            alphabetical.thenComparing(weight))
+            .toList();
 
         registration.addRecipes(
             tiers.get(tier).getRecipeType(),
-            jeiRecipes
+            foundRecipes
         );
     }
 
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        List<CrystalSet> allSets = CrystalSet.getAllSets();
+        List<CrystalSet> allSets = CrystalSet.sets();
         for (int i = 0; i < allSets.size(); i++) {
             CrystalSet set = allSets.get(i);
             registration.addRecipeCatalyst(

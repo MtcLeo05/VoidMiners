@@ -40,7 +40,7 @@ public class ModBlockTagGenerator extends BlockTagsProvider {
                 ModBlocks.NULL_MOD.get()
             );
 
-        List<CrystalSet> allSets = CrystalSet.getAllSets();
+        List<CrystalSet> allSets = CrystalSet.sets();
         for (int i = 0; i < allSets.size(); i++) {
             CrystalSet set = allSets.get(i);
             this.tag(BlockTags.NEEDS_STONE_TOOL)
@@ -63,7 +63,7 @@ public class ModBlockTagGenerator extends BlockTagsProvider {
                     set.ITEM_MOD.get()
                 );
 
-            for (int j = 1; j < CrystalSet.getAllSets().size() + 1; j++) {
+            for (int j = 1; j < CrystalSet.sets().size() + 1; j++) {
                 if (i + 1 >= j) {
                     this.tag(create("frames/" + j))
                         .add(set.FRAME.get());

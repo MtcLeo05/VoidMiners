@@ -1,9 +1,9 @@
 package com.leo.voidminers.recipe;
 
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 public class WeightedStack {
-
     public ItemStack stack;
     public float weight;
 
@@ -12,9 +12,8 @@ public class WeightedStack {
         this.weight = weight;
     }
 
-    public WeightedStack(float weight, ItemStack stack) {
-        this.stack = stack;
+    public WeightedStack(Item item, float weight) {
+        this.stack = item.getDefaultInstance();
         this.weight = weight;
     }
-
 }

@@ -42,7 +42,7 @@ public class ModLanguageProvider extends LanguageProvider {
         );
 
         this.add(
-            VoidMiners.MODID + ".structure.chance", "Chance: %d"
+            VoidMiners.MODID + ".structure.weight", "Weight: %d"
         );
 
         this.add(
@@ -61,7 +61,7 @@ public class ModLanguageProvider extends LanguageProvider {
             ModBlocks.NULL_MOD.get(), "Null Modifier"
         );
 
-        for (CrystalSet set : CrystalSet.getAllSets()) {
+        for (CrystalSet set : CrystalSet.sets()) {
             this.add(
                 set.CRYSTAL.get(), cFL(set.name)
             );

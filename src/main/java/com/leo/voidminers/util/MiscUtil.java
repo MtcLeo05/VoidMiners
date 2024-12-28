@@ -16,8 +16,8 @@ public class MiscUtil {
     public static Map<String, List<List<List<BlockState>>>> structureMap = new HashMap<>();
 
     static {
-        for (int i = 0; i < CrystalSet.getAllSets().size(); i++) {
-            CrystalSet set = CrystalSet.getAllSets().get(i);
+        for (int i = 0; i < CrystalSet.sets().size(); i++) {
+            CrystalSet set = CrystalSet.sets().get(i);
 
             tierMap.put(
                 set.name,

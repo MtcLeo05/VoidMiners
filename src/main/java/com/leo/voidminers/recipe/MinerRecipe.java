@@ -30,32 +30,27 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class MinerRecipe implements Recipe<Container> {
-    private final List<WeightedStack> outputs;
+    private final WeightedStack output;
     private final int minTier;
     private final ResourceLocation id;
     private final ResourceKey<Level> dimension;
 
-    public MinerRecipe(List<WeightedStack> outputs, int minTier, ResourceLocation id, ResourceKey<Level> dimension) {
-        this.outputs = outputs;
+    public MinerRecipe(WeightedStack output, int minTier, ResourceLocation id, ResourceKey<Level> dimension) {
+        this.output = output;
         this.minTier = minTier;
         this.id = id;
         this.dimension = dimension;
     }
 
-    public static MinerRecipe.Builder create(List<WeightedStack> outputs, int minTier, ResourceKey<Level> dimension) {
-        ResourceLocation recipeId = new ResourceLocation(VoidMiners.MODID, "tier" + minTier + "_miner" + "/" + dimension.location().getPath());
-        return new MinerRecipe.Builder(outputs, minTier, recipeId, dimension);
+    public WeightedStack output() {
+        return output;
     }
 
-    public List<WeightedStack> getOutputs() {
-        return outputs;
-    }
-
-    public ResourceKey<Level> getDimension() {
+    public ResourceKey<Level> dimension() {
         return dimension;
     }
 
-    public int getMinTier() {
+    public int minTier() {
         return minTier;
     }
 
@@ -76,7 +71,7 @@ public class MinerRecipe implements Recipe<Container> {
 
     @Override
     public ItemStack getResultItem(RegistryAccess pRegistryAccess) {
-        return outputs.isEmpty() ? ItemStack.EMPTY : outputs.get(0).stack;
+        return output.stack.isEmpty() ? ItemStack.EMPTY : output.stack;
     }
 
     @Override
@@ -104,20 +99,22 @@ public class MinerRecipe implements Recipe<Container> {
 
         @Override
         public MinerRecipe fromJson(ResourceLocation pRecipeId, JsonObject pSerializedRecipe) {
-            List<WeightedStack> outputs = new ArrayList<>();
-            JsonArray jsonOutputs = GsonHelper.getAsJsonArray(pSerializedRecipe, "outputs");
+            JsonObject jsonOutput = GsonHelper.getAsJsonObject(pSerializedRecipe, "output");
 
-            for (JsonElement output : jsonOutputs) {
-                JsonObject object = output.getAsJsonObject();
+            ItemStack stack;
 
-                ItemStack stack = CraftingHelper.getItemStack(object, true, true);
-                outputs.add(
-                    new WeightedStack(
-                        stack,
-                        GsonHelper.getAsFloat(object, "weight", 1)
-                    )
-                );
+            if(jsonOutput.get("item").isJsonObject()) {
+                stack = CraftingHelper.getItemStack(jsonOutput.getAsJsonObject("item"), true, true);
+            } else {
+                stack = ForgeRegistries.ITEMS.getValue(
+                    new ResourceLocation(jsonOutput.get("item").getAsString())
+                ).getDefaultInstance();
             }
+
+            WeightedStack output = new WeightedStack(
+                stack,
+                GsonHelper.getAsFloat(jsonOutput, "weight", 1)
+            );
 
             int minTier = GsonHelper.getAsInt(pSerializedRecipe, "minTier");
 
@@ -125,42 +122,27 @@ public class MinerRecipe implements Recipe<Container> {
 
             ResourceKey<Level> dimension = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(jsonDim));
 
-            return new MinerRecipe(outputs, minTier, pRecipeId, dimension);
+            return new MinerRecipe(output, minTier, pRecipeId, dimension);
         }
 
         @Override
         public @Nullable MinerRecipe fromNetwork(ResourceLocation pRecipeId, FriendlyByteBuf pBuffer) {
-            List<WeightedStack> outputs = new ArrayList<>();
+            ItemStack stack = pBuffer.readItem();
+            float weight = pBuffer.readFloat();
 
-            int outputAmount = pBuffer.readInt();
-
-            for (int i = 0; i < outputAmount; i++) {
-                ItemStack stack = pBuffer.readItem();
-                float weight = pBuffer.readFloat();
-
-                outputs.add(
-                    new WeightedStack(
-                        stack,
-                        weight
-                    )
-                );
-            }
+            WeightedStack output = new WeightedStack(stack, weight);
 
             int minTier = pBuffer.readInt();
 
             ResourceKey<Level> dimension = pBuffer.readResourceKey(Registries.DIMENSION);
 
-            return new MinerRecipe(outputs, minTier, pRecipeId, dimension);
+            return new MinerRecipe(output, minTier, pRecipeId, dimension);
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf pBuffer, MinerRecipe pRecipe) {
-            pBuffer.writeInt(pRecipe.outputs.size());
-
-            pRecipe.outputs.forEach(stack -> {
-                pBuffer.writeItem(stack.stack);
-                pBuffer.writeFloat(stack.weight);
-            });
+            pBuffer.writeItem(pRecipe.output.stack);
+            pBuffer.writeFloat(pRecipe.output.weight);
 
             pBuffer.writeInt(pRecipe.minTier);
 
@@ -169,16 +151,21 @@ public class MinerRecipe implements Recipe<Container> {
     }
 
     public static class Builder implements RecipeBuilder, FinishedRecipe {
-        private final List<WeightedStack> outputs;
+        private final WeightedStack output;
         private final int minTier;
         private final ResourceLocation id;
         private final ResourceKey<Level> dimension;
 
-        private Builder(List<WeightedStack> outputs, int minTier, ResourceLocation id, ResourceKey<Level> dimension) {
-            this.outputs = outputs;
+        private Builder(WeightedStack output, int minTier, ResourceLocation id, ResourceKey<Level> dimension) {
+            this.output = output;
             this.minTier = minTier;
             this.id = id;
             this.dimension = dimension;
+        }
+
+        public static Builder builder(WeightedStack output, int minTier, ResourceKey<Level> dimension) {
+            ResourceLocation recipeId = new ResourceLocation(VoidMiners.MODID, dimension.location().getPath() + "/tier" + minTier + "_miner/" + ForgeRegistries.ITEMS.getKey(output.stack.getItem()).getPath());
+            return new Builder(output, minTier, recipeId, dimension);
         }
 
         @Override
@@ -193,7 +180,7 @@ public class MinerRecipe implements Recipe<Container> {
 
         @Override
         public @NotNull Item getResult() {
-            return this.outputs.get(0).stack.getItem();
+            return this.output.stack.getItem();
         }
 
         @Override
@@ -203,22 +190,20 @@ public class MinerRecipe implements Recipe<Container> {
 
         @Override
         public void serializeRecipeData(JsonObject json) {
-            JsonArray output = new JsonArray();
-            for (WeightedStack itemOutput : this.outputs) {
-                JsonObject outputItem = new JsonObject();
-                outputItem.addProperty("item", ForgeRegistries.ITEMS.getKey(itemOutput.stack.getItem()).toString());
-                if (itemOutput.stack.getCount() != 1) {
-                    outputItem.addProperty("count", itemOutput.stack.getCount());
-                }
-                if (itemOutput.stack.getTag() != null) {
-                    outputItem.addProperty("nbt", itemOutput.stack.getTag().toString());
-                }
+            JsonObject outputItem = new JsonObject();
 
-                outputItem.addProperty("weight", itemOutput.weight);
-                output.add(outputItem);
+            outputItem.addProperty("item", ForgeRegistries.ITEMS.getKey(this.output.stack.getItem()).toString());
+
+            if (this.output.stack.getCount() != 1) {
+                outputItem.addProperty("count", this.output.stack.getCount());
+            }
+            if (this.output.stack.getTag() != null) {
+                outputItem.addProperty("nbt", this.output.stack.getTag().toString());
             }
 
-            json.add("outputs", output);
+            outputItem.addProperty("weight", this.output.weight);
+
+            json.add("output", outputItem);
 
             json.addProperty("minTier", this.minTier);
             json.addProperty("dimension", dimension.location().toString());

@@ -37,7 +37,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
         simpleAllCubeWithItem(ModBlocks.NULL_MOD);
 
-        for (CrystalSet set : CrystalSet.getAllSets()) {
+        for (CrystalSet set : CrystalSet.sets()) {
             simpleAllCubeWithItem(
                 set.CRYSTAL_BLOCK,
                 set.name

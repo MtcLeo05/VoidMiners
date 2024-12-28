@@ -113,7 +113,7 @@ public class CrystalSet {
         );
     }
 
-    public static List<CrystalSet> getAllSets() {
+    public static List<CrystalSet> sets() {
         List<CrystalSet> sets = new ArrayList<>();
 
         sets.add(RUBETINE);

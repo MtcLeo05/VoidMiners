@@ -8,15 +8,12 @@ import com.leo.voidminers.init.ModBlocks;
 import com.leo.voidminers.multiblock.MinerMultiblocks;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
 
 import java.util.HashSet;
 import java.util.List;
-
-import static com.leo.voidminers.config.CommonConfig.commonConfigData;
 
 @Mod.EventBusSubscriber(modid = VoidMiners.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModBusEvent {
@@ -31,15 +28,5 @@ public class ModBusEvent {
         List<Block> modifiers = ModBlocks.BLOCKS.getEntries().stream().map(RegistryObject::get).filter(block -> block instanceof ModifierBlock).toList();
 
         ModBlockEntities.MODIFIER_BE.get().validBlocks = new HashSet<>(modifiers);
-    }
-
-    @SubscribeEvent
-    public static void onConfigLoad(ModConfigEvent.Loading event) {
-        commonConfigData = event.getConfig().getConfigData();
-    }
-
-    @SubscribeEvent
-    public static void onConfigReload(ModConfigEvent.Reloading event) {
-        commonConfigData = event.getConfig().getConfigData();
     }
 }

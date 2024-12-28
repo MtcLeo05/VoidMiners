@@ -5,6 +5,7 @@ import com.leo.voidminers.init.ModBlocks;
 import com.leo.voidminers.item.CrystalSet;
 import com.leo.voidminers.recipe.MinerRecipe;
 import com.leo.voidminers.recipe.WeightedStack;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
@@ -13,6 +14,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -91,7 +93,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
             .unlockedBy("hasItem", has(Items.DIAMOND))
             .save(pWriter);
 
-        List<CrystalSet> allSets = CrystalSet.getAllSets();
+        List<CrystalSet> allSets = CrystalSet.sets();
         for (int i = 0; i < allSets.size(); i++) {
             CrystalSet set = allSets.get(i);
 
@@ -191,211 +193,193 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .requires(set.CRYSTAL_BLOCK.get())
                 .unlockedBy("hasItem", has(set.CRYSTAL_BLOCK.get()))
                 .save(pWriter, new ResourceLocation(VoidMiners.MODID, set.name + "_crystal_from_block"));
-
-
         }
 
-        MinerRecipe.create(
-            List.of(
-                new WeightedStack(
-                    Items.EMERALD_ORE.getDefaultInstance(),
-                    1f
-                ),
-                new WeightedStack(
-                    Items.DIAMOND_ORE.getDefaultInstance(),
-                    2f
-                ),
-                new WeightedStack(
-                    Items.GOLD_ORE.getDefaultInstance(),
-                    4f
-                ),
-                new WeightedStack(
-                    Items.REDSTONE_ORE.getDefaultInstance(),
-                    6f
-                ),
-                new WeightedStack(
-                    Items.LAPIS_ORE.getDefaultInstance(),
-                    6f
-                ),
-                new WeightedStack(
-                    Items.IRON_ORE.getDefaultInstance(),
-                    8f
-                ),
-                new WeightedStack(
-                    Items.COPPER_ORE.getDefaultInstance(),
-                    12f
-                ),
-                new WeightedStack(
-                    Items.COAL_ORE.getDefaultInstance(),
-                    16f
-                ),
-                new WeightedStack(
-                    CrystalSet.RUBETINE.CRYSTAL.get().getDefaultInstance(),
-                    2f
-                ),
-                new WeightedStack(
-                    CrystalSet.AURANTIUM.CRYSTAL.get().getDefaultInstance(),
-                    2f
-                )
+        List<WeightedStack> OVERWORLD = List.of(
+            new WeightedStack(
+                Items.EMERALD_ORE,
+                1f
             ),
-            1,
+            new WeightedStack(
+                Items.DIAMOND_ORE,
+                2f
+            ),
+            new WeightedStack(
+                Items.GOLD_ORE,
+                4f
+            ),
+            new WeightedStack(
+                Items.REDSTONE_ORE,
+                6f
+            ),
+            new WeightedStack(
+                Items.LAPIS_ORE,
+                6f
+            ),
+            new WeightedStack(
+                Items.IRON_ORE,
+                8f
+            ),
+            new WeightedStack(
+                Items.COPPER_ORE,
+                12f
+            ),
+            new WeightedStack(
+                Items.COAL_ORE,
+                16f
+            ),
+            new WeightedStack(
+                CrystalSet.RUBETINE.CRYSTAL.get(),
+                2f
+            ),
+            new WeightedStack(
+                CrystalSet.AURANTIUM.CRYSTAL.get(),
+                2f
+            )
+        );
+
+        for (WeightedStack stack : OVERWORLD) {
+            MinerRecipe.Builder.builder(
+                stack,
+                1,
+                Level.OVERWORLD
+            ).save(pWriter);
+        }
+
+        List<WeightedStack> NETHER = List.of(
+            new WeightedStack(
+                Items.NETHER_QUARTZ_ORE,
+                10f
+            ),
+            new WeightedStack(
+                Items.NETHER_GOLD_ORE,
+                5f
+            ),
+            new WeightedStack(
+                Items.ANCIENT_DEBRIS,
+                0.1f
+            ),
+            new WeightedStack(
+                CrystalSet.RUBETINE.CRYSTAL.get(),
+                2f
+            ),
+            new WeightedStack(
+                CrystalSet.AURANTIUM.CRYSTAL.get(),
+                2f
+            )
+        );
+
+        for (WeightedStack stack : NETHER) {
+            MinerRecipe.Builder.builder(
+                stack,
+                1,
+                Level.NETHER
+            ).save(pWriter);
+        }
+
+        MinerRecipe.Builder.builder(
+            new WeightedStack(
+                CrystalSet.CITRINETINE.CRYSTAL.get(),
+                2f
+            ),
+            2,
             Level.OVERWORLD
         ).save(pWriter);
 
-        MinerRecipe.create(
-            List.of(
-                new WeightedStack(
-                    Items.NETHER_QUARTZ_ORE.getDefaultInstance(),
-                    10f
-                ),
-                new WeightedStack(
-                    Items.NETHER_GOLD_ORE.getDefaultInstance(),
-                    5f
-                ),
-                new WeightedStack(
-                    Items.ANCIENT_DEBRIS.getDefaultInstance(),
-                    0.1f
-                ),
-                new WeightedStack(
-                    CrystalSet.RUBETINE.CRYSTAL.get().getDefaultInstance(),
-                    2f
-                ),
-                new WeightedStack(
-                    CrystalSet.AURANTIUM.CRYSTAL.get().getDefaultInstance(),
-                    2f
-                )
-            ),
-            1,
-            Level.NETHER
-        ).save(pWriter);
-
-        MinerRecipe.create(
-            List.of(
-                new WeightedStack(
-                    CrystalSet.CITRINETINE.CRYSTAL.get().getDefaultInstance(),
-                    2f
-                )
-            ),
-            2,
-            Level.OVERWORLD
-        ).save(pWriter);
-
-        MinerRecipe.create(
-            List.of(
-                new WeightedStack(
-                    CrystalSet.CITRINETINE.CRYSTAL.get().getDefaultInstance(),
-                    4f
-                )
+        MinerRecipe.Builder.builder(
+            new WeightedStack(
+                CrystalSet.CITRINETINE.CRYSTAL.get(),
+                4f
             ),
             2,
             Level.NETHER
         ).save(pWriter);
 
-        MinerRecipe.create(
-            List.of(
-                new WeightedStack(
-                    CrystalSet.VERDIUM.CRYSTAL.get().getDefaultInstance(),
-                    2f
-                )
+        MinerRecipe.Builder.builder(
+            new WeightedStack(
+                CrystalSet.VERDIUM.CRYSTAL.get(),
+                2f
             ),
             3,
             Level.OVERWORLD
         ).save(pWriter);
 
-        MinerRecipe.create(
-            List.of(
-                new WeightedStack(
-                    CrystalSet.VERDIUM.CRYSTAL.get().getDefaultInstance(),
-                    4f
-                )
+        MinerRecipe.Builder.builder(
+            new WeightedStack(
+                CrystalSet.VERDIUM.CRYSTAL.get(),
+                4f
             ),
             3,
             Level.NETHER
         ).save(pWriter);
 
-        MinerRecipe.create(
-            List.of(
-                new WeightedStack(
-                    CrystalSet.AZURINE.CRYSTAL.get().getDefaultInstance(),
-                    2f
-                )
+        MinerRecipe.Builder.builder(
+            new WeightedStack(
+                CrystalSet.AZURINE.CRYSTAL.get(),
+                2f
             ),
             4,
             Level.OVERWORLD
         ).save(pWriter);
 
-        MinerRecipe.create(
-            List.of(
-                new WeightedStack(
-                    CrystalSet.AZURINE.CRYSTAL.get().getDefaultInstance(),
-                    4f
-                )
+        MinerRecipe.Builder.builder(
+            new WeightedStack(
+                CrystalSet.AZURINE.CRYSTAL.get(),
+                4f
             ),
             4,
             Level.NETHER
         ).save(pWriter);
 
-        MinerRecipe.create(
-            List.of(
-                new WeightedStack(
-                    CrystalSet.CAERIUM.CRYSTAL.get().getDefaultInstance(),
-                    2f
-                )
+        MinerRecipe.Builder.builder(
+            new WeightedStack(
+                CrystalSet.CAERIUM.CRYSTAL.get(),
+                2f
             ),
             5,
             Level.OVERWORLD
         ).save(pWriter);
 
-        MinerRecipe.create(
-            List.of(
-                new WeightedStack(
-                    CrystalSet.CAERIUM.CRYSTAL.get().getDefaultInstance(),
-                    4f
-                )
+        MinerRecipe.Builder.builder(
+            new WeightedStack(
+                CrystalSet.CAERIUM.CRYSTAL.get(),
+                4f
             ),
             5,
             Level.NETHER
         ).save(pWriter);
 
-        MinerRecipe.create(
-            List.of(
-                new WeightedStack(
-                    CrystalSet.AMETHYSTINE.CRYSTAL.get().getDefaultInstance(),
-                    2f
-                )
+        MinerRecipe.Builder.builder(
+            new WeightedStack(
+                CrystalSet.AMETHYSTINE.CRYSTAL.get(),
+                2f
             ),
             6,
             Level.OVERWORLD
         ).save(pWriter);
 
-        MinerRecipe.create(
-            List.of(
-                new WeightedStack(
-                    CrystalSet.AMETHYSTINE.CRYSTAL.get().getDefaultInstance(),
-                    4f
-                )
+        MinerRecipe.Builder.builder(
+            new WeightedStack(
+                CrystalSet.AMETHYSTINE.CRYSTAL.get(),
+                4f
             ),
             6,
             Level.NETHER
         ).save(pWriter);
 
-        MinerRecipe.create(
-            List.of(
-                new WeightedStack(
-                    CrystalSet.ROSARIUM.CRYSTAL.get().getDefaultInstance(),
-                    2f
-                )
+        MinerRecipe.Builder.builder(
+            new WeightedStack(
+                CrystalSet.ROSARIUM.CRYSTAL.get(),
+                2f
             ),
             7,
             Level.OVERWORLD
         ).save(pWriter);
 
-        MinerRecipe.create(
-            List.of(
-                new WeightedStack(
-                    CrystalSet.ROSARIUM.CRYSTAL.get().getDefaultInstance(),
-                    4f
-                )
+        MinerRecipe.Builder.builder(
+            new WeightedStack(
+                CrystalSet.ROSARIUM.CRYSTAL.get(),
+                4f
             ),
             7,
             Level.NETHER

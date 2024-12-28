@@ -1,7 +1,7 @@
 package com.leo.voidminers.compat.jei;
 
 import com.leo.voidminers.VoidMiners;
-import com.leo.voidminers.recipe.JeiRecipe;
+import com.leo.voidminers.recipe.MinerRecipe;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -15,14 +15,16 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
-public class MinerCategory implements IRecipeCategory<JeiRecipe> {
+public class MinerCategory implements IRecipeCategory<MinerRecipe> {
     public final ResourceLocation UID;
     public static final ResourceLocation TEXTURE = new ResourceLocation(VoidMiners.MODID, "textures/gui/jei_background.png");
 
-    public RecipeType<JeiRecipe> RECIPE_TYPE;
+    public RecipeType<MinerRecipe> RECIPE_TYPE;
 
     private final IDrawable background;
     private final IDrawable icon;
@@ -31,7 +33,7 @@ public class MinerCategory implements IRecipeCategory<JeiRecipe> {
 
     public MinerCategory(IGuiHelper guiHelper, Block blockIcon, int tier) {
         UID = new ResourceLocation(VoidMiners.MODID, "miner/tier" + tier + "_miner");
-        RECIPE_TYPE = new RecipeType<>(UID, JeiRecipe.class);
+        RECIPE_TYPE = new RecipeType<>(UID, MinerRecipe.class);
         this.background = guiHelper.createDrawable(TEXTURE, 0, 0, 125, 35);
         this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, blockIcon.asItem().getDefaultInstance());
         this.blockIcon = blockIcon;
@@ -39,7 +41,7 @@ public class MinerCategory implements IRecipeCategory<JeiRecipe> {
     }
 
     @Override
-    public RecipeType<JeiRecipe> getRecipeType() {
+    public RecipeType<MinerRecipe> getRecipeType() {
         return RECIPE_TYPE;
     }
 
@@ -59,24 +61,46 @@ public class MinerCategory implements IRecipeCategory<JeiRecipe> {
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, JeiRecipe minerRecipe, IFocusGroup iFocusGroup) {
+    public void setRecipe(IRecipeLayoutBuilder builder, MinerRecipe minerRecipe, IFocusGroup iFocusGroup) {
         builder.addSlot(
             RecipeIngredientRole.OUTPUT,
             4,
-            4
-        ).addItemStack(minerRecipe.getOutput().stack);
+            11
+        ).addItemStack(minerRecipe.output().stack);
     }
 
     @Override
-    public void draw(JeiRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
-        float per = 100 * (recipe.getOutput().weight / recipe.getTotalWeight());
+    public void draw(MinerRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+        Component weight = Component.translatable(VoidMiners.MODID + ".structure.weight", customFormat(recipe.output().weight));
+        String dimensionName = recipe.dimension().location().toString();
 
-        Component weight = Component.translatable(VoidMiners.MODID + ".structure.chance", customFormat(per) + "%");
-        String dimensionName = recipe.getDimension().location().toString();
+        ResourceLocation texture = new ResourceLocation(VoidMiners.MODID, "textures/gui/icon/" + getDimensionIcon(recipe.dimension()) + ".png");
 
         Font font = Minecraft.getInstance().font;
-        guiGraphics.drawString(font, weight, 24, 8, 0xFFFFFFFF);
-        guiGraphics.drawString(font, dimensionName, 4, 21, 0xFFFFFFFF);
+
+        guiGraphics.drawString(font, weight, 24, 15, 0xFFFFFFFF);
+        guiGraphics.blit(
+            texture,
+            99,
+            11,
+            0,
+            0,
+            16,
+            16,
+            16,
+            16
+        );
+
+        if(isHovering(mouseX, mouseY, 99, 11, 115, 27)) {
+            guiGraphics.drawString(font, dimensionName, (int) mouseX, (int) mouseY, 0xFFFFFFFF);
+        }
+    }
+
+    public static boolean isHovering(double mouseX, double mouseY, int x1, int y1, int x2, int y2) {
+        return mouseX >= x1
+            && mouseX <= x2
+            && mouseY >= y1
+            && mouseY <= y2;
     }
 
     public static String customFormat(float number) {
@@ -110,5 +134,9 @@ public class MinerCategory implements IRecipeCategory<JeiRecipe> {
         }
 
         return parts[0] + "." + "0".repeat(Math.max(0, zeroCount)) + lastNumber;
+    }
+
+    public static String getDimensionIcon(ResourceKey<Level> dimension) {
+        return dimension.location().toString().replace(':', '.');
     }
 }

@@ -3,7 +3,6 @@ package com.leo.voidminers.block.entity;
 import com.leo.voidminers.VoidMiners;
 import com.leo.voidminers.block.ModifierBlock;
 import com.leo.voidminers.config.CommonConfig;
-import com.leo.voidminers.config.CommonConfig;
 import com.leo.voidminers.energy.ModEnergyStorage;
 import com.leo.voidminers.init.ModBlockEntities;
 import com.leo.voidminers.recipe.MinerRecipe;
@@ -61,7 +60,7 @@ public class ControllerBaseBE extends BlockEntity {
 
     public boolean showStructure = false;
 
-    private final Map<BlockInWorld, Float[]> modifierMap = new HashMap<>();
+    private final Map<BlockInWorld, List<? extends Float>> modifierMap = new HashMap<>();
 
     private ResourceLocation structure;
     private String name;
@@ -242,8 +241,8 @@ public class ControllerBaseBE extends BlockEntity {
     public int getRfTick() {
         float mod = 1;
 
-        for (Map.Entry<BlockInWorld, Float[]> entry : modifierMap.entrySet()) {
-            mod *= entry.getValue()[0];
+        for (Map.Entry<BlockInWorld, List<? extends Float>> entry : modifierMap.entrySet()) {
+            mod *= entry.getValue().get(0);
         }
 
         return (int) (CommonConfig.getEnergy(name) * mod);
@@ -252,8 +251,8 @@ public class ControllerBaseBE extends BlockEntity {
     public int getMaxProgress() {
         float mod = 1;
 
-        for (Map.Entry<BlockInWorld, Float[]> entry : modifierMap.entrySet()) {
-            mod *= entry.getValue()[1];
+        for (Map.Entry<BlockInWorld, List<? extends Float>> entry : modifierMap.entrySet()) {
+            mod *= entry.getValue().get(1);
         }
 
         return (int) (CommonConfig.getDuration(name) * mod);
@@ -262,8 +261,8 @@ public class ControllerBaseBE extends BlockEntity {
     public ItemStack getBoostedStack(ItemStack base) {
         float mod = 1;
 
-        for (Map.Entry<BlockInWorld, Float[]> entry : modifierMap.entrySet()) {
-            mod *= entry.getValue()[2];
+        for (Map.Entry<BlockInWorld, List<? extends Float>> entry : modifierMap.entrySet()) {
+            mod *= entry.getValue().get(2);
         }
 
         int count = (int) (base.getCount() * mod);
@@ -314,12 +313,12 @@ public class ControllerBaseBE extends BlockEntity {
                 .stream()
                 .filter(recipe -> {
                     if(CommonConfig.shouldMinePreviousTiers()){
-                        return recipe.getMinTier() <= MiscUtil.tierMap.get(structure.getPath());
+                        return recipe.minTier() <= MiscUtil.tierMap.get(structure.getPath());
                     } else {
-                        return recipe.getMinTier() == MiscUtil.tierMap.get(structure.getPath());
+                        return recipe.minTier() == MiscUtil.tierMap.get(structure.getPath());
                     }
                 })
-                .filter(recipe -> recipe.getDimension().equals(this.level.dimension()))
+                .filter(recipe -> recipe.dimension().equals(this.level.dimension()))
                 .toList();
         }
 
@@ -334,8 +333,8 @@ public class ControllerBaseBE extends BlockEntity {
         List<WeightedStack> allOutputs = new ArrayList<>();
 
         for (MinerRecipe recipe : allRecipes()) {
-            allOutputs.addAll(
-                recipe.getOutputs()
+            allOutputs.add(
+                recipe.output()
             );
         }
 

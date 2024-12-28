@@ -67,7 +67,7 @@
   "voidminers.controller.working": "Miner is working correctly.",
   "voidminers.gui.miner": "Tier %d Miner",
   "voidminers.itemGroup.items": "Items",
-  "voidminers.structure.chance": "Chance: %d",
+  "voidminers.structure.weight": "Weight: %d",
   "voidminers.tooltip.energy": "Energy Modifier: %dx",
   "voidminers.tooltip.item": "Item Amount Modifier: %dx",
   "voidminers.tooltip.speed": "Duration Modifier: %dx"

@@ -19,7 +19,7 @@ public class ModItemModelProvider extends ItemModelProvider {
     protected void registerModels() {
         simpleItem(ModItems.ASSEMBLER);
 
-        for (CrystalSet set : CrystalSet.getAllSets()) {
+        for (CrystalSet set : CrystalSet.sets()) {
             simpleItem(
                 set.CRYSTAL
             );

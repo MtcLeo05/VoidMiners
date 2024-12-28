@@ -24,24 +24,24 @@ public class ForgeBusClientEvent {
 
         if (itemStack.getItem() instanceof BlockItem blockItem) {
             if (blockItem.getBlock() instanceof ModifierBlock mb) {
-                Float[] values = CommonConfig.getModifiersFromTypeAndName(mb.name, mb.type);
+                List<? extends Float> values = CommonConfig.getModifiersFromTypeAndName(mb.name, mb.type);
 
-                if(values.length == 3){
+                if(values.size() == 3){
                     toolTip.add(
                         Component.translatable(
-                            VoidMiners.MODID + ".tooltip.energy", values[0]
+                            VoidMiners.MODID + ".tooltip.energy", values.get(0)
                         ).withStyle(ChatFormatting.DARK_RED)
                     );
 
                     toolTip.add(
                         Component.translatable(
-                            VoidMiners.MODID + ".tooltip.speed", values[1]
+                            VoidMiners.MODID + ".tooltip.speed", values.get(1)
                         ).withStyle(ChatFormatting.DARK_GREEN)
                     );
 
                     toolTip.add(
                         Component.translatable(
-                            VoidMiners.MODID + ".tooltip.item", values[2]
+                            VoidMiners.MODID + ".tooltip.item", values.get(2)
                         ).withStyle(ChatFormatting.DARK_BLUE)
                     );
                 }

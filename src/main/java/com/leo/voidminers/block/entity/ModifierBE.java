@@ -7,6 +7,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.List;
+
 public class ModifierBE extends BlockEntity {
     private String name;
     private ModifierType type;
@@ -46,12 +48,12 @@ public class ModifierBE extends BlockEntity {
         }
     }
 
-    public Float[] getModifiers() {
+    public List<? extends Float> getModifiers() {
         if (name != null && type != null) {
             return CommonConfig.getModifiersFromTypeAndName(name, type);
         }
 
-        return new Float[]{1f, 1f, 1f};
+        return List.of(1f, 1f, 1f);
     }
 
     public enum ModifierType {
