@@ -1,17 +1,17 @@
 package com.leo.voidminers;
 
-import com.leo.voidminers.config.CommonConfig;
+import com.leo.voidminers.config.ConfigLoader;
 import com.leo.voidminers.init.*;
 import com.leo.voidminers.item.CrystalSet;
+import com.leo.voidminers.network.ModNetwork;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
@@ -37,8 +37,9 @@ public class VoidMiners {
         ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
 
         modEventBus.addListener(VoidMiners::clientSetup);
+        modEventBus.addListener(VoidMiners::commonSetup);
 
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CommonConfig.SPEC, MODID + "-common.toml");
+        ConfigLoader.getInstance().load();
     }
 
     private static void clientSetup(final FMLClientSetupEvent event) {
@@ -48,5 +49,9 @@ public class VoidMiners {
     // TODO: move render type to model json
     private static void setupRenders() {
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.GLASS_PANEL.get(), RenderType.translucent());
+    }
+
+    private static void commonSetup(final FMLCommonSetupEvent event) {
+        ModNetwork.register();
     }
 }

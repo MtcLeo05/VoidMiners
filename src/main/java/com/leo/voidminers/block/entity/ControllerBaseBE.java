@@ -2,7 +2,7 @@ package com.leo.voidminers.block.entity;
 
 import com.leo.voidminers.VoidMiners;
 import com.leo.voidminers.block.ModifierBlock;
-import com.leo.voidminers.config.CommonConfig;
+import com.leo.voidminers.config.ConfigLoader;
 import com.leo.voidminers.energy.ModEnergyStorage;
 import com.leo.voidminers.init.ModBlockEntities;
 import com.leo.voidminers.recipe.MinerRecipe;
@@ -60,7 +60,7 @@ public class ControllerBaseBE extends BlockEntity {
 
     public boolean showStructure = false;
 
-    private final Map<BlockInWorld, List<? extends Float>> modifierMap = new HashMap<>();
+    private final Map<BlockInWorld, ConfigLoader.ModifierConfig> modifierMap = new HashMap<>();
 
     private ResourceLocation structure;
     private String name;
@@ -241,28 +241,28 @@ public class ControllerBaseBE extends BlockEntity {
     public int getRfTick() {
         float mod = 1;
 
-        for (Map.Entry<BlockInWorld, List<? extends Float>> entry : modifierMap.entrySet()) {
-            mod *= entry.getValue().get(0);
+        for (Map.Entry<BlockInWorld, ConfigLoader.ModifierConfig> entry : modifierMap.entrySet()) {
+            mod *= entry.getValue().energy();
         }
 
-        return (int) (CommonConfig.getEnergy(name) * mod);
+        return (int) (ConfigLoader.getInstance().getMinerConfig(name).energy() * mod);
     }
 
     public int getMaxProgress() {
         float mod = 1;
 
-        for (Map.Entry<BlockInWorld, List<? extends Float>> entry : modifierMap.entrySet()) {
-            mod *= entry.getValue().get(1);
+        for (Map.Entry<BlockInWorld, ConfigLoader.ModifierConfig> entry : modifierMap.entrySet()) {
+            mod *= entry.getValue().speed();
         }
 
-        return (int) (CommonConfig.getDuration(name) * mod);
+        return (int) (ConfigLoader.getInstance().getMinerConfig(name).duration() * mod);
     }
 
     public ItemStack getBoostedStack(ItemStack base) {
         float mod = 1;
 
-        for (Map.Entry<BlockInWorld, List<? extends Float>> entry : modifierMap.entrySet()) {
-            mod *= entry.getValue().get(2);
+        for (Map.Entry<BlockInWorld, ConfigLoader.ModifierConfig> entry : modifierMap.entrySet()) {
+            mod *= entry.getValue().item();
         }
 
         int count = (int) (base.getCount() * mod);
@@ -312,7 +312,7 @@ public class ControllerBaseBE extends BlockEntity {
             return level.getRecipeManager().getAllRecipesFor(MinerRecipe.Type.INSTANCE)
                 .stream()
                 .filter(recipe -> {
-                    if(CommonConfig.shouldMinePreviousTiers()){
+                    if(ConfigLoader.getInstance().MINE_PREVIOUS_TIER){
                         return recipe.minTier() <= MiscUtil.tierMap.get(structure.getPath());
                     } else {
                         return recipe.minTier() == MiscUtil.tierMap.get(structure.getPath());

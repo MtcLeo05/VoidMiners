@@ -1,7 +1,7 @@
 package com.leo.voidminers.compat.jei;
 
 import com.leo.voidminers.VoidMiners;
-import com.leo.voidminers.config.CommonConfig;
+import com.leo.voidminers.config.ConfigLoader;
 import com.leo.voidminers.item.CrystalSet;
 import com.leo.voidminers.recipe.MinerRecipe;
 import mezz.jei.api.IModPlugin;
@@ -64,7 +64,7 @@ public class JeiPlugin implements IModPlugin {
 
         List<MinerRecipe> foundRecipes = recipes.stream().filter(
             recipe -> {
-                if(CommonConfig.shouldMinePreviousTiers()){
+                if(ConfigLoader.getInstance().MINE_PREVIOUS_TIER){
                     return recipe.minTier() <= tier + 1;
                 } else {
                     return recipe.minTier() == tier + 1;

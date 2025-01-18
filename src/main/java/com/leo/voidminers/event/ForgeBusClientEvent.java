@@ -2,7 +2,8 @@ package com.leo.voidminers.event;
 
 import com.leo.voidminers.VoidMiners;
 import com.leo.voidminers.block.ModifierBlock;
-import com.leo.voidminers.config.CommonConfig;
+import com.leo.voidminers.config.ConfigLoader;
+import com.leo.voidminers.util.MapUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
@@ -22,31 +23,34 @@ public class ForgeBusClientEvent {
         List<Component> toolTip = toolTipEvent.getToolTip();
         ItemStack itemStack = toolTipEvent.getItemStack();
 
-        if (itemStack.getItem() instanceof BlockItem blockItem) {
-            if (blockItem.getBlock() instanceof ModifierBlock mb) {
-                List<? extends Float> values = CommonConfig.getModifiersFromTypeAndName(mb.name, mb.type);
-
-                if(values.size() == 3){
-                    toolTip.add(
-                        Component.translatable(
-                            VoidMiners.MODID + ".tooltip.energy", values.get(0)
-                        ).withStyle(ChatFormatting.DARK_RED)
-                    );
-
-                    toolTip.add(
-                        Component.translatable(
-                            VoidMiners.MODID + ".tooltip.speed", values.get(1)
-                        ).withStyle(ChatFormatting.DARK_GREEN)
-                    );
-
-                    toolTip.add(
-                        Component.translatable(
-                            VoidMiners.MODID + ".tooltip.item", values.get(2)
-                        ).withStyle(ChatFormatting.DARK_BLUE)
-                    );
-                }
-            }
+        if (!(itemStack.getItem() instanceof BlockItem blockItem)) {
+            return;
         }
+
+        if (!(blockItem.getBlock() instanceof ModifierBlock mb)) {
+            return;
+        }
+
+
+        ConfigLoader.ModifierConfig modConfig = ConfigLoader.getInstance().getModifierConfig(mb.name, mb.type.type);
+
+        toolTip.add(
+            Component.translatable(
+                VoidMiners.MODID + ".tooltip.energy", modConfig.energy()
+            ).withStyle(ChatFormatting.DARK_RED)
+        );
+
+        toolTip.add(
+            Component.translatable(
+                VoidMiners.MODID + ".tooltip.speed", modConfig.speed()
+            ).withStyle(ChatFormatting.DARK_GREEN)
+        );
+
+        toolTip.add(
+            Component.translatable(
+                VoidMiners.MODID + ".tooltip.item", modConfig.item()
+            ).withStyle(ChatFormatting.DARK_BLUE)
+        );
     }
 
 }

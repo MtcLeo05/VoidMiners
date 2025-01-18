@@ -1,6 +1,6 @@
 package com.leo.voidminers.block.entity;
 
-import com.leo.voidminers.config.CommonConfig;
+import com.leo.voidminers.config.ConfigLoader;
 import com.leo.voidminers.init.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -48,12 +48,12 @@ public class ModifierBE extends BlockEntity {
         }
     }
 
-    public List<? extends Float> getModifiers() {
+    public ConfigLoader.ModifierConfig getModifiers() {
         if (name != null && type != null) {
-            return CommonConfig.getModifiersFromTypeAndName(name, type);
+            return ConfigLoader.getInstance().getModifierConfig(name, type.type);
         }
 
-        return List.of(1f, 1f, 1f);
+        return new ConfigLoader.ModifierConfig(1, 1, 1);
     }
 
     public enum ModifierType {
@@ -69,7 +69,7 @@ public class ModifierBE extends BlockEntity {
         }
 
         public static ModifierType getFromName(String name) {
-            return switch (name) {
+            return switch (name.toLowerCase()) {
                 case "energy" -> ENERGY;
                 case "speed" -> SPEED;
                 case "item" -> ITEM;

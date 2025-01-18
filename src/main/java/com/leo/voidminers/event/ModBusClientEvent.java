@@ -15,4 +15,6 @@ public class ModBusClientEvent {
     public static void registerBER(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(ModBlockEntities.CONTROLLER_BASE_BE.get(), ControllerRenderer::new);
     }
+
+
 }
