@@ -131,12 +131,12 @@ public class ControllerBaseBE extends BlockEntity {
         super.saveAdditional(pTag);
 
         CompoundTag data = new CompoundTag();
-        data.put("energy", energyHandler.serializeNBT());
-        data.put("items", itemHandler.serializeNBT());
+        if(energyHandler != null) data.put("energy", energyHandler.serializeNBT());
+        if(itemHandler != null)data.put("items", itemHandler.serializeNBT());
         data.putInt("progress", this.progress);
-        data.putString("name", this.name);
+        if(name != null)data.putString("name", this.name);
         data.putBoolean("active", active);
-        data.putString("structure", structure.toString());
+        if(structure != null)data.putString("structure", structure.toString());
         data.putBoolean("showStructure", showStructure);
         pTag.put(VoidMiners.MODID, data);
     }
@@ -245,7 +245,7 @@ public class ControllerBaseBE extends BlockEntity {
             mod *= entry.getValue().energy();
         }
 
-        return (int) (ConfigLoader.getInstance().getMinerConfig(name).energy() * mod);
+        return (int) (ConfigLoader.getInstance().getMinerConfig(name).energyTick() * mod);
     }
 
     public int getMaxProgress() {

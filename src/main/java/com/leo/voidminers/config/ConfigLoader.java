@@ -132,7 +132,7 @@ public class ConfigLoader {
         return getMinerConfig(name).modifiers.getOrDefault(type, new ModifierConfig(1, 1, 1));
     }
 
-    public record MinerConfig(@Expose int duration, @Expose int energy, @Expose Map<String, ModifierConfig> modifiers) {
+    public record MinerConfig(@Expose int duration, @Expose int energyTick, @Expose Map<String, ModifierConfig> modifiers) {
 
         public static MinerConfig fromBuf(FriendlyByteBuf buf) {
             int duration = buf.readInt();
@@ -154,7 +154,7 @@ public class ConfigLoader {
 
         public void toBuf(FriendlyByteBuf buf) {
             buf.writeInt(duration);
-            buf.writeInt(energy);
+            buf.writeInt(energyTick);
 
             buf.writeInt(modifiers.size());
 
