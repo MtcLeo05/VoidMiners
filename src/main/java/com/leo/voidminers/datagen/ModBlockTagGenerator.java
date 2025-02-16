@@ -43,7 +43,7 @@ public class ModBlockTagGenerator extends BlockTagsProvider {
         List<CrystalSet> allSets = CrystalSet.sets();
         for (int i = 0; i < allSets.size(); i++) {
             CrystalSet set = allSets.get(i);
-            this.tag(BlockTags.NEEDS_STONE_TOOL)
+            this.tag(BlockTags.MINEABLE_WITH_PICKAXE)
                 .add(
                     set.MINER_CONTROLLER.get(),
                     set.CRYSTAL_BLOCK.get(),
