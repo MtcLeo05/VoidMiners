@@ -1,0 +1,9 @@
+{
+  "type": "voidminers:miner",
+  "dimension": "minecraft:the_nether",
+  "minTier": 7,
+  "output": {
+    "item": "voidminers:rosarium",
+    "weight": 4.0
+  }
+}

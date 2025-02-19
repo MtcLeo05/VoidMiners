@@ -1,0 +1,9 @@
+{
+  "type": "voidminers:miner",
+  "dimension": "minecraft:the_nether",
+  "minTier": 3,
+  "output": {
+    "item": "voidminers:verdium",
+    "weight": 4.0
+  }
+}

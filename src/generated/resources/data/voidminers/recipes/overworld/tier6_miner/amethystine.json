@@ -1,0 +1,9 @@
+{
+  "type": "voidminers:miner",
+  "dimension": "minecraft:overworld",
+  "minTier": 6,
+  "output": {
+    "item": "voidminers:amethystine",
+    "weight": 2.0
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "type": "voidminers:miner",
+  "dimension": "minecraft:overworld",
+  "minTier": 5,
+  "output": {
+    "item": "voidminers:caerium",
+    "weight": 2.0
+  }
+}

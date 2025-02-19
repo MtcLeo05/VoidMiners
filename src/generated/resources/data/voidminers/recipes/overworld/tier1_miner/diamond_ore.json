@@ -1,0 +1,9 @@
+{
+  "type": "voidminers:miner",
+  "dimension": "minecraft:overworld",
+  "minTier": 1,
+  "output": {
+    "item": "minecraft:diamond_ore",
+    "weight": 2.0
+  }
+}

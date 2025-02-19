@@ -1,0 +1,9 @@
+{
+  "type": "voidminers:miner",
+  "dimension": "minecraft:overworld",
+  "minTier": 7,
+  "output": {
+    "item": "voidminers:rosarium",
+    "weight": 2.0
+  }
+}

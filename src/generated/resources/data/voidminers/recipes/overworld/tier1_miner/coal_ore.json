@@ -1,0 +1,9 @@
+{
+  "type": "voidminers:miner",
+  "dimension": "minecraft:overworld",
+  "minTier": 1,
+  "output": {
+    "item": "minecraft:coal_ore",
+    "weight": 16.0
+  }
+}

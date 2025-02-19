@@ -1,0 +1,9 @@
+{
+  "type": "voidminers:miner",
+  "dimension": "minecraft:the_nether",
+  "minTier": 5,
+  "output": {
+    "item": "voidminers:caerium",
+    "weight": 4.0
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "type": "voidminers:miner",
+  "dimension": "minecraft:the_nether",
+  "minTier": 6,
+  "output": {
+    "item": "voidminers:amethystine",
+    "weight": 4.0
+  }
+}

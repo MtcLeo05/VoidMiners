@@ -31,4 +31,3 @@ run-data/
 gradle/
 src/generated/resources/.cache/
 gradlew
-src/generated

@@ -1,0 +1,9 @@
+{
+  "type": "voidminers:miner",
+  "dimension": "minecraft:the_nether",
+  "minTier": 1,
+  "output": {
+    "item": "minecraft:ancient_debris",
+    "weight": 0.1
+  }
+}

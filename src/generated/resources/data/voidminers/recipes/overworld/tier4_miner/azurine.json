@@ -1,0 +1,9 @@
+{
+  "type": "voidminers:miner",
+  "dimension": "minecraft:overworld",
+  "minTier": 4,
+  "output": {
+    "item": "voidminers:azurine",
+    "weight": 2.0
+  }
+}
