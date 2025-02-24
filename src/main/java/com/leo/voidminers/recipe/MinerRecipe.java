@@ -1,7 +1,5 @@
 package com.leo.voidminers.recipe;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.leo.voidminers.VoidMiners;
 import net.minecraft.advancements.CriterionTriggerInstance;
@@ -25,8 +23,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
 
 public class MinerRecipe implements Recipe<Container> {
@@ -43,7 +39,7 @@ public class MinerRecipe implements Recipe<Container> {
     }
 
     public WeightedStack output() {
-        return output;
+        return output.copy();
     }
 
     public ResourceKey<Level> dimension() {

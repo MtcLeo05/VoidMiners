@@ -29,6 +29,7 @@ public class JeiPlugin implements IModPlugin {
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
         List<CrystalSet> sets = CrystalSet.sets();
+        tiers = new ArrayList<>();
         for (int i = 0; i < sets.size(); i++) {
             CrystalSet set = sets.get(i);
             tiers.add(

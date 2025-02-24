@@ -47,7 +47,7 @@ public class ControllerBaseBE extends BlockEntity {
     public static final int ENERGY_CAPACITY = 1000000;
 
     private final ModEnergyStorage energyHandler = new ModEnergyStorage(ENERGY_CAPACITY, ENERGY_CAPACITY, 0, 0);
-    private final ItemStackHandler itemHandler = new ItemStackHandler(4) {
+    private final ItemStackHandler itemHandler = new ItemStackHandler(9) {
         @Override
         protected void onContentsChanged(int slot) {
             super.onContentsChanged(slot);
@@ -266,7 +266,7 @@ public class ControllerBaseBE extends BlockEntity {
         }
 
         int count = (int) (base.getCount() * mod);
-        base.setCount(count);
+        base.copyWithCount(count);
         return base;
     }
 
@@ -334,7 +334,8 @@ public class ControllerBaseBE extends BlockEntity {
 
         for (MinerRecipe recipe : allRecipes()) {
             allOutputs.add(
-                recipe.output()
+                //Just to be sure, copy 2 times
+                recipe.output().copy()
             );
         }
 
@@ -343,7 +344,7 @@ public class ControllerBaseBE extends BlockEntity {
 
         for (int i = 0; i < itemHandler.getSlots(); i++) {
             if (!isItemValid(output, itemHandler.getStackInSlot(i))) continue;
-            remaining = itemHandler.insertItem(i, output, false);
+            remaining = itemHandler.insertItem(i, output.copy(), false);
             if (remaining.isEmpty()) break;
             output = remaining;
         }

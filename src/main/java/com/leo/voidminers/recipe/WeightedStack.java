@@ -16,4 +16,8 @@ public class WeightedStack {
         this.stack = item.getDefaultInstance();
         this.weight = weight;
     }
+
+    public WeightedStack copy() {
+        return new WeightedStack(stack, weight);
+    }
 }
