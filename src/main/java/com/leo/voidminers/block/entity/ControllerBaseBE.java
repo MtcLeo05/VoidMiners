@@ -46,7 +46,8 @@ public class ControllerBaseBE extends BlockEntity {
 
     public static final int ENERGY_CAPACITY = 1000000;
 
-    private final ModEnergyStorage energyHandler = new ModEnergyStorage(ENERGY_CAPACITY, ENERGY_CAPACITY, 0, 0);
+    private ModEnergyStorage energyHandler = new ModEnergyStorage(ENERGY_CAPACITY, ENERGY_CAPACITY, 0, 0);
+
     private final ItemStackHandler itemHandler = new ItemStackHandler(9) {
         @Override
         protected void onContentsChanged(int slot) {
@@ -78,6 +79,9 @@ public class ControllerBaseBE extends BlockEntity {
     public void setup(ResourceLocation structure, String name) {
         this.structure = structure;
         this.name = name;
+
+        int storage = ConfigLoader.getInstance().getMinerConfig(name).energyStorage();
+        energyHandler = new ModEnergyStorage(storage, storage, 0, energyHandler.getEnergyStored());
     }
 
     public int getBeamColor() {
@@ -266,8 +270,7 @@ public class ControllerBaseBE extends BlockEntity {
         }
 
         int count = (int) (base.getCount() * mod);
-        base.copyWithCount(count);
-        return base;
+        return base.copyWithCount(count);
     }
 
     public boolean isActive(BlockPos pos) {

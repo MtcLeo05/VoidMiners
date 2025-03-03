@@ -28,7 +28,9 @@ public class VoidMiners {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         MinecraftForge.EVENT_BUS.register(this);
 
+        ConfigLoader.getInstance().load();
         CrystalSet.initSets();
+
         ModItems.ITEMS.register(modEventBus);
         ModBlocks.BLOCKS.register(modEventBus);
         ModCreativeTabs.CREATIVE_MODE_TABS.register(modEventBus);
@@ -39,7 +41,6 @@ public class VoidMiners {
         modEventBus.addListener(VoidMiners::clientSetup);
         modEventBus.addListener(VoidMiners::commonSetup);
 
-        ConfigLoader.getInstance().load();
     }
 
     private static void clientSetup(final FMLClientSetupEvent event) {

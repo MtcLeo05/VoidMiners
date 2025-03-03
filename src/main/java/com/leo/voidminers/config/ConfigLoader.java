@@ -28,56 +28,56 @@ public class ConfigLoader {
 
     @Expose
     public Map<String, MinerConfig> MINER_CONFIGS = MapUtil.of(
-        MapUtil.createEntry("rubetine", new MinerConfig(1000, 300,
+        MapUtil.createEntry("rubetine", new MinerConfig(1000000, 1000, 300,
             MapUtil.of(
                 MapUtil.createEntry("energy", new ModifierConfig(0.9f, 1, 1)),
                 MapUtil.createEntry("speed", new ModifierConfig(1.1f, 0.95f, 1)),
                 MapUtil.createEntry("item", new ModifierConfig(1.2f, 1, 1.75f))
             )
         )),
-        MapUtil.createEntry("aurantium", new MinerConfig(900, 350,
+        MapUtil.createEntry("aurantium", new MinerConfig(2000000, 900, 350,
             MapUtil.of(
                 MapUtil.createEntry("energy", new ModifierConfig(0.9f, 1, 1)),
                 MapUtil.createEntry("speed", new ModifierConfig(1.1f, 0.95f, 1)),
                 MapUtil.createEntry("item", new ModifierConfig(1.2f, 1, 1.75f))
             )
         )),
-        MapUtil.createEntry("citrinetine", new MinerConfig(800, 400,
+        MapUtil.createEntry("citrinetine", new MinerConfig(3000000,800, 400,
             MapUtil.of(
                 MapUtil.createEntry("energy", new ModifierConfig(0.9f, 1, 1)),
                 MapUtil.createEntry("speed", new ModifierConfig(1.1f, 0.95f, 1)),
                 MapUtil.createEntry("item", new ModifierConfig(1.2f, 1, 1.75f))
             )
         )),
-        MapUtil.createEntry("verdium", new MinerConfig(700, 450,
+        MapUtil.createEntry("verdium", new MinerConfig(4000000,700, 450,
             MapUtil.of(
                 MapUtil.createEntry("energy", new ModifierConfig(0.9f, 1, 1)),
                 MapUtil.createEntry("speed", new ModifierConfig(1.1f, 0.95f, 1)),
                 MapUtil.createEntry("item", new ModifierConfig(1.2f, 1, 1.75f))
             )
         )),
-        MapUtil.createEntry("azurine", new MinerConfig(600, 500,
+        MapUtil.createEntry("azurine", new MinerConfig(5000000,600, 500,
             MapUtil.of(
                 MapUtil.createEntry("energy", new ModifierConfig(0.9f, 1, 1)),
                 MapUtil.createEntry("speed", new ModifierConfig(1.1f, 0.95f, 1)),
                 MapUtil.createEntry("item", new ModifierConfig(1.2f, 1, 1.75f))
             )
         )),
-        MapUtil.createEntry("caerium", new MinerConfig(500, 550,
+        MapUtil.createEntry("caerium", new MinerConfig(6000000,500, 550,
             MapUtil.of(
                 MapUtil.createEntry("energy", new ModifierConfig(0.9f, 1, 1)),
                 MapUtil.createEntry("speed", new ModifierConfig(1.1f, 0.95f, 1)),
                 MapUtil.createEntry("item", new ModifierConfig(1.2f, 1, 1.75f))
             )
         )),
-        MapUtil.createEntry("amethystine", new MinerConfig(400, 600,
+        MapUtil.createEntry("amethystine", new MinerConfig(7000000,400, 600,
             MapUtil.of(
                 MapUtil.createEntry("energy", new ModifierConfig(0.9f, 1, 1)),
                 MapUtil.createEntry("speed", new ModifierConfig(1.1f, 0.95f, 1)),
                 MapUtil.createEntry("item", new ModifierConfig(1.2f, 1, 1.75f))
             )
         )),
-        MapUtil.createEntry("rosarium", new MinerConfig(300, 650,
+        MapUtil.createEntry("rosarium", new MinerConfig(8000000,300, 650,
             MapUtil.of(
                 MapUtil.createEntry("energy", new ModifierConfig(0.9f, 1, 1)),
                 MapUtil.createEntry("speed", new ModifierConfig(1.1f, 0.95f, 1)),
@@ -125,16 +125,17 @@ public class ConfigLoader {
     }
 
     public MinerConfig getMinerConfig(String name) {
-        return MINER_CONFIGS.getOrDefault(name, new MinerConfig(0, 0, Map.of()));
+        return MINER_CONFIGS.getOrDefault(name, new MinerConfig(0,0, 0, Map.of()));
     }
 
     public ModifierConfig getModifierConfig(String name, String type) {
         return getMinerConfig(name).modifiers.getOrDefault(type, new ModifierConfig(1, 1, 1));
     }
 
-    public record MinerConfig(@Expose int duration, @Expose int energyTick, @Expose Map<String, ModifierConfig> modifiers) {
+    public record MinerConfig(@Expose int energyStorage, @Expose int duration, @Expose int energyTick, @Expose Map<String, ModifierConfig> modifiers) {
 
         public static MinerConfig fromBuf(FriendlyByteBuf buf) {
+            int energyStorage = buf.readInt();
             int duration = buf.readInt();
             int energy = buf.readInt();
 
@@ -149,10 +150,11 @@ public class ConfigLoader {
                 );
             }
 
-            return new MinerConfig(duration, energy, modifiers);
+            return new MinerConfig(energyStorage, duration, energy, modifiers);
         }
 
         public void toBuf(FriendlyByteBuf buf) {
+            buf.writeInt(energyStorage);
             buf.writeInt(duration);
             buf.writeInt(energyTick);
 
