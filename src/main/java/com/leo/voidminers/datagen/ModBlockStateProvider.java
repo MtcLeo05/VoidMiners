@@ -23,17 +23,17 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        simpleBlockWithItem(
-            ModBlocks.FRAME_BASE
-        );
+        // simpleBlockWithItem(
+        //     ModBlocks.FRAME_BASE
+        // );
 
-        simpleBlockWithItem(
-            ModBlocks.STRUCTURE_PANEL
-        );
+        // simpleBlockWithItem(
+        //     ModBlocks.STRUCTURE_PANEL
+        // );
 
-        simpleAllCubeWithItem(
-            ModBlocks.GLASS_PANEL
-        );
+        // simpleAllCubeWithItem(
+        //     ModBlocks.GLASS_PANEL
+        // );
 
         simpleAllCubeWithItem(ModBlocks.NULL_MOD);
 
@@ -43,29 +43,29 @@ public class ModBlockStateProvider extends BlockStateProvider {
                 set.name
             );
 
-            simpleAllCubeWithItem(
-                set.FRAME,
-                set.name
-            );
+            // simpleAllCubeWithItem(
+            //     set.FRAME,
+            //     set.name
+            // );
 
             simpleBlockWithItem(
                 set.MINER_CONTROLLER
             );
 
-            simpleAllCubeWithItem(
-                set.ENERGY_MOD,
-                set.name
-            );
+            // simpleAllCubeWithItem(
+            //     set.ENERGY_MOD,
+            //     set.name
+            // );
 
-            simpleAllCubeWithItem(
-                set.SPEED_MOD,
-                set.name
-            );
+            // simpleAllCubeWithItem(
+            //     set.SPEED_MOD,
+            //     set.name
+            // );
 
-            simpleAllCubeWithItem(
-                set.ITEM_MOD,
-                set.name
-            );
+            // simpleAllCubeWithItem(
+            //     set.ITEM_MOD,
+            //     set.name
+            // );
         }
     }
 
