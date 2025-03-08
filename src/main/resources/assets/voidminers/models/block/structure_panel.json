@@ -1,6 +1,7 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "voidminers:block/_template/dual_layer",
   "textures": {
-    "all": "voidminers:block/structure_panel"
+    "layer0": "voidminers:block/_core/panel",
+    "layer1": "voidminers:block/_core/cover"
   }
 }
