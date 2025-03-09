@@ -1,6 +1,8 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "voidminers:block/_template/triple_layer",
   "textures": {
-    "all": "voidminers:block/rosarium/frame"
+    "layer0": "voidminers:block/rosarium/frame",
+    "layer1": "voidminers:block/_core/frame",
+    "layer2": "voidminers:block/_core/cover"
   }
 }

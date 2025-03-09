@@ -4,10 +4,12 @@ import com.leo.voidminers.VoidMiners;
 import com.leo.voidminers.block.BaseTransparentBlock;
 import com.leo.voidminers.block.ModifierBlock;
 import com.leo.voidminers.block.entity.ModifierBE;
+
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -39,7 +41,7 @@ public class ModBlocks {
         () -> new BaseTransparentBlock(
             BlockBehaviour.Properties.of()
                 .strength(10, 5)
-                .requiresCorrectToolForDrops()
+                .requiresCorrectToolForDrops().sound(SoundType.GLASS)
         )
     );
 

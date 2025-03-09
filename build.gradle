@@ -164,6 +164,7 @@ dependencies {
     implementation fg.deobf("curse.maven:jade-324717:5493390")
     implementation fg.deobf("curse.maven:pipez-443900:4916633")
     implementation fg.deobf("curse.maven:mekanism-268560:6123077")
+    implementation fg.deobf("curse.maven:ctm-267602:5983309")
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }

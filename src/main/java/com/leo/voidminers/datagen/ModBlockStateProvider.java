@@ -6,6 +6,7 @@ import com.leo.voidminers.item.CrystalSet;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -23,19 +24,15 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        simpleBlockWithItem(
-            ModBlocks.FRAME_BASE
-        );
+        simpleBlockItem(ModBlocks.FRAME_BASE);
 
-        simpleBlockWithItem(
-            ModBlocks.STRUCTURE_PANEL
-        );
+        quadLayerBlockWithItem(ModBlocks.FRAME_BASE, "voidminers:block/null/frame", "voidminers:block/_core/frame", "voidminers:block/_core/cover", "voidminers:block/null/core");
 
-        simpleAllCubeWithItem(
-            ModBlocks.GLASS_PANEL
-        );
+        dualLayerBlockWithItem(ModBlocks.STRUCTURE_PANEL, "voidminers:block/_core/panel", "voidminers:block/_core/cover");
 
-        simpleAllCubeWithItem(ModBlocks.NULL_MOD);
+        simpleBlockWithItem(ModBlocks.GLASS_PANEL);
+
+        quadLayerBlockWithItem(ModBlocks.NULL_MOD, "voidminers:block/null/modifier", "voidminers:block/_core/modifier", "voidminers:block/_core/cover", "voidminers:block/null/core");
 
         for (CrystalSet set : CrystalSet.sets()) {
             simpleAllCubeWithItem(
@@ -43,74 +40,76 @@ public class ModBlockStateProvider extends BlockStateProvider {
                 set.name
             );
 
-            simpleAllCubeWithItem(
-                set.FRAME,
-                set.name
-            );
+            tripleLayerBlockWithItem(set.FRAME, "voidminers:block/" + set.name + "/frame", "voidminers:block/_core/frame", "voidminers:block/_core/cover");
 
-            simpleBlockWithItem(
-                set.MINER_CONTROLLER
-            );
+            simpleBlockWithItem(set.MINER_CONTROLLER);
 
-            simpleAllCubeWithItem(
-                set.ENERGY_MOD,
-                set.name
-            );
+            quadLayerBlockWithItem(set.ENERGY_MOD, "voidminers:block/_core/energy", "voidminers:block/_core/modifier", "voidminers:block/_core/cover", "voidminers:block/" + set.name + "/core");
 
-            simpleAllCubeWithItem(
-                set.SPEED_MOD,
-                set.name
-            );
+            quadLayerBlockWithItem(set.SPEED_MOD, "voidminers:block/_core/speed", "voidminers:block/_core/modifier", "voidminers:block/_core/cover", "voidminers:block/" + set.name + "/core");
 
-            simpleAllCubeWithItem(
-                set.ITEM_MOD,
-                set.name
-            );
+            quadLayerBlockWithItem(set.ITEM_MOD, "voidminers:block/_core/item", "voidminers:block/_core/modifier", "voidminers:block/_core/cover", "voidminers:block/" + set.name + "/core");
         }
     }
 
-
-    private void simpleAllCubeWithItem(RegistryObject<Block> block, String name) {
-        simpleBlockWithItem(block.get(), models().cubeAll(name(block.get()), stripSetName(block.getId()).withPrefix("block/" + name + "/")));
-    }
-
-    private void simpleAllCubeWithItem(RegistryObject<? extends Block> block) {
-        simpleBlockWithItem(block.get(), cubeAll(block.get()));
-    }
     private void simpleBlockWithItem(RegistryObject<? extends Block> block) {
         simpleBlockWithItem(block.get(), new ModelFile.UncheckedModelFile(new ResourceLocation(VoidMiners.MODID, "block/" + block.getId().getPath())));
+    }
+
+    private void simpleBlockWithItem(RegistryObject<? extends Block> block, String name) {
+        simpleBlockWithItem(block.get(), new ModelFile.UncheckedModelFile(new ResourceLocation(VoidMiners.MODID, "block/" + name)));
     }
 
     private void simpleBlockItem(RegistryObject<? extends Block> block) {
         simpleBlockItem(block.get(), new ModelFile.UncheckedModelFile(new ResourceLocation(VoidMiners.MODID, "block/" + block.getId().getPath())));
     }
 
-    private static ResourceLocation texture(RegistryObject<? extends Block> block) {
-        return texture(block.getId().getPath());
+    private void dualLayerBlockWithItem(RegistryObject<? extends Block> block, String layer0, String layer1) {
+        ModelFile.UncheckedModelFile parent = new ModelFile.UncheckedModelFile(new ResourceLocation(VoidMiners.MODID, "block/_template/dual_layer"));
+
+        BlockModelBuilder model = models().getBuilder(block.getId().getPath())
+            .parent(parent)
+            .texture("layer0", layer0)
+            .texture("layer1", layer1);
+
+        simpleBlockWithItem(block.get(), model);
     }
 
-    private static ResourceLocation texture(RegistryObject<? extends Block> block, String prefix) {
-        return texture(stripSetName(block.getId()).withPrefix(prefix + "/").getPath());
+    private void tripleLayerBlockWithItem(RegistryObject<? extends Block> block, String layer0, String layer1, String layer2) {
+        ModelFile.UncheckedModelFile parent = new ModelFile.UncheckedModelFile(new ResourceLocation(VoidMiners.MODID, "block/_template/triple_layer"));
+
+        BlockModelBuilder model = models().getBuilder(block.getId().getPath())
+            .parent(parent)
+            .texture("layer0", layer0)
+            .texture("layer1", layer1)
+            .texture("layer2", layer2);
+
+        simpleBlockWithItem(block.get(), model);
     }
 
-    private static ResourceLocation texture(String name) {
-        return new ResourceLocation(VoidMiners.MODID, "block/" + name);
+    private void quadLayerBlockWithItem(RegistryObject<? extends Block> block, String layer0, String layer1, String layer2, String layer3) {
+        ModelFile.UncheckedModelFile parent = new ModelFile.UncheckedModelFile(new ResourceLocation(VoidMiners.MODID, "block/_template/quad_layer"));
+
+        BlockModelBuilder model = models().getBuilder(block.getId().getPath())
+            .parent(parent)
+            .texture("layer0", layer0)
+            .texture("layer1", layer1)
+            .texture("layer2", layer2)
+            .texture("layer3", layer3);
+
+        simpleBlockWithItem(block.get(), model);
     }
 
-    private static ModelFile model(RegistryObject<? extends Block> block) {
-        return model(texture(block));
-    }
-
-    private static ModelFile model(ResourceLocation model) {
-        return new ModelFile.UncheckedModelFile(model);
-    }
-
-    private ResourceLocation key(Block block) {
-        return ForgeRegistries.BLOCKS.getKey(block);
+    private void simpleAllCubeWithItem(RegistryObject<Block> block, String name) {
+        simpleBlockWithItem(block.get(), models().cubeAll(name(block.get()), stripSetName(block.getId()).withPrefix("block/" + name + "/")));
     }
 
     private String name(Block block) {
         return key(block).getPath();
+    }
+
+    private ResourceLocation key(Block block) {
+        return ForgeRegistries.BLOCKS.getKey(block);
     }
 
     private static ResourceLocation stripSetName(ResourceLocation name) {
@@ -122,5 +121,4 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
         return new ResourceLocation(name.getNamespace(), name.getPath().substring(index + 1));
     }
-
 }

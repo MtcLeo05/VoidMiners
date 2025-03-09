@@ -2,6 +2,7 @@ package com.leo.voidminers.datagen;
 
 import com.leo.voidminers.VoidMiners;
 import com.leo.voidminers.init.ModBlocks;
+import com.leo.voidminers.init.ModItems;
 import com.leo.voidminers.item.CrystalSet;
 import com.leo.voidminers.recipe.MinerRecipe;
 import com.leo.voidminers.recipe.WeightedStack;
@@ -35,7 +36,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
             .pattern("IGI")
             .pattern("GRG")
             .pattern("IGI")
-            .define('R', Blocks.REDSTONE_BLOCK)
+            .define('R', Items.REDSTONE)
             .define('G', Items.GOLD_NUGGET)
             .define('I', Items.IRON_INGOT)
             .unlockedBy("hasItem", has(Items.IRON_INGOT))
@@ -47,9 +48,9 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 1
             )
             .pattern("GIG")
-            .pattern("IRI")
+            .pattern("ISI")
             .pattern("GIG")
-            .define('R', Items.REDSTONE)
+            .define('S', ModBlocks.STRUCTURE_PANEL.get())
             .define('G', Items.GOLD_NUGGET)
             .define('I', Items.IRON_INGOT)
             .unlockedBy("hasItem", has(Items.IRON_INGOT))
@@ -64,7 +65,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
             .pattern("IGI")
             .pattern("OIO")
             .define('O', Blocks.OBSIDIAN)
-            .define('G', Items.GOLD_INGOT)
+            .define('G', ModBlocks.STRUCTURE_PANEL.get())
             .define('I', Items.IRON_INGOT)
             .unlockedBy("hasItem", has(Items.IRON_INGOT))
             .save(pWriter);

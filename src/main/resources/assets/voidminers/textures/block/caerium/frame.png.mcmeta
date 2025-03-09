@@ -1,0 +1,13 @@
+{
+    "ctm":{
+        "ctm_version": 1,
+        "type":"CTM",
+        "textures":[
+            "voidminers:block/caerium/frame_ctm"
+        ],
+        "extra":{
+        	"ignore_states":true,
+        	"connect_inside":true
+        }
+    }
+}
