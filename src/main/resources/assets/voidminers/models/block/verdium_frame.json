@@ -1,8 +1,0 @@
-{
-  "parent": "voidminers:block/_template/triple_layer",
-  "textures": {
-    "layer0": "voidminers:block/verdium/frame",
-    "layer1": "voidminers:block/_core/frame",
-    "layer2": "voidminers:block/_core/cover"
-  }
-}
