@@ -27,6 +27,9 @@ public class ConfigLoader {
     public boolean MINE_PREVIOUS_TIER = true;
 
     @Expose
+    public boolean ALLOW_NO_ENERGY_MINERS = false;
+
+    @Expose
     public Map<String, MinerConfig> MINER_CONFIGS = MapUtil.of(
         MapUtil.createEntry("rubetine", new MinerConfig(1000000, 1000, 300,
             MapUtil.of(
