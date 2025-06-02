@@ -17,7 +17,7 @@ public class ModItemModelProvider extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
-        simpleItem(ModItems.ASSEMBLER);
+        simpleItem(ModItems.STRUCTURE_HELPER);
 
         for (CrystalSet set : CrystalSet.sets()) {
             simpleItem(

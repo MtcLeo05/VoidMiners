@@ -94,23 +94,31 @@ public class ControllerBaseBE extends BlockEntity {
     }
 
     public List<Component> getInteractionTooltip() {
-        if (isActive(getBlockPos())) {
+        List<Component> toRet = new ArrayList<>();
+
+        BlockPos pos = getBlockPos();
+
+        if(isWorking(pos)) {
+            return List.of(Component.translatable("tooltip." + VoidMiners.MODID + ".controller.working"),
+                Component.translatable("tooltip." + VoidMiners.MODID + ".controller.energy", getRfTick()),
+                Component.translatable("tooltip." + VoidMiners.MODID + ".controller.duration", getMaxProgress()));
+        }
+
+
+        if (isActive(pos)) {
             return List.of(
-                Component.translatable(VoidMiners.MODID + ".controller.working"),
-                Component.translatable(VoidMiners.MODID + ".controller.energy", getRfTick()),
-                Component.translatable(VoidMiners.MODID + ".controller.duration", getMaxProgress())
+                Component.translatable("tooltip." + VoidMiners.MODID + ".controller.not_working"),
+                Component.translatable("tooltip." + VoidMiners.MODID + ".controller.energy", getRfTick())
             );
         }
 
         if (foundStructure) {
             return List.of(
-                Component.translatable(VoidMiners.MODID + ".controller.notWorking")
+                Component.translatable("tooltip." + VoidMiners.MODID + ".controller.not_active")
             );
         }
 
-        List<Component> toRet = new ArrayList<>();
-
-        toRet.add(Component.translatable(VoidMiners.MODID + ".controller.notWorking") );
+        toRet.add(Component.translatable("tooltip." + VoidMiners.MODID + ".controller.missing_structure") );
 
         MiscUtil.getNeededBlocks(MiscUtil.structureMap.get(structure.toString())).forEach((string, integer) -> {
             toRet.add(Component.literal(string + ": " + integer));
@@ -278,8 +286,12 @@ public class ControllerBaseBE extends BlockEntity {
         return active;
     }
 
-    public boolean isWorking(BlockPos pos) {
-        working = !isItemHandlerFull() && energyHandler.getEnergyStored() >= getRfTick();
+    private boolean hasValidEnergyRequirement() {
+        return getRfTick() <= energyHandler.getMaxEnergyStored();
+    }
+
+    private boolean isWorking(BlockPos pos) {
+        working = !isItemHandlerFull() && hasValidEnergyRequirement() && isActive(pos);
         level.sendBlockUpdated(pos, getBlockState(), getBlockState(), 3);
         return working;
     }
@@ -380,10 +392,6 @@ public class ControllerBaseBE extends BlockEntity {
         }
 
         return ItemStack.EMPTY;
-    }
-
-    private boolean hasRecipe() {
-        return !allRecipes().isEmpty();
     }
 
     private boolean hasProgressFinished() {

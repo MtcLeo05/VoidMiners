@@ -1,8 +1,11 @@
 package com.leo.voidminers.item;
 
+import com.leo.voidminers.VoidMiners;
 import com.leo.voidminers.block.entity.ControllerBaseBE;
 import com.leo.voidminers.multiblock.MinerMultiblocks;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -13,8 +16,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.mangorage.mangomultiblock.core.manager.RegisteredMultiBlockPattern;
 
-public class Assembler extends Item {
-    public Assembler(Properties pProperties) {
+public class StructureHelper extends Item {
+    public StructureHelper(Properties pProperties) {
         super(pProperties);
     }
 

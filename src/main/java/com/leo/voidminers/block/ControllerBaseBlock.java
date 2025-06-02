@@ -53,23 +53,21 @@ public class ControllerBaseBlock extends BaseTransparentBlock implements EntityB
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         ControllerBaseBE blockEntity = (ControllerBaseBE) pLevel.getBlockEntity(pPos);
 
-        if (!pLevel.isClientSide) {
+        if (pLevel.isClientSide) {
+            return InteractionResult.sidedSuccess(pLevel.isClientSide());
+        }
 
-            if (pPlayer.isCrouching()) {
-                blockEntity.updateShowStructure();
-            } else {
-                for (Component component : blockEntity.getInteractionTooltip()) {
-                    pPlayer.displayClientMessage(
-                        component,
-                        false
-                    );
-                }
-            }
-
+        if (pPlayer.isCrouching()) {
+            blockEntity.updateShowStructure();
             return InteractionResult.CONSUME;
         }
 
-        return InteractionResult.sidedSuccess(pLevel.isClientSide());
+        for (Component component : blockEntity.getInteractionTooltip()) {
+            pPlayer.displayClientMessage(component, false);
+        }
+
+        return InteractionResult.CONSUME;
+
     }
 
     @Override
