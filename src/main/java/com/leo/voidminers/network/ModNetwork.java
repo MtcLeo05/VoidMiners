@@ -29,7 +29,7 @@ public class ModNetwork {
      */
     public static void register() {
         CHANNEL = NetworkRegistry.ChannelBuilder
-            .named(new ResourceLocation(VoidMiners.MODID, "messages"))
+            .named(ResourceLocation.fromNamespaceAndPath(VoidMiners.MODID, "messages"))
             .networkProtocolVersion(() -> PROTOCOL_VERSION)
             .clientAcceptedVersions(PROTOCOL_VERSION::equals)
             .serverAcceptedVersions(PROTOCOL_VERSION::equals)

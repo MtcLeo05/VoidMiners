@@ -32,7 +32,7 @@ public class ModItemModelProvider extends ItemModelProvider {
 
     private void simpleItem(String name) {
         withExistingParent(name,
-            new ResourceLocation("item/generated")).texture("layer0",
-            new ResourceLocation(VoidMiners.MODID, "item/" + name));
+            ResourceLocation.parse("item/generated")).texture("layer0",
+            ResourceLocation.fromNamespaceAndPath(VoidMiners.MODID, "item/" + name));
     }
 }

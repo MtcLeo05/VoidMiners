@@ -104,6 +104,6 @@ public class ModBlockTagGenerator extends BlockTagsProvider {
     public static final TagKey<Block> MODIFIERS = create("modifiers");
 
     private static TagKey<Block> create(String pName) {
-        return TagKey.create(Registries.BLOCK, new ResourceLocation(VoidMiners.MODID, pName));
+        return TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(VoidMiners.MODID, pName));
     }
 }

@@ -53,19 +53,19 @@ public class ModBlockStateProvider extends BlockStateProvider {
     }
 
     private void simpleBlockWithItem(RegistryObject<? extends Block> block) {
-        simpleBlockWithItem(block.get(), new ModelFile.UncheckedModelFile(new ResourceLocation(VoidMiners.MODID, "block/" + block.getId().getPath())));
+        simpleBlockWithItem(block.get(), new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(VoidMiners.MODID, "block/" + block.getId().getPath())));
     }
 
     private void simpleBlockWithItem(RegistryObject<? extends Block> block, String name) {
-        simpleBlockWithItem(block.get(), new ModelFile.UncheckedModelFile(new ResourceLocation(VoidMiners.MODID, "block/" + name)));
+        simpleBlockWithItem(block.get(), new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(VoidMiners.MODID, "block/" + name)));
     }
 
     private void simpleBlockItem(RegistryObject<? extends Block> block) {
-        simpleBlockItem(block.get(), new ModelFile.UncheckedModelFile(new ResourceLocation(VoidMiners.MODID, "block/" + block.getId().getPath())));
+        simpleBlockItem(block.get(), new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(VoidMiners.MODID, "block/" + block.getId().getPath())));
     }
 
     private void dualLayerBlockWithItem(RegistryObject<? extends Block> block, String layer0, String layer1) {
-        ModelFile.UncheckedModelFile parent = new ModelFile.UncheckedModelFile(new ResourceLocation(VoidMiners.MODID, "block/_template/dual_layer"));
+        ModelFile.UncheckedModelFile parent = new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(VoidMiners.MODID, "block/_template/dual_layer"));
 
         BlockModelBuilder model = models().getBuilder(block.getId().getPath())
             .parent(parent)
@@ -76,7 +76,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
     }
 
     private void tripleLayerBlockWithItem(RegistryObject<? extends Block> block, String layer0, String layer1, String layer2) {
-        ModelFile.UncheckedModelFile parent = new ModelFile.UncheckedModelFile(new ResourceLocation(VoidMiners.MODID, "block/_template/triple_layer"));
+        ModelFile.UncheckedModelFile parent = new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(VoidMiners.MODID, "block/_template/triple_layer"));
 
         BlockModelBuilder model = models().getBuilder(block.getId().getPath())
             .parent(parent)
@@ -88,7 +88,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
     }
 
     private void quadLayerBlockWithItem(RegistryObject<? extends Block> block, String layer0, String layer1, String layer2, String layer3) {
-        ModelFile.UncheckedModelFile parent = new ModelFile.UncheckedModelFile(new ResourceLocation(VoidMiners.MODID, "block/_template/quad_layer"));
+        ModelFile.UncheckedModelFile parent = new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(VoidMiners.MODID, "block/_template/quad_layer"));
 
         BlockModelBuilder model = models().getBuilder(block.getId().getPath())
             .parent(parent)
@@ -119,6 +119,6 @@ public class ModBlockStateProvider extends BlockStateProvider {
             return name;
         }
 
-        return new ResourceLocation(name.getNamespace(), name.getPath().substring(index + 1));
+        return ResourceLocation.fromNamespaceAndPath(name.getNamespace(), name.getPath().substring(index + 1));
     }
 }

@@ -105,7 +105,7 @@ public class CrystalSet {
             name,
             fastCreateItem(name, rarity),
             fastCreateBlock(name + "_block", 10, 5, rarity),
-            fastCreateController(name, 10, 50, rarity, new ResourceLocation(VoidMiners.MODID, name)),
+            fastCreateController(name, 10, 50, rarity, ResourceLocation.fromNamespaceAndPath(VoidMiners.MODID, name)),
             fastCreateBlock(name + "_frame", 10, 50, rarity),
             fastCreateModifier(name, 10, 50, rarity, ModifierBE.ModifierType.ENERGY),
             fastCreateModifier(name, 10, 50, rarity, ModifierBE.ModifierType.SPEED),

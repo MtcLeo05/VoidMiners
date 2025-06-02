@@ -103,7 +103,7 @@ public class MinerRecipe implements Recipe<Container> {
                 stack = CraftingHelper.getItemStack(jsonOutput.getAsJsonObject("item"), true, true);
             } else {
                 stack = ForgeRegistries.ITEMS.getValue(
-                    new ResourceLocation(jsonOutput.get("item").getAsString())
+                    ResourceLocation.parse(jsonOutput.get("item").getAsString())
                 ).getDefaultInstance();
             }
 
@@ -116,7 +116,7 @@ public class MinerRecipe implements Recipe<Container> {
 
             String jsonDim = GsonHelper.getAsString(pSerializedRecipe, "dimension", "minecraft:overworld");
 
-            ResourceKey<Level> dimension = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(jsonDim));
+            ResourceKey<Level> dimension = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(jsonDim));
 
             return new MinerRecipe(output, minTier, pRecipeId, dimension);
         }
@@ -160,7 +160,7 @@ public class MinerRecipe implements Recipe<Container> {
         }
 
         public static Builder builder(WeightedStack output, int minTier, ResourceKey<Level> dimension) {
-            ResourceLocation recipeId = new ResourceLocation(VoidMiners.MODID, dimension.location().getPath() + "/tier" + minTier + "_miner/" + ForgeRegistries.ITEMS.getKey(output.stack.getItem()).getPath());
+            ResourceLocation recipeId = ResourceLocation.fromNamespaceAndPath(VoidMiners.MODID, dimension.location().getPath() + "/tier" + minTier + "_miner/" + ForgeRegistries.ITEMS.getKey(output.stack.getItem()).getPath());
             return new Builder(output, minTier, recipeId, dimension);
         }
 

@@ -193,7 +193,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 )
                 .requires(set.CRYSTAL_BLOCK.get())
                 .unlockedBy("hasItem", has(set.CRYSTAL_BLOCK.get()))
-                .save(pWriter, new ResourceLocation(VoidMiners.MODID, set.name + "_crystal_from_block"));
+                .save(pWriter, ResourceLocation.fromNamespaceAndPath(VoidMiners.MODID, set.name + "_crystal_from_block"));
         }
 
         List<WeightedStack> OVERWORLD = List.of(

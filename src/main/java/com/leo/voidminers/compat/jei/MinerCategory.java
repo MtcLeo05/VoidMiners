@@ -22,7 +22,7 @@ import net.minecraft.world.level.block.Block;
 
 public class MinerCategory implements IRecipeCategory<MinerRecipe> {
     public final ResourceLocation UID;
-    public static final ResourceLocation TEXTURE = new ResourceLocation(VoidMiners.MODID, "textures/gui/jei_background.png");
+    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(VoidMiners.MODID, "textures/gui/jei_background.png");
 
     public RecipeType<MinerRecipe> RECIPE_TYPE;
 
@@ -32,7 +32,7 @@ public class MinerCategory implements IRecipeCategory<MinerRecipe> {
     public final int tier;
 
     public MinerCategory(IGuiHelper guiHelper, Block blockIcon, int tier) {
-        UID = new ResourceLocation(VoidMiners.MODID, "miner/tier" + tier + "_miner");
+        UID = ResourceLocation.fromNamespaceAndPath(VoidMiners.MODID, "miner/tier" + tier + "_miner");
         RECIPE_TYPE = new RecipeType<>(UID, MinerRecipe.class);
         this.background = guiHelper.createDrawable(TEXTURE, 0, 0, 125, 35);
         this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, blockIcon.asItem().getDefaultInstance());
@@ -47,7 +47,7 @@ public class MinerCategory implements IRecipeCategory<MinerRecipe> {
 
     @Override
     public Component getTitle() {
-        return Component.translatable("voidminers.gui.miner", tier);
+        return Component.translatable("gui." + VoidMiners.MODID + ".miner", tier);
     }
 
     @Override
@@ -71,10 +71,10 @@ public class MinerCategory implements IRecipeCategory<MinerRecipe> {
 
     @Override
     public void draw(MinerRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
-        Component weight = Component.translatable(VoidMiners.MODID + ".structure.weight", customFormat(recipe.output().weight));
-        String dimensionName = recipe.dimension().location().toString();
+        Component weight = Component.translatable("tooltip." + VoidMiners.MODID + ".structure.weight", customFormat(recipe.output().weight));
+        String dimensionName = recipe.dimension().location().toLanguageKey();
 
-        ResourceLocation texture = new ResourceLocation(VoidMiners.MODID, "textures/gui/icon/" + getDimensionIcon(recipe.dimension()) + ".png");
+        ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(VoidMiners.MODID, "textures/gui/icon/" + getDimensionIcon(recipe.dimension()) + ".png");
 
         Font font = Minecraft.getInstance().font;
 
@@ -92,7 +92,7 @@ public class MinerCategory implements IRecipeCategory<MinerRecipe> {
         );
 
         if(isHovering(mouseX, mouseY, 99, 11, 115, 27)) {
-            guiGraphics.drawString(font, dimensionName, (int) mouseX, (int) mouseY, 0xFFFFFFFF);
+            guiGraphics.drawString(font, Component.translatable(dimensionName), (int) mouseX, (int) mouseY - 10, 0xFFFFFFFF);
         }
     }
 

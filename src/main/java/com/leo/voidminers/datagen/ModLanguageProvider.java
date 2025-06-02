@@ -19,7 +19,7 @@ public class ModLanguageProvider extends LanguageProvider {
 
         this.add(ModItems.STRUCTURE_HELPER.get(), "Structure Helper");
 
-        this.add(VoidMiners.MODID + ".gui.miner", "Tier %d Miner");
+        this.add("gui." + VoidMiners.MODID + ".miner", "Tier %d Miner");
 
         this.add("tooltip." + VoidMiners.MODID + ".controller.working", "Miner is working correctly.");
 
@@ -66,6 +66,10 @@ public class ModLanguageProvider extends LanguageProvider {
         this.add("tooltip." + VoidMiners.MODID + ".item", "Item Amount Modifier: %dx");
 
         this.add("tooltip." + VoidMiners.MODID + "creative_only", "Creative Only");
+
+        this.add("minecraft.overworld", "Overworld");
+        this.add("minecraft.the_nether", "The Nether");
+        this.add("minecraft.the_end", "The End");
     }
 
 
