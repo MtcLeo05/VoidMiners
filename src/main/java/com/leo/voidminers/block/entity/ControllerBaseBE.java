@@ -229,7 +229,11 @@ public class ControllerBaseBE extends BlockEntity {
         return super.getCapability(cap, side);
     }
 
-    public void tick(Level pLevel, BlockPos pPos, BlockState pState) {
+    public void tick(Level pLevel, BlockPos pPos, BlockState pState, ResourceLocation structure, String name) {
+        if(getStructure() == null) {
+            setup(structure, name);
+        }
+
         checkStructure(pLevel, pPos);
         setupEnergyStorage();
 

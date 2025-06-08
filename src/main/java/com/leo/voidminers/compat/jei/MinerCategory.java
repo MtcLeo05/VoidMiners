@@ -34,7 +34,7 @@ public class MinerCategory implements IRecipeCategory<MinerRecipe> {
     public MinerCategory(IGuiHelper guiHelper, Block blockIcon, int tier) {
         UID = ResourceLocation.fromNamespaceAndPath(VoidMiners.MODID, "miner/tier" + tier + "_miner");
         RECIPE_TYPE = new RecipeType<>(UID, MinerRecipe.class);
-        this.background = guiHelper.createDrawable(TEXTURE, 0, 0, 125, 35);
+        this.background = guiHelper.createDrawable(TEXTURE, 0, 0, 125, 15);
         this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, blockIcon.asItem().getDefaultInstance());
         this.blockIcon = blockIcon;
         this.tier = tier;
@@ -65,7 +65,7 @@ public class MinerCategory implements IRecipeCategory<MinerRecipe> {
         builder.addSlot(
             RecipeIngredientRole.OUTPUT,
             4,
-            11
+            -1
         ).addItemStack(minerRecipe.output().stack);
     }
 
@@ -78,11 +78,11 @@ public class MinerCategory implements IRecipeCategory<MinerRecipe> {
 
         Font font = Minecraft.getInstance().font;
 
-        guiGraphics.drawString(font, weight, 24, 15, 0xFFFFFFFF);
+        guiGraphics.drawString(font, weight, 24, 4, 0xFFFFFFFF);
         guiGraphics.blit(
             texture,
             99,
-            11,
+            -1,
             0,
             0,
             16,
@@ -91,9 +91,10 @@ public class MinerCategory implements IRecipeCategory<MinerRecipe> {
             16
         );
 
-        if(isHovering(mouseX, mouseY, 99, 11, 115, 27)) {
-            guiGraphics.drawString(font, Component.translatable(dimensionName), (int) mouseX, (int) mouseY - 10, 0xFFFFFFFF);
+        if (!isHovering(mouseX, mouseY, 99, 0, 115, 16)) {
+            return;
         }
+        guiGraphics.renderTooltip(font, Component.translatable(dimensionName), (int) mouseX, (int) mouseY - 10);
     }
 
     public static boolean isHovering(double mouseX, double mouseY, int x1, int y1, int x2, int y2) {

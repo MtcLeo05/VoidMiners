@@ -89,7 +89,7 @@ public class ControllerBaseBlock extends BaseTransparentBlock implements EntityB
             return null;
         }
 
-        return ((level, blockPos, blockState, be) -> ((ControllerBaseBE) be).tick(pLevel, blockPos, blockState));
+        return ((level, blockPos, blockState, be) -> ((ControllerBaseBE) be).tick(pLevel, blockPos, blockState, structure, name));
     }
 
     @Override

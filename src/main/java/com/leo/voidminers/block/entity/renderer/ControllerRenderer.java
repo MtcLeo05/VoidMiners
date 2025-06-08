@@ -40,47 +40,52 @@ public class ControllerRenderer implements BlockEntityRenderer<ControllerBaseBE>
             renderBeam(pBuffer.getBuffer(RenderType.gui()), pose, new Vector3f(0f, 0f, 0f), pBlockEntity.getBeamColor(), 320, 0.3f);
 
             pose.popPose();
-        } else if (pBlockEntity.showStructure) {
-            String structure = pBlockEntity.getStructure().toString();
+            return;
+        }
 
-            if (MiscUtil.structureMap.containsKey(structure)) {
-                int offset = MiscUtil.structureMap.get(structure).get(0).size() / 2;
+        if (!pBlockEntity.showStructure) return;
 
-                pose.pushPose();
-                pose.translate(-offset, 1, -offset);
-                pose.pushPose();
-                pose.mulPose(Axis.ZN.rotationDegrees(90));
+        if(pBlockEntity.getStructure() == null) return;
 
-                //TODO Find a better way to do this, it's performance intensive doing 3 loops each render tick
-                List<List<List<BlockState>>> blocks = MiscUtil.structureMap.get(structure);
+        String structure = pBlockEntity.getStructure().toString();
 
-                for (int x = 0; x < blocks.size(); x++) {
-                    List<List<BlockState>> b2 = blocks.get(x);
+        if (!MiscUtil.structureMap.containsKey(structure)) return;
 
-                    for (int y = 0; y < b2.size(); y++) {
-                        List<BlockState> b3 = b2.get(y);
+        int offset = MiscUtil.structureMap.get(structure).get(0).size() / 2;
 
-                        for (int z = 0; z < b3.size(); z++) {
-                            BlockState block = b3.get(z);
+        pose.pushPose();
+        pose.translate(-offset, 1, -offset);
+        pose.pushPose();
+        pose.mulPose(Axis.ZN.rotationDegrees(90));
 
-                            pose.pushPose();
-                            pose.translate(x, y, z);
+        //TODO Find a better way to do this, it's performance intensive doing 3 loops each render tick
+        List<List<List<BlockState>>> blocks = MiscUtil.structureMap.get(structure);
 
-                            renderBlock(
-                                block,
-                                pose,
-                                pBuffer
-                            );
+        for (int x = 0; x < blocks.size(); x++) {
+            List<List<BlockState>> b2 = blocks.get(x);
 
-                            pose.popPose();
-                        }
-                    }
+            for (int y = 0; y < b2.size(); y++) {
+                List<BlockState> b3 = b2.get(y);
+
+                for (int z = 0; z < b3.size(); z++) {
+                    BlockState block = b3.get(z);
+
+                    pose.pushPose();
+                    pose.translate(x, y, z);
+
+                    renderBlock(
+                        block,
+                        pose,
+                        pBuffer
+                    );
+
+                    pose.popPose();
                 }
-
-                pose.popPose();
-                pose.popPose();
             }
         }
+
+        pose.popPose();
+        pose.popPose();
     }
 
     public void renderBlock(BlockState state, PoseStack pose, MultiBufferSource buffer) {
