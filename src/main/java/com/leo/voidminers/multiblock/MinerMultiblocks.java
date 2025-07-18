@@ -3,7 +3,7 @@ package com.leo.voidminers.multiblock;
 import com.leo.voidminers.VoidMiners;
 import com.leo.voidminers.datagen.ModBlockTagGenerator;
 import com.leo.voidminers.init.ModBlocks;
-import com.leo.voidminers.item.CrystalSet;
+import com.leo.voidminers.init.CrystalSet;
 import com.leo.voidminers.util.MiscUtil;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;

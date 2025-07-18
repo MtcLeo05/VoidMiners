@@ -24,9 +24,6 @@ public class ConfigLoader {
     }
 
     @Expose
-    public boolean MINE_PREVIOUS_TIER = true;
-
-    @Expose
     public boolean ALLOW_NO_ENERGY_MINERS = false;
 
     @Expose

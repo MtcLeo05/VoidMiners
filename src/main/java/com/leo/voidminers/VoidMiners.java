@@ -2,7 +2,7 @@ package com.leo.voidminers;
 
 import com.leo.voidminers.config.ConfigLoader;
 import com.leo.voidminers.init.*;
-import com.leo.voidminers.item.CrystalSet;
+import com.leo.voidminers.init.CrystalSet;
 import com.leo.voidminers.network.ModNetwork;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;

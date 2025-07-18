@@ -2,11 +2,9 @@ package com.leo.voidminers.datagen;
 
 import com.leo.voidminers.VoidMiners;
 import com.leo.voidminers.init.ModBlocks;
-import com.leo.voidminers.init.ModItems;
-import com.leo.voidminers.item.CrystalSet;
+import com.leo.voidminers.init.CrystalSet;
 import com.leo.voidminers.recipe.MinerRecipe;
 import com.leo.voidminers.recipe.WeightedStack;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
@@ -15,7 +13,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
 import java.util.function.Consumer;

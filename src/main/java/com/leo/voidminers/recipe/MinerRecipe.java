@@ -28,14 +28,20 @@ import java.util.function.Consumer;
 public class MinerRecipe implements Recipe<Container> {
     private final WeightedStack output;
     private final int minTier;
+    private final boolean allowHigherTiers;
     private final ResourceLocation id;
     private final ResourceKey<Level> dimension;
 
-    public MinerRecipe(WeightedStack output, int minTier, ResourceLocation id, ResourceKey<Level> dimension) {
+    public MinerRecipe(WeightedStack output, int minTier, boolean allowHigherTiers, ResourceLocation id, ResourceKey<Level> dimension) {
         this.output = output;
         this.minTier = minTier;
+        this.allowHigherTiers = allowHigherTiers;
         this.id = id;
         this.dimension = dimension;
+    }
+
+    public boolean allowHigherTiers() {
+        return allowHigherTiers;
     }
 
     public WeightedStack output() {
@@ -114,11 +120,17 @@ public class MinerRecipe implements Recipe<Container> {
 
             int minTier = GsonHelper.getAsInt(pSerializedRecipe, "minTier");
 
+            boolean allowHigherTiers = true;
+
+            if(jsonOutput.has("allowHigherTiers")) {
+                allowHigherTiers = GsonHelper.getAsBoolean(jsonOutput, "allowHigherTiers");
+            }
+
             String jsonDim = GsonHelper.getAsString(pSerializedRecipe, "dimension", "minecraft:overworld");
 
             ResourceKey<Level> dimension = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(jsonDim));
 
-            return new MinerRecipe(output, minTier, pRecipeId, dimension);
+            return new MinerRecipe(output, minTier, allowHigherTiers, pRecipeId, dimension);
         }
 
         @Override
@@ -129,10 +141,11 @@ public class MinerRecipe implements Recipe<Container> {
             WeightedStack output = new WeightedStack(stack, weight);
 
             int minTier = pBuffer.readInt();
+            boolean allowHigherTiers = pBuffer.readBoolean();
 
             ResourceKey<Level> dimension = pBuffer.readResourceKey(Registries.DIMENSION);
 
-            return new MinerRecipe(output, minTier, pRecipeId, dimension);
+            return new MinerRecipe(output, minTier, allowHigherTiers, pRecipeId, dimension);
         }
 
         @Override
@@ -141,6 +154,7 @@ public class MinerRecipe implements Recipe<Container> {
             pBuffer.writeFloat(pRecipe.output.weight);
 
             pBuffer.writeInt(pRecipe.minTier);
+            pBuffer.writeBoolean(pRecipe.allowHigherTiers);
 
             pBuffer.writeResourceKey(pRecipe.dimension);
         }
@@ -149,19 +163,26 @@ public class MinerRecipe implements Recipe<Container> {
     public static class Builder implements RecipeBuilder, FinishedRecipe {
         private final WeightedStack output;
         private final int minTier;
+        private final boolean allowHigherTiers;
         private final ResourceLocation id;
         private final ResourceKey<Level> dimension;
 
-        private Builder(WeightedStack output, int minTier, ResourceLocation id, ResourceKey<Level> dimension) {
+        private Builder(WeightedStack output, int minTier, boolean allowHigherTiers, ResourceLocation id, ResourceKey<Level> dimension) {
             this.output = output;
             this.minTier = minTier;
             this.id = id;
+            this.allowHigherTiers = allowHigherTiers;
             this.dimension = dimension;
         }
 
         public static Builder builder(WeightedStack output, int minTier, ResourceKey<Level> dimension) {
             ResourceLocation recipeId = ResourceLocation.fromNamespaceAndPath(VoidMiners.MODID, dimension.location().getPath() + "/tier" + minTier + "_miner/" + ForgeRegistries.ITEMS.getKey(output.stack.getItem()).getPath());
-            return new Builder(output, minTier, recipeId, dimension);
+            return new Builder(output, minTier, true, recipeId, dimension);
+        }
+
+        public static Builder builder(WeightedStack output, int minTier, boolean allowHigherTiers, ResourceKey<Level> dimension) {
+            ResourceLocation recipeId = ResourceLocation.fromNamespaceAndPath(VoidMiners.MODID, dimension.location().getPath() + "/tier" + minTier + "_miner/" + ForgeRegistries.ITEMS.getKey(output.stack.getItem()).getPath());
+            return new Builder(output, minTier, allowHigherTiers, recipeId, dimension);
         }
 
         @Override
@@ -202,6 +223,7 @@ public class MinerRecipe implements Recipe<Container> {
             json.add("output", outputItem);
 
             json.addProperty("minTier", this.minTier);
+            json.addProperty("allowHigherTiers", this.allowHigherTiers);
             json.addProperty("dimension", dimension.location().toString());
         }
 

@@ -1,6 +1,6 @@
 package com.leo.voidminers.util;
 
-import com.leo.voidminers.item.CrystalSet;
+import com.leo.voidminers.init.CrystalSet;
 import net.minecraft.locale.Language;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;

@@ -1,5 +1,6 @@
 {
   "type": "voidminers:miner",
+  "allowHigherTiers": true,
   "dimension": "minecraft:overworld",
   "minTier": 6,
   "output": {

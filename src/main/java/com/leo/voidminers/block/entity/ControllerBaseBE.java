@@ -335,7 +335,7 @@ public class ControllerBaseBE extends BlockEntity {
         return level.getRecipeManager().getAllRecipesFor(MinerRecipe.Type.INSTANCE)
             .stream()
             .filter(recipe -> {
-                if (ConfigLoader.getInstance().MINE_PREVIOUS_TIER) {
+                if (recipe.allowHigherTiers()) {
                     return recipe.minTier() <= MiscUtil.tierMap.get(structure.getPath());
                 } else {
                     return recipe.minTier() == MiscUtil.tierMap.get(structure.getPath());

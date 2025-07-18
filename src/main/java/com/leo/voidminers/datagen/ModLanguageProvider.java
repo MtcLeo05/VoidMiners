@@ -3,7 +3,7 @@ package com.leo.voidminers.datagen;
 import com.leo.voidminers.VoidMiners;
 import com.leo.voidminers.init.ModBlocks;
 import com.leo.voidminers.init.ModItems;
-import com.leo.voidminers.item.CrystalSet;
+import com.leo.voidminers.init.CrystalSet;
 import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.LanguageProvider;
 
@@ -20,6 +20,7 @@ public class ModLanguageProvider extends LanguageProvider {
         this.add(ModItems.STRUCTURE_HELPER.get(), "Structure Helper");
 
         this.add("gui." + VoidMiners.MODID + ".miner", "Tier %d Miner");
+        this.add("gui." + VoidMiners.MODID + ".miners", "Miners");
 
         this.add("tooltip." + VoidMiners.MODID + ".controller.working", "Miner is working correctly.");
 

@@ -1,12 +1,9 @@
-package com.leo.voidminers.item;
+package com.leo.voidminers.init;
 
 import com.leo.voidminers.VoidMiners;
 import com.leo.voidminers.block.ControllerBaseBlock;
 import com.leo.voidminers.block.ModifierBlock;
 import com.leo.voidminers.block.entity.ModifierBE;
-import com.leo.voidminers.init.ModBlocks;
-import com.leo.voidminers.init.ModItems;
-import com.leo.voidminers.init.ModRarities;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;

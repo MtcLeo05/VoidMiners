@@ -28,7 +28,6 @@ public class ForgeBusEvent {
 
         ModNetwork.sendToAllPlayers(
             new SyncConfigS2CPacket(
-                ConfigLoader.getInstance().MINE_PREVIOUS_TIER,
                 ConfigLoader.getInstance().MINER_CONFIGS
             )
         );

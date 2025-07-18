@@ -2,7 +2,7 @@ package com.leo.voidminers.datagen;
 
 import com.leo.voidminers.VoidMiners;
 import com.leo.voidminers.init.ModItems;
-import com.leo.voidminers.item.CrystalSet;
+import com.leo.voidminers.init.CrystalSet;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;

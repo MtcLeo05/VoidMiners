@@ -22,16 +22,13 @@ import java.util.stream.Stream;
  */
 public class SyncConfigS2CPacket {
 
-    private final boolean minePreviousTier;
     private final Map<String, ConfigLoader.MinerConfig> minerConfigs;
 
-    public SyncConfigS2CPacket(boolean minePreviousTier, Map<String, ConfigLoader.MinerConfig> minerConfigs) {
-        this.minePreviousTier = minePreviousTier;
+    public SyncConfigS2CPacket(Map<String, ConfigLoader.MinerConfig> minerConfigs) {
         this.minerConfigs = minerConfigs;
     }
 
     public SyncConfigS2CPacket(FriendlyByteBuf buf) {
-        this.minePreviousTier = buf.readBoolean();
         int entries = buf.readInt();
 
         minerConfigs = new HashMap<>();
@@ -45,8 +42,6 @@ public class SyncConfigS2CPacket {
     }
 
     public void toBytes(FriendlyByteBuf buf) {
-        buf.writeBoolean(minePreviousTier);
-
         buf.writeInt(minerConfigs.size());
 
         minerConfigs.forEach((key, value) -> {
@@ -56,7 +51,6 @@ public class SyncConfigS2CPacket {
     }
 
     public void handle(Supplier<NetworkEvent.Context> supplier) {
-        ConfigLoader.getInstance().MINE_PREVIOUS_TIER = minePreviousTier;
         ConfigLoader.getInstance().MINER_CONFIGS = minerConfigs;
     }
 }
