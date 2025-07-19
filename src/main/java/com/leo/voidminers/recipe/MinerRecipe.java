@@ -122,8 +122,8 @@ public class MinerRecipe implements Recipe<Container> {
 
             boolean allowHigherTiers = true;
 
-            if(jsonOutput.has("allowHigherTiers")) {
-                allowHigherTiers = GsonHelper.getAsBoolean(jsonOutput, "allowHigherTiers");
+            if(pSerializedRecipe.has("allowHigherTiers")) {
+                allowHigherTiers = GsonHelper.getAsBoolean(pSerializedRecipe, "allowHigherTiers");
             }
 
             String jsonDim = GsonHelper.getAsString(pSerializedRecipe, "dimension", "minecraft:overworld");
@@ -176,8 +176,7 @@ public class MinerRecipe implements Recipe<Container> {
         }
 
         public static Builder builder(WeightedStack output, int minTier, ResourceKey<Level> dimension) {
-            ResourceLocation recipeId = ResourceLocation.fromNamespaceAndPath(VoidMiners.MODID, dimension.location().getPath() + "/tier" + minTier + "_miner/" + ForgeRegistries.ITEMS.getKey(output.stack.getItem()).getPath());
-            return new Builder(output, minTier, true, recipeId, dimension);
+            return Builder.builder(output, minTier, true, dimension);
         }
 
         public static Builder builder(WeightedStack output, int minTier, boolean allowHigherTiers, ResourceKey<Level> dimension) {
