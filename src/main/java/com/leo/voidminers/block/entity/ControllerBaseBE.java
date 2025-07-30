@@ -303,10 +303,11 @@ public class ControllerBaseBE extends BlockEntity {
     private boolean hasViewOnBedrockOrVoid(BlockPos pos) {
         for (int i = 0; i < 320; i++) {
             BlockPos check = pos.below(i);
-            if (level.getBlockState(check).propagatesSkylightDown(level, check) || level.getBlockState(check).is(Blocks.BEDROCK) || level.isFluidAtPosition(check, (fluidState -> !fluidState.isEmpty()))) {
-                continue;
-            }
 
+            if(level.getBlockState(check).is(Blocks.BEDROCK)) return true;
+
+            if (level.getBlockState(check).propagatesSkylightDown(level, check) || level.isFluidAtPosition(check, (fluidState -> !fluidState.isEmpty()))) continue;
+            
             return false;
         }
 
