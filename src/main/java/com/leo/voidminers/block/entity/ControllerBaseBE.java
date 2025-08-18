@@ -104,7 +104,6 @@ public class ControllerBaseBE extends BlockEntity {
                 Component.translatable("tooltip." + VoidMiners.MODID + ".controller.duration", getMaxProgress()));
         }
 
-
         if (isActive(pos)) {
             return List.of(
                 Component.translatable("tooltip." + VoidMiners.MODID + ".controller.not_working"),
@@ -242,8 +241,8 @@ public class ControllerBaseBE extends BlockEntity {
         }
 
         increaseCraftingProgress();
-        setChanged(pLevel, pPos, pState);
         pLevel.sendBlockUpdated(pPos, pState, pState, 3);
+        setChanged(pLevel, pPos, pState);
 
         if (!hasProgressFinished()) {
             return;
@@ -251,6 +250,7 @@ public class ControllerBaseBE extends BlockEntity {
 
         craftItem();
         resetProgress();
+        setChanged(pLevel, pPos, pState);
     }
 
     public int getRfTick() {
@@ -291,7 +291,7 @@ public class ControllerBaseBE extends BlockEntity {
     }
 
     private boolean hasValidEnergyRequirement() {
-        return getRfTick() <= energyHandler.getMaxEnergyStored();
+        return getRfTick() <= energyHandler.getEnergyStored();
     }
 
     private boolean isWorking(BlockPos pos) {
