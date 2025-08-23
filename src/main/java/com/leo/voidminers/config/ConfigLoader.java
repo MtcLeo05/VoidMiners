@@ -7,7 +7,11 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.stream.JsonReader;
 import com.leo.voidminers.util.MapUtil;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -130,6 +134,14 @@ public class ConfigLoader {
 
     public ModifierConfig getModifierConfig(String name, String type) {
         return getMinerConfig(name).modifiers.getOrDefault(type, new ModifierConfig(1, 1, 1));
+    }
+
+    public ModifierConfig getModifierConfig(Block block) {
+        String blockName = ForgeRegistries.BLOCKS.getKey(block).getPath();
+        String minerTier = blockName.split("_")[0];
+        String modifierType = blockName.split("_")[1];
+
+        return getModifierConfig(minerTier, modifierType);
     }
 
     public record MinerConfig(@Expose int energyStorage, @Expose int duration, @Expose int energyTick, @Expose Map<String, ModifierConfig> modifiers) {

@@ -161,7 +161,7 @@ dependencies {
     implementation fg.deobf("curse.maven:mangos-multiblock-library-966061:5144465")
     implementation fg.deobf("curse.maven:jei-238222:5101366")
     implementation fg.deobf("curse.maven:athena-841890:5176879")
-    implementation fg.deobf("curse.maven:jade-324717:5493390")
+    implementation fg.deobf("curse.maven:jade-324717:6855440")
     implementation fg.deobf("curse.maven:pipez-443900:4916633")
     implementation fg.deobf("curse.maven:mekanism-268560:6123077")
     implementation fg.deobf("curse.maven:ctm-267602:5983309")

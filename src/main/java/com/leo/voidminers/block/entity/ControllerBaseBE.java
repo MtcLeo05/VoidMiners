@@ -22,6 +22,7 @@ import net.minecraft.world.Containers;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -83,10 +84,12 @@ public class ControllerBaseBE extends BlockEntity {
     }
 
     public void setupEnergyStorage() {
+        invalidateCaps();
         int storage = ConfigLoader.getInstance().getMinerConfig(name).energyStorage();
 
         if (!ConfigLoader.getInstance().ALLOW_NO_ENERGY_MINERS && storage <= 0) storage = ENERGY_CAPACITY;
         energyHandler = new ModEnergyStorage(storage, storage, 0, energyHandler.getEnergyStored());
+        lazyEnergyHandler = LazyOptional.of(() -> energyHandler);
     }
 
     public int getBeamColor() {
@@ -98,13 +101,13 @@ public class ControllerBaseBE extends BlockEntity {
 
         BlockPos pos = getBlockPos();
 
-        if(isWorking(pos)) {
+        if(working) {
             return List.of(Component.translatable("tooltip." + VoidMiners.MODID + ".controller.working"),
                 Component.translatable("tooltip." + VoidMiners.MODID + ".controller.energy", getRfTick()),
                 Component.translatable("tooltip." + VoidMiners.MODID + ".controller.duration", getMaxProgress()));
         }
 
-        if (isActive(pos)) {
+        if (active) {
             return List.of(
                 Component.translatable("tooltip." + VoidMiners.MODID + ".controller.not_working"),
                 Component.translatable("tooltip." + VoidMiners.MODID + ".controller.energy", getRfTick())
@@ -236,21 +239,60 @@ public class ControllerBaseBE extends BlockEntity {
         checkStructure(pLevel, pPos);
         setupEnergyStorage();
 
-        if (!isActive(pPos) || !isWorking(pPos)) {
+        active = foundStructure && hasViewOnBedrockOrVoid(pPos);
+        level.sendBlockUpdated(pPos, getBlockState(), getBlockState(), 3);
+
+        if(!active) return;
+
+        working = !isItemHandlerFull() && getRfTick() <= energyHandler.getEnergyStored();
+        level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+
+        if (!working) {
             return;
         }
 
-        increaseCraftingProgress();
+        progress++;
+        energyHandler.removeEnergy(getRfTick());
+
         pLevel.sendBlockUpdated(pPos, pState, pState, 3);
-        setChanged(pLevel, pPos, pState);
+        sync();
 
-        if (!hasProgressFinished()) {
+        if (progress < getMaxProgress()) {
             return;
         }
 
-        craftItem();
-        resetProgress();
-        setChanged(pLevel, pPos, pState);
+        List<WeightedStack> allOutputs = new ArrayList<>();
+
+        for (MinerRecipe recipe : allRecipes()) {
+            allOutputs.add(recipe.output().copy());
+        }
+
+        ItemStack output = getBoostedStack(getWeightedItem(allOutputs, level.random));
+        ItemStack remaining;
+
+        for (int i = 0; i < itemHandler.getSlots(); i++) {
+            if (!isItemValid(output, itemHandler.getStackInSlot(i))) continue;
+            remaining = itemHandler.insertItem(i, output.copy(), false);
+            if (remaining.isEmpty()) break;
+            output = remaining;
+        }
+
+        progress = 0;
+        sync();
+    }
+
+    @Override
+    public void handleUpdateTag(CompoundTag tag) {
+        super.handleUpdateTag(tag);
+        this.load(tag);
+    }
+
+    private void sync() {
+        setChanged(getLevel(), getBlockPos(), getBlockState());
+
+        if(level.isClientSide) return;
+
+        level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_ALL);
     }
 
     public int getRfTick() {
@@ -282,22 +324,6 @@ public class ControllerBaseBE extends BlockEntity {
 
         int count = (int) (base.getCount() * mod);
         return base.copyWithCount(count);
-    }
-
-    public boolean isActive(BlockPos pos) {
-        active = foundStructure && hasViewOnBedrockOrVoid(pos);
-        level.sendBlockUpdated(pos, getBlockState(), getBlockState(), 3);
-        return active;
-    }
-
-    private boolean hasValidEnergyRequirement() {
-        return getRfTick() <= energyHandler.getEnergyStored();
-    }
-
-    private boolean isWorking(BlockPos pos) {
-        working = !isItemHandlerFull() && hasValidEnergyRequirement() && isActive(pos);
-        level.sendBlockUpdated(pos, getBlockState(), getBlockState(), 3);
-        return working;
     }
 
     private boolean hasViewOnBedrockOrVoid(BlockPos pos) {
@@ -347,29 +373,6 @@ public class ControllerBaseBE extends BlockEntity {
 
     }
 
-    private void resetProgress() {
-        progress = 0;
-    }
-
-    private void craftItem() {
-        List<WeightedStack> allOutputs = new ArrayList<>();
-
-        for (MinerRecipe recipe : allRecipes()) {
-            //Just to be sure, copy 2 times
-            allOutputs.add(recipe.output().copy());
-        }
-
-        ItemStack output = getBoostedStack(getWeightedItem(allOutputs, level.random));
-        ItemStack remaining;
-
-        for (int i = 0; i < itemHandler.getSlots(); i++) {
-            if (!isItemValid(output, itemHandler.getStackInSlot(i))) continue;
-            remaining = itemHandler.insertItem(i, output.copy(), false);
-            if (remaining.isEmpty()) break;
-            output = remaining;
-        }
-    }
-
     private boolean isItemValid(ItemStack stack, ItemStack handler) {
         return handler.isEmpty() || handler.is(stack.getItem()) && stack.getCount() + handler.getCount() <= handler.getMaxStackSize();
     }
@@ -399,17 +402,6 @@ public class ControllerBaseBE extends BlockEntity {
         return ItemStack.EMPTY;
     }
 
-    private boolean hasProgressFinished() {
-        return progress >= getMaxProgress();
-    }
-
-    private void increaseCraftingProgress() {
-        progress++;
-        energyHandler.setEnergy(
-            energyHandler.getEnergyStored() - getRfTick()
-        );
-    }
-
     public void checkStructure(Level pLevel, BlockPos pPos) {
         RegisteredMultiBlockPattern pattern = MultiBlockManager.findAnyStructure(pLevel, pPos, Rotation.NONE);
         if (pattern == null) {
@@ -425,10 +417,10 @@ public class ControllerBaseBE extends BlockEntity {
         modifierMap.clear();
         foundStructure = true;
         result.blocks().stream().filter(block -> block.getState().getBlock() instanceof ModifierBlock).forEach(block -> {
-            ModifierBE be = ((ModifierBE) block.getLevel().getBlockEntity(block.getPos()));
+            ConfigLoader.ModifierConfig modifier = ConfigLoader.getInstance().getModifierConfig(block.getState().getBlock());
 
             if (!modifierMap.containsKey(block)) {
-                modifierMap.put(block, be.getModifiers());
+                modifierMap.put(block, modifier);
             }
         });
     }

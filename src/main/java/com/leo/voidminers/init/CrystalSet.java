@@ -3,7 +3,6 @@ package com.leo.voidminers.init;
 import com.leo.voidminers.VoidMiners;
 import com.leo.voidminers.block.ControllerBaseBlock;
 import com.leo.voidminers.block.ModifierBlock;
-import com.leo.voidminers.block.entity.ModifierBE;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
@@ -60,14 +59,13 @@ public class CrystalSet {
         );
     }
 
-    public static RegistryObject<Block> fastCreateModifier(String name, float hardness, float resistance, Rarity rarity, ModifierBE.ModifierType type) {
+    public static RegistryObject<Block> fastCreateModifier(String name, float hardness, float resistance, Rarity rarity, ModifierType type) {
         return ModBlocks.registerBlock(name + "_" + type.type + "_modifier",
             () -> new ModifierBlock(
                 BlockBehaviour.Properties.of()
                     .strength(hardness, resistance)
                     .requiresCorrectToolForDrops(),
-                name,
-                type
+                name
             ),
             rarity
         );
@@ -104,9 +102,9 @@ public class CrystalSet {
             fastCreateBlock(name + "_block", 10, 5, rarity),
             fastCreateController(name, 10, 50, rarity, ResourceLocation.fromNamespaceAndPath(VoidMiners.MODID, name)),
             fastCreateBlock(name + "_frame", 10, 50, rarity),
-            fastCreateModifier(name, 10, 50, rarity, ModifierBE.ModifierType.ENERGY),
-            fastCreateModifier(name, 10, 50, rarity, ModifierBE.ModifierType.SPEED),
-            fastCreateModifier(name, 10, 50, rarity, ModifierBE.ModifierType.ITEM)
+            fastCreateModifier(name, 10, 50, rarity, ModifierType.ENERGY),
+            fastCreateModifier(name, 10, 50, rarity, ModifierType.SPEED),
+            fastCreateModifier(name, 10, 50, rarity, ModifierType.ITEM)
         );
     }
 
@@ -123,5 +121,27 @@ public class CrystalSet {
         sets.add(ROSARIUM);
 
         return sets;
+    }
+
+    public enum ModifierType {
+        ENERGY("energy"),
+        SPEED("speed"),
+        ITEM("item"),
+        NULL("null");
+
+        public final String type;
+
+        ModifierType(String type) {
+            this.type = type;
+        }
+
+        public static ModifierType getFromName(String name) {
+            return switch (name.toLowerCase()) {
+                case "energy" -> ENERGY;
+                case "speed" -> SPEED;
+                case "item" -> ITEM;
+                default -> null;
+            };
+        }
     }
 }

@@ -26,9 +26,5 @@ public class ModBusEvent {
         List<Block> controllers = ModBlocks.BLOCKS.getEntries().stream().map(RegistryObject::get).filter(block -> block instanceof ControllerBaseBlock).toList();
 
         ModBlockEntities.CONTROLLER_BASE_BE.get().validBlocks = new HashSet<>(controllers);
-
-        List<Block> modifiers = ModBlocks.BLOCKS.getEntries().stream().map(RegistryObject::get).filter(block -> block instanceof ModifierBlock).toList();
-
-        ModBlockEntities.MODIFIER_BE.get().validBlocks = new HashSet<>(modifiers);
     }
 }

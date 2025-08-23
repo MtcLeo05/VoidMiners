@@ -37,7 +37,7 @@ public class ForgeBusClientEvent {
             return;
         }
 
-        ConfigLoader.ModifierConfig modConfig = ConfigLoader.getInstance().getModifierConfig(mb.name, mb.type.type);
+        ConfigLoader.ModifierConfig modConfig = ConfigLoader.getInstance().getModifierConfig(mb);
 
         toolTip.add(Component.translatable("tooltip." + VoidMiners.MODID + ".energy", modConfig.energy()).withStyle(ChatFormatting.DARK_RED));
         toolTip.add(Component.translatable("tooltip." + VoidMiners.MODID + ".speed", modConfig.speed()).withStyle(ChatFormatting.DARK_GREEN));
