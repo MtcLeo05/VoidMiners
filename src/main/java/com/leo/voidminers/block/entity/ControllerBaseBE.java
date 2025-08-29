@@ -99,8 +99,6 @@ public class ControllerBaseBE extends BlockEntity {
     public List<Component> getInteractionTooltip() {
         List<Component> toRet = new ArrayList<>();
 
-        BlockPos pos = getBlockPos();
-
         if(working) {
             return List.of(Component.translatable("tooltip." + VoidMiners.MODID + ".controller.working"),
                 Component.translatable("tooltip." + VoidMiners.MODID + ".controller.energy", getRfTick()),
@@ -188,6 +186,7 @@ public class ControllerBaseBE extends BlockEntity {
     @Override
     public void onLoad() {
         super.onLoad();
+        setupEnergyStorage();
         lazyEnergyHandler = LazyOptional.of(() -> energyHandler);
         lazyItemHandler = LazyOptional.of(() -> itemHandler);
     }
@@ -237,7 +236,6 @@ public class ControllerBaseBE extends BlockEntity {
         }
 
         checkStructure(pLevel, pPos);
-        setupEnergyStorage();
 
         active = foundStructure && hasViewOnBedrockOrVoid(pPos);
         level.sendBlockUpdated(pPos, getBlockState(), getBlockState(), 3);
