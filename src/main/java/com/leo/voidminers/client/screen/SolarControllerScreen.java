@@ -16,6 +16,11 @@ public class SolarControllerScreen extends AbstractContainerScreen<SolarControll
     private static final int PANEL_WIDTH = 176;
     private static final int PANEL_HEIGHT = 140;
 
+    // Trend state for production (FE/t) color feedback
+    private int lastRfShown = Integer.MIN_VALUE;
+    private int trendColor = 0xFF9E9E9E; // neutral default
+    private long trendExpireMs = 0L;     // hold highlight for a short time
+
     public SolarControllerScreen(SolarControllerMenu menu, net.minecraft.world.entity.player.Inventory inv, Component title) {
         super(menu, inv, title);
         this.imageWidth = PANEL_WIDTH;
@@ -95,7 +100,19 @@ public class SolarControllerScreen extends AbstractContainerScreen<SolarControll
         int rowY = barY + 22;
         int colW = (imageWidth / 2) - 16; // max width per column for values
         int rfShown = (!menu.isActive() || menu.isBufferFull()) ? 0 : menu.rfPerTick();
-        drawStat(gg, x + 12, rowY, Component.translatable("screen." + VoidMiners.MODID + ".solar.rft"), String.format("%,d", rfShown), statusColor, colW);
+
+        // Compute trend-based color for production (green up, red down), with a short hold
+        long now = System.currentTimeMillis();
+        if (rfShown != lastRfShown) {
+            if (lastRfShown != Integer.MIN_VALUE) {
+                trendColor = (rfShown > lastRfShown) ? 0xFF2ECC71 : 0xFFE74C3C; // green up, red down
+                trendExpireMs = now + 1000L; // keep highlight ~1s
+            }
+            lastRfShown = rfShown;
+        }
+        int prodColor = (now <= trendExpireMs) ? trendColor : statusColor;
+
+        drawStat(gg, x + 12, rowY, Component.translatable("screen." + VoidMiners.MODID + ".solar.rft"), String.format("%,d", rfShown), prodColor, colW);
         int sun = menu.sunPercent();
         drawStat(gg, x + imageWidth / 2 + 4, rowY, Component.translatable("screen." + VoidMiners.MODID + ".solar.sun"), sun + "%", statusColor, colW);
 
@@ -105,8 +122,8 @@ public class SolarControllerScreen extends AbstractContainerScreen<SolarControll
         long fePerMin = fePerSec * 60L;
         // Move FE/s and FE/min a bit lower for clarity
         int rowY2 = rowY + 26;
-        drawStat(gg, x + 12, rowY2, Component.translatable("screen." + VoidMiners.MODID + ".solar.fes"), String.format("%,d", fePerSec), statusColor, colW);
-        drawStat(gg, x + imageWidth / 2 + 4, rowY2, Component.translatable("screen." + VoidMiners.MODID + ".solar.femin"), String.format("%,d", fePerMin), statusColor, colW);
+        drawStat(gg, x + 12, rowY2, Component.translatable("screen." + VoidMiners.MODID + ".solar.fes"), String.format("%,d", fePerSec), prodColor, colW);
+        drawStat(gg, x + imageWidth / 2 + 4, rowY2, Component.translatable("screen." + VoidMiners.MODID + ".solar.femin"), String.format("%,d", fePerMin), prodColor, colW);
 
         // Status pill: consider buffer full as inactive (no generation)
         Component statusText = working
