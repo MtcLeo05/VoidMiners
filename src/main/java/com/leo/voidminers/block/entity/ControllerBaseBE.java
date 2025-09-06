@@ -71,6 +71,10 @@ public class ControllerBaseBE extends BlockEntity {
     public boolean active;
     public boolean working;
 
+    // Export throttling/backoff to reduce TPS impact when no valid output is nearby
+    private long exportCooldownUntilTick = 0L; // world time until which we skip export attempts
+    private int consecutiveNoExportAttempts = 0; // counts failed export attempts (runs ~every 100 ticks)
+
     private LazyOptional<ModEnergyStorage> lazyEnergyHandler = LazyOptional.empty();
     private LazyOptional<ItemStackHandler> lazyItemHandler = LazyOptional.empty();
 
@@ -148,6 +152,9 @@ public class ControllerBaseBE extends BlockEntity {
         data.putBoolean("active", active);
         if (structure != null) data.putString("structure", structure.toString());
         data.putBoolean("showStructure", showStructure);
+        // Persist export throttling state
+        data.putLong("exportCooldownUntil", exportCooldownUntilTick);
+        data.putInt("noExportAttempts", consecutiveNoExportAttempts);
         pTag.put(VoidMiners.MODID, data);
     }
 
@@ -184,6 +191,14 @@ public class ControllerBaseBE extends BlockEntity {
 
         if (data.contains("showStructure")) {
             showStructure = data.getBoolean("showStructure");
+        }
+
+        // Load export throttling state (optional for older saves)
+        if (data.contains("exportCooldownUntil")) {
+            exportCooldownUntilTick = data.getLong("exportCooldownUntil");
+        }
+        if (data.contains("noExportAttempts")) {
+            consecutiveNoExportAttempts = data.getInt("noExportAttempts");
         }
     }
 
@@ -449,8 +464,12 @@ public class ControllerBaseBE extends BlockEntity {
     private void pushItemsToNeighbors() {
         if (level == null || level.isClientSide) return;
 
-        // Run this export routine only every ~100 ticks, offset by position to spread load
         long time = level.getGameTime();
+
+        // Backoff: if we've failed many times, skip attempts for a cooldown window
+        if (time < exportCooldownUntilTick) return;
+
+        // Run this export routine only every ~100 ticks, offset by position to spread load
         if (((time + worldPosition.asLong()) % 100L) != 0L) return;
 
         // Fast check: nothing to do if inventory is empty
@@ -458,7 +477,13 @@ public class ControllerBaseBE extends BlockEntity {
         for (int i = 0; i < itemHandler.getSlots(); i++) {
             if (!itemHandler.getStackInSlot(i).isEmpty()) { hasItems = true; break; }
         }
-        if (!hasItems) return;
+        if (!hasItems) {
+            // Reset counters if empty; there's no point in counting failures
+            if (consecutiveNoExportAttempts != 0) consecutiveNoExportAttempts = 0;
+            return;
+        }
+
+        boolean exportedAny = false;
 
         for (Direction dir : Direction.values()) {
             BlockPos neighborPos = worldPosition.relative(dir);
@@ -497,6 +522,11 @@ public class ControllerBaseBE extends BlockEntity {
                     remainder = neighbor.insertItem(nSlot, remainder, false);
                 }
 
+                // If the neighbor accepted any items, mark success
+                if (extracted.getCount() > 0 && (remainder.isEmpty() || remainder.getCount() < extracted.getCount())) {
+                    exportedAny = true;
+                }
+
                 // If neighbor refused some back, put it into our inventory again if possible
                 if (!remainder.isEmpty()) {
                     // Try to reinsert to the same slot; if it fails, drop on the ground to avoid item loss
@@ -505,6 +535,23 @@ public class ControllerBaseBE extends BlockEntity {
                         Containers.dropItemStack(level, worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5, back);
                     }
                 }
+            }
+        }
+
+        // Update backoff counters based on success/failure
+        if (exportedAny) {
+            if (consecutiveNoExportAttempts != 0) consecutiveNoExportAttempts = 0;
+        } else {
+            consecutiveNoExportAttempts++;
+            // Compute allowed failures from configured tick window and current scan interval (~100 ticks)
+            final int scanInterval = 100; // keep scan cadence as-is
+            int windowTicks = Math.max(0, ConfigLoader.getInstance().EXPORT_NO_SUCCESS_THRESHOLD_TICKS);
+            int maxFailures = Math.max(1, (int) Math.ceil(windowTicks / (double) scanInterval));
+
+            if (consecutiveNoExportAttempts >= maxFailures) {
+                long cooldown = Math.max(0, ConfigLoader.getInstance().EXPORT_BACKOFF_TICKS);
+                exportCooldownUntilTick = time + cooldown;
+                consecutiveNoExportAttempts = 0;
             }
         }
     }
