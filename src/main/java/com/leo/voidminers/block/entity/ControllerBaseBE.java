@@ -32,6 +32,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mangorage.mangomultiblock.core.manager.MultiBlockManager;
@@ -243,12 +244,17 @@ public class ControllerBaseBE extends BlockEntity {
         active = foundStructure && hasViewOnBedrockOrVoid(pPos);
         level.sendBlockUpdated(pPos, getBlockState(), getBlockState(), 3);
 
+        // Always try to push items out, even if inactive
+        pushItemsToNeighbors();
+
         if(!active) return;
 
         working = !isItemHandlerFull() && getRfTick() <= energyHandler.getEnergyStored();
         level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
 
         if (!working) {
+            // Not working (e.g., full or not enough energy), still try to push items out
+            pushItemsToNeighbors();
             return;
         }
 
@@ -280,6 +286,9 @@ public class ControllerBaseBE extends BlockEntity {
 
         progress = 0;
         sync();
+
+        // Attempt to auto-output newly produced items immediately
+        pushItemsToNeighbors();
     }
 
     @Override
@@ -435,5 +444,68 @@ public class ControllerBaseBE extends BlockEntity {
 
     public ResourceLocation getStructure() {
         return structure;
+    }
+
+    private void pushItemsToNeighbors() {
+        if (level == null || level.isClientSide) return;
+
+        // Run this export routine only every ~100 ticks, offset by position to spread load
+        long time = level.getGameTime();
+        if (((time + worldPosition.asLong()) % 100L) != 0L) return;
+
+        // Fast check: nothing to do if inventory is empty
+        boolean hasItems = false;
+        for (int i = 0; i < itemHandler.getSlots(); i++) {
+            if (!itemHandler.getStackInSlot(i).isEmpty()) { hasItems = true; break; }
+        }
+        if (!hasItems) return;
+
+        for (Direction dir : Direction.values()) {
+            BlockPos neighborPos = worldPosition.relative(dir);
+            BlockEntity neighborBE = level.getBlockEntity(neighborPos);
+            if (neighborBE == null) continue;
+
+            LazyOptional<IItemHandler> neighborCap = neighborBE.getCapability(ForgeCapabilities.ITEM_HANDLER, dir.getOpposite());
+            if (!neighborCap.isPresent()) continue;
+
+            IItemHandler neighbor = neighborCap.orElse(null);
+            if (neighbor == null) continue;
+
+            // Try moving items from each internal slot into the neighbor
+            for (int slot = 0; slot < itemHandler.getSlots(); slot++) {
+                ItemStack stackInSlot = itemHandler.getStackInSlot(slot);
+                if (stackInSlot.isEmpty()) continue;
+
+                ItemStack toMove = stackInSlot.copy();
+
+                // Simulate how much neighbor can accept in total
+                ItemStack remainderSim = toMove.copy();
+                for (int nSlot = 0; nSlot < neighbor.getSlots() && !remainderSim.isEmpty(); nSlot++) {
+                    remainderSim = neighbor.insertItem(nSlot, remainderSim, true);
+                }
+
+                int canTransfer = toMove.getCount() - remainderSim.getCount();
+                if (canTransfer <= 0) continue;
+
+                // Extract from internal inventory
+                ItemStack extracted = itemHandler.extractItem(slot, canTransfer, false);
+                if (extracted.isEmpty()) continue;
+
+                // Actually insert into neighbor
+                ItemStack remainder = extracted;
+                for (int nSlot = 0; nSlot < neighbor.getSlots() && !remainder.isEmpty(); nSlot++) {
+                    remainder = neighbor.insertItem(nSlot, remainder, false);
+                }
+
+                // If neighbor refused some back, put it into our inventory again if possible
+                if (!remainder.isEmpty()) {
+                    // Try to reinsert to the same slot; if it fails, drop on the ground to avoid item loss
+                    ItemStack back = itemHandler.insertItem(slot, remainder, false);
+                    if (!back.isEmpty()) {
+                        Containers.dropItemStack(level, worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5, back);
+                    }
+                }
+            }
+        }
     }
 }
