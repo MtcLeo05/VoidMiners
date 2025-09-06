@@ -28,7 +28,8 @@ public class SolarControllerRenderer implements BlockEntityRenderer<SolarControl
 
     @Override
     public void render(SolarControllerBE pBlockEntity, float pPartialTick, PoseStack pose, MultiBufferSource pBuffer, int pPackedLight, int pPackedOverlay) {
-        if (pBlockEntity.active) {
+        // Only render the generation beam when actually working (buffer not full)
+        if (pBlockEntity.active && !pBlockEntity.bufferFull) {
             long gameTime = pBlockEntity.getLevel().getGameTime();
             float f = (float) Math.floorMod(gameTime, 40) + pPartialTick;
 

@@ -92,6 +92,8 @@
   "screen.voidminers.solar.title": "Solar Controller",
   "screen.voidminers.solar.energy": "Energy",
   "screen.voidminers.solar.rft": "FE/t",
+  "screen.voidminers.solar.fes": "FE/s",
+  "screen.voidminers.solar.femin": "FE/min",
   "screen.voidminers.solar.sun": "Sun",
   "screen.voidminers.solar.status.working": "Generating",
   "screen.voidminers.solar.status.active": "Active (buffer full)",

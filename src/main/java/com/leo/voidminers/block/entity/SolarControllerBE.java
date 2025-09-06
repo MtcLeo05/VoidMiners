@@ -52,6 +52,7 @@ public class SolarControllerBE extends BlockEntity {
     public boolean showStructure = false;
     public boolean active;
     public boolean working;
+    public boolean bufferFull;
 
     // Modifiers are disabled for solar panels; keep no modifier map.
 
@@ -111,17 +112,20 @@ public class SolarControllerBE extends BlockEntity {
     public List<Component> getInteractionTooltip() {
         List<Component> toRet = new ArrayList<>();
 
+        // Show 0 RF/t when buffer is full (not working), to match UI/renderer
+        int shownRf = (working && !bufferFull) ? getRfTick() : 0;
+
         if(working) {
             return List.of(
                 Component.translatable("tooltip." + VoidMiners.MODID + ".solar.working"),
-                Component.translatable("tooltip." + VoidMiners.MODID + ".controller.energy", getRfTick())
+                Component.translatable("tooltip." + VoidMiners.MODID + ".controller.energy", shownRf)
             );
         }
 
         if (active) {
             return List.of(
                 Component.translatable("tooltip." + VoidMiners.MODID + ".solar.not_working"),
-                Component.translatable("tooltip." + VoidMiners.MODID + ".controller.energy", getRfTick())
+                Component.translatable("tooltip." + VoidMiners.MODID + ".controller.energy", shownRf)
             );
         }
 
@@ -156,6 +160,7 @@ public class SolarControllerBE extends BlockEntity {
         data.put("items", itemHandler.serializeNBT());
         if (name != null) data.putString("name", this.name);
         data.putBoolean("active", active);
+        data.putBoolean("bufferFull", bufferFull);
         if (structure != null) data.putString("structure", structure.toString());
         data.putBoolean("showStructure", showStructure);
         pTag.put(VoidMiners.MODID, data);
@@ -182,6 +187,9 @@ public class SolarControllerBE extends BlockEntity {
 
         if (data.contains("active")) {
             active = data.getBoolean("active");
+        }
+        if (data.contains("bufferFull")) {
+            bufferFull = data.getBoolean("bufferFull");
         }
 
         if (data.contains("structure")) {
@@ -251,9 +259,16 @@ public class SolarControllerBE extends BlockEntity {
         active = foundStructure && sun > 0.001f;
         level.sendBlockUpdated(pPos, getBlockState(), getBlockState(), 3);
 
-        if(!active) return;
+        if(!active) {
+            // If inactive (missing structure or no sun), ensure flags are reset
+            working = false;
+            bufferFull = false;
+            level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+            return;
+        }
 
         working = energyHandler.getEnergyStored() < energyHandler.getMaxEnergyStored();
+        bufferFull = !working;
         level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
 
         // If buffer is full, still try to push energy and exit early

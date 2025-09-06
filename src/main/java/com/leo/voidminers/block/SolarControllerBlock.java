@@ -3,6 +3,7 @@ package com.leo.voidminers.block;
 import com.leo.voidminers.block.entity.SolarControllerBE;
 import com.leo.voidminers.util.ShapeUtil;
 import net.minecraft.core.BlockPos;
+import com.leo.voidminers.VoidMiners;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -83,9 +84,13 @@ public class SolarControllerBlock extends BaseTransparentBlock implements Entity
 
         // Open the Solar Controller screen
         if (pPlayer instanceof ServerPlayer serverPlayer) {
+            // Build a title that includes the multiblock set name
+            Component base = Component.translatable("screen." + VoidMiners.MODID + ".solar.title");
+            Component setName = Component.translatable("item." + VoidMiners.MODID + "." + this.name);
+            Component fullTitle = base.copy().append(Component.literal(" — ")).append(setName);
             SimpleMenuProvider provider = new SimpleMenuProvider(
                 (id, inv, player) -> new SolarControllerMenu(id, inv, blockEntity),
-                Component.translatable("screen.voidminers.solar.title")
+                fullTitle
             );
             NetworkHooks.openScreen(serverPlayer, provider, pPos);
         }

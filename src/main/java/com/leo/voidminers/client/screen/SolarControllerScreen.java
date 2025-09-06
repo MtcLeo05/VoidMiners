@@ -3,7 +3,6 @@ package com.leo.voidminers.client.screen;
 import com.leo.voidminers.VoidMiners;
 import com.leo.voidminers.block.entity.SolarControllerBE;
 import com.leo.voidminers.menu.SolarControllerMenu;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -28,7 +27,18 @@ public class SolarControllerScreen extends AbstractContainerScreen<SolarControll
     }
 
     @Override
+    protected void init() {
+        super.init();
+        int x = (this.width - this.imageWidth) / 2;
+        int y = (this.height - this.imageHeight) / 2;
+    }
+
+    @Override
     protected void renderBg(GuiGraphics gg, float partialTick, int mouseX, int mouseY) {
+        // Render all custom UI at a higher Z to avoid being masked by slot rendering
+        gg.pose().pushPose();
+        gg.pose().translate(0, 0, 200f);
+
         // Center panel
         int x = (this.width - this.imageWidth) / 2;
         int y = (this.height - this.imageHeight) / 2;
@@ -36,6 +46,12 @@ public class SolarControllerScreen extends AbstractContainerScreen<SolarControll
         // Accent color from BE
         int accent = getAccentColor();
         int accentDark = darken(accent, 0.65f);
+        
+        // State color (used for energy fill + stats)
+        boolean active = menu.isActive();
+        boolean working = menu.isWorking();
+        boolean bufferFull = menu.isBufferFull();
+        int statusColor = working ? 0xFF2ECC71 : (active && bufferFull ? 0xFFE74C3C : 0xFF9E9E9E);
         int bg = 0xCC101010; // translucent dark backdrop
 
         // Backdrop blur-ish overlay
@@ -45,9 +61,6 @@ public class SolarControllerScreen extends AbstractContainerScreen<SolarControll
         gg.fill(x, y, x + imageWidth, y + imageHeight, 0xEE141414);
         // Top gradient bar
         gg.fillGradient(x, y, x + imageWidth, y + 22, accent, accentDark, 0);
-
-        // Title text
-        gg.drawString(this.font, Component.translatable("screen." + VoidMiners.MODID + ".solar.title"), x + 10, y + 8, 0xFFFFFFFF, false);
 
         // Energy section
         int barX = x + 12;
@@ -60,34 +73,49 @@ public class SolarControllerScreen extends AbstractContainerScreen<SolarControll
         float ratio = Math.min(1f, (float) menu.energyStored() / (float) menu.maxEnergy());
         int fillW = (int) (barW * ratio);
         if (fillW > 0) {
-            gg.fillGradient(barX, barY, barX + fillW, barY + barH, accent, accentDark, 0);
+            int barC1 = lighten(statusColor, 0.20f);
+            int barC2 = statusColor;
+            gg.fillGradient(barX, barY, barX + fillW, barY + barH, barC1, barC2, 0);
         }
         String energyText = String.format("%,d / %,d FE", menu.energyStored(), menu.maxEnergy());
         int etw = this.font.width(energyText);
-        gg.drawString(this.font, energyText, x + (imageWidth - etw) / 2, barY + 4, 0xFFEEEEEE, false);
-
-        // RF/t and Sun row
-        int rowY = barY + 28;
-        drawStat(gg, x + 12, rowY, Component.translatable("screen." + VoidMiners.MODID + ".solar.rft"), String.format("%,d", menu.rfPerTick()), accent);
-        drawStat(gg, x + imageWidth / 2 + 4, rowY, Component.translatable("screen." + VoidMiners.MODID + ".solar.sun"), menu.sunPercent() + "%", accent);
-
-        // Status pill
-        boolean active = menu.isActive();
-        boolean working = menu.isWorking();
-        Component statusText;
-        int statusColor;
-        if (working) {
-            statusText = Component.translatable("screen." + VoidMiners.MODID + ".solar.status.working");
-            statusColor = 0xFF2ECC71; // green
-        } else if (active) {
-            statusText = Component.translatable("screen." + VoidMiners.MODID + ".solar.status.active");
-            statusColor = 0xFFFFC107; // amber
-        } else {
-            statusText = Component.translatable("screen." + VoidMiners.MODID + ".solar.status.inactive");
-            statusColor = 0xFFE74C3C; // red
+        int avail = barW - 8; // padding inside bar
+        float scale = 1.0f;
+        if (etw > avail) {
+            scale = Math.max(0.6f, (float) avail / (float) etw);
         }
+        int textX = x + (int) ((imageWidth - (etw * scale)) / 2f);
+        int textY = barY + 4;
+        gg.pose().pushPose();
+        gg.pose().scale(scale, scale, 1f);
+        gg.drawString(this.font, energyText, Math.round(textX / scale), Math.round(textY / scale), 0xFFEEEEEE, false);
+        gg.pose().popPose();
+
+        // RF/t row (display 0 when buffer is full) + Sun percent on right
+        int rowY = barY + 22;
+        int colW = (imageWidth / 2) - 16; // max width per column for values
+        int rfShown = (!menu.isActive() || menu.isBufferFull()) ? 0 : menu.rfPerTick();
+        drawStat(gg, x + 12, rowY, Component.translatable("screen." + VoidMiners.MODID + ".solar.rft"), String.format("%,d", rfShown), statusColor, colW);
+        int sun = menu.sunPercent();
+        drawStat(gg, x + imageWidth / 2 + 4, rowY, Component.translatable("screen." + VoidMiners.MODID + ".solar.sun"), sun + "%", statusColor, colW);
+
+        // Additional metrics: FE/s and FE/min
+        int rfPerTick = rfShown;
+        long fePerSec = Math.max(0L, (long) rfPerTick * 20L);
+        long fePerMin = fePerSec * 60L;
+        // Move FE/s and FE/min a bit lower for clarity
+        int rowY2 = rowY + 26;
+        drawStat(gg, x + 12, rowY2, Component.translatable("screen." + VoidMiners.MODID + ".solar.fes"), String.format("%,d", fePerSec), statusColor, colW);
+        drawStat(gg, x + imageWidth / 2 + 4, rowY2, Component.translatable("screen." + VoidMiners.MODID + ".solar.femin"), String.format("%,d", fePerMin), statusColor, colW);
+
+        // Status pill: consider buffer full as inactive (no generation)
+        Component statusText = working
+                ? Component.translatable("screen." + VoidMiners.MODID + ".solar.status.working")
+                : Component.translatable("screen." + VoidMiners.MODID + ".solar.status.inactive");
         drawPill(gg, x + 12, y + imageHeight - 28, imageWidth - 24, 16, statusColor, 0x22222222);
         gg.drawCenteredString(this.font, statusText, x + imageWidth / 2, y + imageHeight - 24, 0xFF101010);
+
+        gg.pose().popPose();
     }
 
     @Override
@@ -97,13 +125,36 @@ public class SolarControllerScreen extends AbstractContainerScreen<SolarControll
         this.renderTooltip(gg, mouseX, mouseY);
     }
 
+    @Override
+    protected void renderLabels(GuiGraphics gg, int mouseX, int mouseY) {
+        // Draw the screen title once in white, above vanilla elements
+        gg.pose().pushPose();
+        gg.pose().translate(0, 0, 210f);
+        gg.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 0xFFFFFFFF, false);
+        gg.pose().popPose();
+        // Hide the vanilla inventory label via high coordinates (already set in ctor)
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
     private void drawLabeledBar(GuiGraphics gg, int x, int y, Component label, int color) {
         gg.drawString(this.font, label, x, y, color, false);
     }
 
-    private void drawStat(GuiGraphics gg, int x, int y, Component label, String value, int accent) {
+    private void drawStat(GuiGraphics gg, int x, int y, Component label, String value, int valueColor, int maxWidth) {
         gg.drawString(this.font, label, x, y, 0xFFB0B0B0, false);
-        gg.drawString(this.font, value, x, y + 12, 0xFFFFFFFF, false);
+        int vw = this.font.width(value);
+        float scale = 1.0f;
+        if (vw > maxWidth) {
+            scale = Math.max(0.5f, (float) maxWidth / (float) vw);
+        }
+        gg.pose().pushPose();
+        gg.pose().scale(scale, scale, 1f);
+        gg.drawString(this.font, value, Math.round(x / scale), Math.round((y + 12) / scale), valueColor, false);
+        gg.pose().popPose();
     }
 
     private void drawPill(GuiGraphics gg, int x, int y, int w, int h, int color, int outline) {
@@ -121,6 +172,8 @@ public class SolarControllerScreen extends AbstractContainerScreen<SolarControll
         return 0xFF3FA9F5; // default blue
     }
 
+    // Chart helpers removed
+
     private static int darken(int argb, float amount) {
         Color c = new Color(argb, true);
         int r = Math.max(0, Math.round(c.getRed() * amount));
@@ -137,4 +190,3 @@ public class SolarControllerScreen extends AbstractContainerScreen<SolarControll
         return (c.getAlpha() << 24) | (r << 16) | (g << 8) | b;
     }
 }
-
