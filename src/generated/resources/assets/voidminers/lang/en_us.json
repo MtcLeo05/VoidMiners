@@ -88,5 +88,12 @@
   "tooltip.voidminers.speed": "Duration Modifier: %dx",
   "tooltip.voidminers.structure.weight": "Weight: %d",
   "tooltip.voidminerscreative_only": "Creative Only",
-  "voidminers.itemGroup.items": "Items"
+  "voidminers.itemGroup.items": "Items",
+  "screen.voidminers.solar.title": "Solar Controller",
+  "screen.voidminers.solar.energy": "Energy",
+  "screen.voidminers.solar.rft": "FE/t",
+  "screen.voidminers.solar.sun": "Sun",
+  "screen.voidminers.solar.status.working": "Generating",
+  "screen.voidminers.solar.status.active": "Active (buffer full)",
+  "screen.voidminers.solar.status.inactive": "Inactive"
 }
