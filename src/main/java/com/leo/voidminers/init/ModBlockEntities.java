@@ -2,6 +2,7 @@ package com.leo.voidminers.init;
 
 import com.leo.voidminers.VoidMiners;
 import com.leo.voidminers.block.entity.ControllerBaseBE;
+import com.leo.voidminers.block.entity.SolarControllerBE;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.DeferredRegister;
@@ -14,6 +15,13 @@ public class ModBlockEntities {
     public static RegistryObject<BlockEntityType<ControllerBaseBE>> CONTROLLER_BASE_BE = BLOCK_ENTITIES.register("controller_base",
         () -> BlockEntityType.Builder.of(
             ControllerBaseBE::new,
+            Blocks.STONE
+        ).build(null)
+    );
+
+    public static RegistryObject<BlockEntityType<SolarControllerBE>> SOLAR_CONTROLLER_BE = BLOCK_ENTITIES.register("solar_controller",
+        () -> BlockEntityType.Builder.of(
+            SolarControllerBE::new,
             Blocks.STONE
         ).build(null)
     );

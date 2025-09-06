@@ -30,6 +30,14 @@ public class ConfigLoader {
     @Expose
     public boolean ALLOW_NO_ENERGY_MINERS = false;
 
+    // Global solar settings
+    @Expose
+    public boolean SOLAR_ALLOW_MOONLIGHT = true;
+
+    // Maximum nighttime fraction of daytime output (0.0 = no night output)
+    @Expose
+    public float SOLAR_MOONLIGHT_MAX = 0.15f;
+
     @Expose
     public Map<String, MinerConfig> MINER_CONFIGS = MapUtil.of(
         MapUtil.createEntry("rubetine", new MinerConfig(1000000, 1000, 300,
@@ -90,6 +98,18 @@ public class ConfigLoader {
         ))
     );
 
+    @Expose
+    public Map<String, SolarConfig> SOLAR_CONFIGS = MapUtil.of(
+        MapUtil.createEntry("rubetine",    new SolarConfig(1_000_000, 300)),
+        MapUtil.createEntry("aurantium",   new SolarConfig(2_000_000, 350)),
+        MapUtil.createEntry("citrinetine", new SolarConfig(3_000_000, 400)),
+        MapUtil.createEntry("verdium",     new SolarConfig(4_000_000, 450)),
+        MapUtil.createEntry("azurine",     new SolarConfig(5_000_000, 500)),
+        MapUtil.createEntry("caerium",     new SolarConfig(6_000_000, 550)),
+        MapUtil.createEntry("amethystine", new SolarConfig(7_000_000, 600)),
+        MapUtil.createEntry("rosarium",    new SolarConfig(1_000_000_000, 54_087_893))
+    );
+
     public void load() {
         Gson gson = new GsonBuilder()
             .excludeFieldsWithoutExposeAnnotation()
@@ -108,6 +128,11 @@ public class ConfigLoader {
                     INSTANCE = gson.fromJson(jsonReader, ConfigLoader.class);
                     if (INSTANCE == null) {
                         throw new JsonSyntaxException("Parsed configuration is null.");
+                    }
+                    // Backward compatibility: if SOLAR_CONFIGS missing in existing json,
+                    // derive sensible defaults from MINER_CONFIGS
+                    if (INSTANCE.SOLAR_CONFIGS == null || INSTANCE.SOLAR_CONFIGS.isEmpty()) {
+                        INSTANCE.SOLAR_CONFIGS = deriveSolarFromMiner(INSTANCE.MINER_CONFIGS);
                     }
                 }
             }
@@ -130,6 +155,17 @@ public class ConfigLoader {
 
     public MinerConfig getMinerConfig(String name) {
         return MINER_CONFIGS.getOrDefault(name, new MinerConfig(0,0, 0, Map.of()));
+    }
+
+    public SolarConfig getSolarConfig(String name) {
+        SolarConfig fallback = new SolarConfig(0, 0);
+        if (SOLAR_CONFIGS != null && SOLAR_CONFIGS.containsKey(name))
+            return SOLAR_CONFIGS.get(name);
+
+        // Fallback to miner values if solar entry missing
+        MinerConfig miner = MINER_CONFIGS.get(name);
+        if (miner != null) return new SolarConfig(miner.energyStorage, miner.energyTick);
+        return fallback;
     }
 
     public ModifierConfig getModifierConfig(String name, String type) {
@@ -193,5 +229,24 @@ public class ConfigLoader {
             buf.writeFloat(speed);
             buf.writeFloat(item);
         }
+    }
+
+    public record SolarConfig(@Expose int energyStorage, @Expose int energyTick) {
+        public static SolarConfig fromBuf(FriendlyByteBuf buf) {
+            int energyStorage = buf.readInt();
+            int energyTick = buf.readInt();
+            return new SolarConfig(energyStorage, energyTick);
+        }
+
+        public void toBuf(FriendlyByteBuf buf) {
+            buf.writeInt(energyStorage);
+            buf.writeInt(energyTick);
+        }
+    }
+
+    private static Map<String, SolarConfig> deriveSolarFromMiner(Map<String, MinerConfig> minerConfigs) {
+        Map<String, SolarConfig> map = new HashMap<>();
+        minerConfigs.forEach((k, v) -> map.put(k, new SolarConfig(v.energyStorage, v.energyTick)));
+        return map;
     }
 }

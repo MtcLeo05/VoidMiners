@@ -27,6 +27,19 @@ public class ControllerBaseBlock extends BaseTransparentBlock implements EntityB
     final ResourceLocation structure;
     final String name;
 
+    // Precompute and cache the shape once to avoid repeated expensive unions
+    private static final VoxelShape SHAPE = Shapes.or(
+        ShapeUtil.shapeFromDimension(0, 0, 0, 16, 2, 16),
+        ShapeUtil.shapeFromDimension(2, 2, 2, 12, 12, 12),
+        ShapeUtil.shapeFromDimension(7, 0f, 1, 2, 15f, 14),
+        ShapeUtil.shapeFromDimension(1, 7, 9, 6, 2, 6),
+        ShapeUtil.shapeFromDimension(1, 7, 1, 6, 2, 6),
+        ShapeUtil.shapeFromDimension(9, 7, 9, 6, 2, 6),
+        ShapeUtil.shapeFromDimension(9, 7, 1, 6, 2, 6),
+        ShapeUtil.shapeFromDimension(1, 0f, 7, 6, 15f, 2),
+        ShapeUtil.shapeFromDimension(9, 0f, 7, 6, 15f, 2)
+    );
+
     public ControllerBaseBlock(Properties pProperties, ResourceLocation structure, String name) {
         super(pProperties);
         this.structure = structure;
@@ -94,16 +107,6 @@ public class ControllerBaseBlock extends BaseTransparentBlock implements EntityB
 
     @Override
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
-        return Shapes.or(
-            ShapeUtil.shapeFromDimension(0, 0, 0, 16, 2, 16),
-            ShapeUtil.shapeFromDimension(2, 2, 2, 12, 12, 12),
-            ShapeUtil.shapeFromDimension(7, 0f, 1, 2, 15f, 14),
-            ShapeUtil.shapeFromDimension(1, 7, 9, 6, 2, 6),
-            ShapeUtil.shapeFromDimension(1, 7, 1, 6, 2, 6),
-            ShapeUtil.shapeFromDimension(9, 7, 9, 6, 2, 6),
-            ShapeUtil.shapeFromDimension(9, 7, 1, 6, 2, 6),
-            ShapeUtil.shapeFromDimension(1, 0f, 7, 6, 15f, 2),
-            ShapeUtil.shapeFromDimension(9, 0f, 7, 6, 15f, 2)
-        );
+        return SHAPE;
     }
 }

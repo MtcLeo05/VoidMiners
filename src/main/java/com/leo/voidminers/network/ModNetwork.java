@@ -17,7 +17,7 @@ import java.util.function.Supplier;
 
 public class ModNetwork {
 
-    private static final String PROTOCOL_VERSION = "1";
+    private static final String PROTOCOL_VERSION = "2";
     private static SimpleChannel CHANNEL;
     private static int packetId = 0;
     private static int id() {
