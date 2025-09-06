@@ -30,3 +30,6 @@ run-data/
 src/generated/resources/.cache/
 gradlew
 /bin
+
+# macOS
+.DS_Store
