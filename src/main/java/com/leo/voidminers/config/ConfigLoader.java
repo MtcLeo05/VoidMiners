@@ -36,6 +36,14 @@ public class ConfigLoader {
     @Expose
     public float SOLAR_MOONLIGHT_MAX = 0.15f;
 
+    // Controller export/backoff tuning
+    // Number of world ticks with no successful exports before entering cooldown (default: 1000)
+    @Expose
+    public int EXPORT_NO_SUCCESS_THRESHOLD_TICKS = 1000;
+    // Duration of cooldown in world ticks once backoff triggers (default: 500)
+    @Expose
+    public int EXPORT_BACKOFF_TICKS = 500;
+
     @Expose
     public Map<String, MinerConfig> MINER_CONFIGS = MapUtil.of(
         MapUtil.createEntry("rubetine", new MinerConfig(1000000, 1000, 300,
