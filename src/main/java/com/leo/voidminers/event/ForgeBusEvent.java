@@ -28,7 +28,10 @@ public class ForgeBusEvent {
 
         ModNetwork.sendToAllPlayers(
             new SyncConfigS2CPacket(
-                ConfigLoader.getInstance().MINER_CONFIGS
+                ConfigLoader.getInstance().MINER_CONFIGS,
+                ConfigLoader.getInstance().SOLAR_CONFIGS,
+                ConfigLoader.getInstance().SOLAR_ALLOW_MOONLIGHT,
+                ConfigLoader.getInstance().SOLAR_MOONLIGHT_MAX
             )
         );
     }

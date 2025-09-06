@@ -78,6 +78,17 @@ public class ModBlockTagGenerator extends BlockTagsProvider {
                 );
         }
 
+        for (com.leo.voidminers.init.SolarSet set : com.leo.voidminers.init.SolarSet.sets()) {
+            this.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+                .add(
+                    set.SOLAR_CONTROLLER.get()
+                );
+            this.tag(BlockTags.NEEDS_STONE_TOOL)
+                .add(
+                    set.SOLAR_CONTROLLER.get()
+                );
+        }
+
         this.tag(PANELS)
             .add(
                 ModBlocks.STRUCTURE_PANEL.get(),

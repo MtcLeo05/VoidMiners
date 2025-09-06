@@ -2,6 +2,7 @@ package com.leo.voidminers.event;
 
 import com.leo.voidminers.VoidMiners;
 import com.leo.voidminers.block.ControllerBaseBlock;
+import com.leo.voidminers.block.SolarControllerBlock;
 import com.leo.voidminers.block.ModifierBlock;
 import com.leo.voidminers.config.ConfigReloadListener;
 import com.leo.voidminers.init.ModBlockEntities;
@@ -24,7 +25,9 @@ public class ModBusEvent {
         MinerMultiblocks.init();
 
         List<Block> controllers = ModBlocks.BLOCKS.getEntries().stream().map(RegistryObject::get).filter(block -> block instanceof ControllerBaseBlock).toList();
+        List<Block> solarControllers = ModBlocks.BLOCKS.getEntries().stream().map(RegistryObject::get).filter(block -> block instanceof SolarControllerBlock).toList();
 
         ModBlockEntities.CONTROLLER_BASE_BE.get().validBlocks = new HashSet<>(controllers);
+        ModBlockEntities.SOLAR_CONTROLLER_BE.get().validBlocks = new HashSet<>(solarControllers);
     }
 }

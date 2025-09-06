@@ -51,6 +51,14 @@
     "voidminers:rosarium_frame",
     "voidminers:rosarium_energy_modifier",
     "voidminers:rosarium_speed_modifier",
-    "voidminers:rosarium_item_modifier"
+    "voidminers:rosarium_item_modifier",
+    "voidminers:rubetine_solar_panel",
+    "voidminers:aurantium_solar_panel",
+    "voidminers:citrinetine_solar_panel",
+    "voidminers:verdium_solar_panel",
+    "voidminers:azurine_solar_panel",
+    "voidminers:caerium_solar_panel",
+    "voidminers:amethystine_solar_panel",
+    "voidminers:rosarium_solar_panel"
   ]
 }

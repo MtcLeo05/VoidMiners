@@ -110,6 +110,22 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("hasItem", has(set.CRYSTAL_BLOCK.get()))
                 .save(pWriter);
 
+            // Solar panel progression: same structure as controllers
+            ShapedRecipeBuilder.shaped(
+                    RecipeCategory.MISC,
+                    com.leo.voidminers.init.SolarSet.sets().get(i).SOLAR_CONTROLLER.get(),
+                    1
+                )
+                .pattern("GGG")
+                .pattern("GCG")
+                .pattern("BOB")
+                .define('G', Tags.Items.GLASS)
+                .define('B', set.CRYSTAL_BLOCK.get())
+                .define('O', Blocks.OBSIDIAN)
+                .define('C', i > 0 ? com.leo.voidminers.init.SolarSet.sets().get(i - 1).SOLAR_CONTROLLER.get() : ModBlocks.STRUCTURE_PANEL.get())
+                .unlockedBy("hasItem", has(set.CRYSTAL_BLOCK.get()))
+                .save(pWriter);
+
             ShapedRecipeBuilder.shaped(
                     RecipeCategory.MISC,
                     set.SPEED_MOD.get(),

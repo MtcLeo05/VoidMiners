@@ -60,6 +60,10 @@ public class ModLanguageProvider extends LanguageProvider {
             this.add(set.ITEM_MOD.get(), cFL(set.name) + " Item Modifier");
         }
 
+        for (com.leo.voidminers.init.SolarSet set : com.leo.voidminers.init.SolarSet.sets()) {
+            this.add(set.SOLAR_CONTROLLER.get(), cFL(set.name) + " Solar Panel");
+        }
+
         this.add("tooltip." + VoidMiners.MODID + ".energy", "Energy Modifier: %dx");
 
         this.add("tooltip." + VoidMiners.MODID + ".speed", "Duration Modifier: %dx");
@@ -71,6 +75,12 @@ public class ModLanguageProvider extends LanguageProvider {
         this.add("minecraft.overworld", "Overworld");
         this.add("minecraft.the_nether", "The Nether");
         this.add("minecraft.the_end", "The End");
+
+        // Solar specific tooltips
+        this.add("tooltip." + VoidMiners.MODID + ".solar.working", "Solar panel is generating power.");
+        this.add("tooltip." + VoidMiners.MODID + ".solar.not_working", "Solar panel is not generating power.");
+        this.add("tooltip." + VoidMiners.MODID + ".solar.not_active", "Solar panel is assembled, but not active. Make sure it can see the sky!");
+        this.add("tooltip." + VoidMiners.MODID + ".solar.missing_structure", "Solar panel is not assembled correctly, shift r-click the block for a guide. Total needed blocks: ");
     }
 
 

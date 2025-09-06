@@ -50,6 +50,11 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
             quadLayerBlockWithItem(set.ITEM_MOD, "voidminers:block/_core/item", "voidminers:block/_core/modifier", "voidminers:block/_core/cover", "voidminers:block/" + set.name + "/core");
         }
+
+        for (com.leo.voidminers.init.SolarSet set : com.leo.voidminers.init.SolarSet.sets()) {
+            // Render the solar panel using core panel + cover + tier core tint
+            tripleLayerBlockWithItem(set.SOLAR_CONTROLLER, "voidminers:block/_core/panel", "voidminers:block/_core/cover", "voidminers:block/" + set.name + "/core");
+        }
     }
 
     private void simpleBlockWithItem(RegistryObject<? extends Block> block) {
