@@ -84,7 +84,10 @@ public class ControllerBaseBE extends BlockEntity {
     }
 
     public void setupEnergyStorage() {
-        invalidateCaps();
+        // Only invalidate and recreate the energy capability; keep item capability intact
+        if (lazyEnergyHandler != null) {
+            lazyEnergyHandler.invalidate();
+        }
         int storage = ConfigLoader.getInstance().getMinerConfig(name).energyStorage();
 
         if (!ConfigLoader.getInstance().ALLOW_NO_ENERGY_MINERS && storage <= 0) storage = ENERGY_CAPACITY;
