@@ -6,6 +6,7 @@ import com.leo.voidminers.init.CrystalSet;
 import com.leo.voidminers.init.SolarSet;
 import com.leo.voidminers.network.ModNetwork;
 import com.mojang.logging.LogUtils;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.common.MinecraftForge;
@@ -46,7 +47,11 @@ public class VoidMiners {
     }
 
     private static void clientSetup(final FMLClientSetupEvent event) {
-        event.enqueueWork(VoidMiners::setupRenders);
+        event.enqueueWork(() -> {
+            setupRenders();
+            // Register screens
+            MenuScreens.register(ModMenuTypes.SOLAR_CONTROLLER_MENU.get(), com.leo.voidminers.client.screen.SolarControllerScreen::new);
+        });
     }
 
     // TODO: move render type to model json

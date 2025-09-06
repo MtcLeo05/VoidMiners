@@ -1,0 +1,10 @@
+{
+  "screen.voidminers.solar.title": "Contrôleur Solaire",
+  "screen.voidminers.solar.energy": "Énergie",
+  "screen.voidminers.solar.rft": "FE/t",
+  "screen.voidminers.solar.sun": "Soleil",
+  "screen.voidminers.solar.status.working": "Génération en cours",
+  "screen.voidminers.solar.status.active": "Actif (tampon plein)",
+  "screen.voidminers.solar.status.inactive": "Inactif"
+}
+

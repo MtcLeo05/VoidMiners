@@ -1308,12 +1308,12 @@ public class MinerMultiblocks {
             '*', a -> a.getState().is(SolarSet.ROSARIUM.SOLAR_CONTROLLER.get()),
             'P', a -> a.getState().is(ModBlockTagGenerator.PANELS),
             'F', a -> a.getState().is(ModBlockTagGenerator.FRAME_8),
-            'M', a -> a.getState().is(ModBlockTagGenerator.MODIFIERS)
+            'M', a -> a.getState().is(ModBlockTagGenerator.PANELS)
         ),
         Map.of(
             'P', ModBlocks.GLASS_PANEL.get()::defaultBlockState,
             'F', CrystalSet.ROSARIUM.FRAME.get()::defaultBlockState,
-            'M', ModBlocks.NULL_MOD.get()::defaultBlockState
+            'M', ModBlocks.GLASS_PANEL.get()::defaultBlockState
         )
     );
 

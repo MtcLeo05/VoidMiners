@@ -1,7 +1,6 @@
 package com.leo.voidminers.block.entity;
 
 import com.leo.voidminers.VoidMiners;
-import com.leo.voidminers.block.ModifierBlock;
 import com.leo.voidminers.config.ConfigLoader;
 import com.leo.voidminers.energy.ModEnergyStorage;
 import com.leo.voidminers.init.ModBlockEntities;
@@ -21,7 +20,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -55,7 +53,7 @@ public class SolarControllerBE extends BlockEntity {
     public boolean active;
     public boolean working;
 
-    private final Map<BlockInWorld, ConfigLoader.ModifierConfig> modifierMap = new HashMap<>();
+    // Modifiers are disabled for solar panels; keep no modifier map.
 
     private ResourceLocation structure;
     private String name;
@@ -92,6 +90,22 @@ public class SolarControllerBE extends BlockEntity {
         if (key == null) key = "";
         if (key.contains("_")) key = key.substring(0, key.indexOf('_'));
         return MiscUtil.colorMap.getOrDefault(key, 0xFFFFFFFF);
+    }
+
+    public int getEnergyStored() {
+        return energyHandler != null ? energyHandler.getEnergyStored() : 0;
+    }
+
+    public int getMaxEnergyStored() {
+        return energyHandler != null ? energyHandler.getMaxEnergyStored() : 0;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public boolean isWorking() {
+        return working;
     }
 
     public List<Component> getInteractionTooltip() {
@@ -275,19 +289,14 @@ public class SolarControllerBE extends BlockEntity {
     }
 
     public int getRfTick() {
-        float mod = 1.0f;
-
-        for (Map.Entry<BlockInWorld, ConfigLoader.ModifierConfig> entry : modifierMap.entrySet()) {
-            mod *= entry.getValue().energy();
-        }
-
         int base = ConfigLoader.getInstance().getSolarConfig(name).energyTick();
         if (base <= 0) return 0;
 
         float sun = getSolarMultiplier();
         if (sun <= 0.0f) return 0;
 
-        return Math.max(0, Math.round(base * mod * sun));
+        // No structure modifiers applied to solar output
+        return Math.max(0, Math.round(base * sun));
     }
 
     private boolean hasSky(BlockPos pos) {
@@ -348,7 +357,6 @@ public class SolarControllerBE extends BlockEntity {
 
     public void checkStructure(Level pLevel, BlockPos pPos) {
         // Support all rotations when matching the multiblock
-        modifierMap.clear();
         foundStructure = false;
 
         for (Rotation rotation : Rotation.values()) {
@@ -358,14 +366,8 @@ public class SolarControllerBE extends BlockEntity {
             MultiblockMatchResult result = pattern.pattern().matchesWithResult(pLevel, pPos, rotation);
             if (result == null || !pattern.ID().equals(structure)) continue;
 
+            // Modifiers are ignored for solar panels; just mark structure found
             foundStructure = true;
-            result.blocks().stream().filter(block -> block.getState().getBlock() instanceof ModifierBlock).forEach(block -> {
-                ConfigLoader.ModifierConfig modifier = ConfigLoader.getInstance().getModifierConfig(block.getState().getBlock());
-                if (!modifierMap.containsKey(block)) {
-                    modifierMap.put(block, modifier);
-                }
-            });
-
             break;
         }
     }

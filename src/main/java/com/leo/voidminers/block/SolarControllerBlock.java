@@ -22,6 +22,10 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.NetworkHooks;
+import com.leo.voidminers.menu.SolarControllerMenu;
 
 public class SolarControllerBlock extends BaseTransparentBlock implements EntityBlock {
     final ResourceLocation structure;
@@ -69,7 +73,7 @@ public class SolarControllerBlock extends BaseTransparentBlock implements Entity
         SolarControllerBE blockEntity = (SolarControllerBE) pLevel.getBlockEntity(pPos);
 
         if (pLevel.isClientSide) {
-            return InteractionResult.sidedSuccess(pLevel.isClientSide());
+            return InteractionResult.sidedSuccess(true);
         }
 
         if (pPlayer.isCrouching()) {
@@ -77,8 +81,13 @@ public class SolarControllerBlock extends BaseTransparentBlock implements Entity
             return InteractionResult.CONSUME;
         }
 
-        for (Component component : blockEntity.getInteractionTooltip()) {
-            pPlayer.displayClientMessage(component, false);
+        // Open the Solar Controller screen
+        if (pPlayer instanceof ServerPlayer serverPlayer) {
+            SimpleMenuProvider provider = new SimpleMenuProvider(
+                (id, inv, player) -> new SolarControllerMenu(id, inv, blockEntity),
+                Component.translatable("screen.voidminers.solar.title")
+            );
+            NetworkHooks.openScreen(serverPlayer, provider, pPos);
         }
 
         return InteractionResult.CONSUME;
