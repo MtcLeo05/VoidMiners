@@ -4,28 +4,30 @@ import com.leo.voidminers.VoidMiners;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class ModCreativeTabs {
+    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = 
+        DeferredRegister.create(Registries.CREATIVE_MODE_TAB, VoidMiners.MODID);
 
-    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, VoidMiners.MODID);
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> ITEMS = 
+        CREATIVE_MODE_TABS.register("items", () ->
+            CreativeModeTab.builder()
+                .title(Component.translatable(VoidMiners.MODID + ".itemGroup.items"))
+                .icon(() -> new ItemStack(ModItems.STRUCTURE_HELPER.get()))
+                .displayItems((parameters, output) -> {
+         
+                    ModItems.ITEMS.getEntries().forEach(entry -> {
+                        output.accept(entry.get());
+                    });
 
-    public static final RegistryObject<CreativeModeTab> ITEMS = CREATIVE_MODE_TABS.register("items", () ->
-        CreativeModeTab.builder()
-            .title(Component.translatable(VoidMiners.MODID + ".itemGroup.items"))
-            .icon(() -> ModItems.STRUCTURE_HELPER.get().getDefaultInstance())
-            .displayItems((idp, output) -> {
-                Iterable<Item> items = ModItems.ITEMS.getEntries().stream().map(RegistryObject::get)::iterator;
-
-                items.forEach(output::accept);
-
-                Iterable<Block> blocks = ModBlocks.BLOCKS.getEntries().stream().map(RegistryObject::get)::iterator;
-
-                blocks.forEach(output::accept);
-            })
-            .build()
-    );
+            
+                    ModBlocks.BLOCKS.getEntries().forEach(entry -> {
+                        output.accept(entry.get());
+                    });
+                })
+                .build()
+        );
 }

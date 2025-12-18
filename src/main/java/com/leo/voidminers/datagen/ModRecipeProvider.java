@@ -5,25 +5,25 @@ import com.leo.voidminers.init.ModBlocks;
 import com.leo.voidminers.init.CrystalSet;
 import com.leo.voidminers.recipe.MinerRecipe;
 import com.leo.voidminers.recipe.WeightedStack;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
 
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.concurrent.CompletableFuture;
 
-public class ModRecipeProvider extends RecipeProvider implements IConditionBuilder {
-    public ModRecipeProvider(PackOutput pOutput) {
-        super(pOutput);
+public class ModRecipeProvider extends RecipeProvider {
+    public ModRecipeProvider(PackOutput pOutput, CompletableFuture<HolderLookup.Provider> pRegistries) {
+        super(pOutput, pRegistries);
     }
 
     @Override
-    protected void buildRecipes(Consumer<FinishedRecipe> pWriter) {
+    protected void buildRecipes(RecipeOutput pWriter) {
 
         ShapedRecipeBuilder.shaped(
                 RecipeCategory.MISC,
@@ -73,7 +73,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 1
             )
             .requires(ModBlocks.STRUCTURE_PANEL.get())
-            .requires(Tags.Items.GLASS)
+            .requires(Items.GLASS)
             .unlockedBy("hasItem", has(ModBlocks.STRUCTURE_PANEL.get()))
             .save(pWriter);
 
@@ -103,7 +103,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .pattern("GGG")
                 .pattern("GCG")
                 .pattern("BOB")
-                .define('G', Tags.Items.GLASS)
+                .define('G', Items.GLASS)
                 .define('B', set.CRYSTAL_BLOCK.get())
                 .define('O', Blocks.OBSIDIAN)
                 .define('C', i > 0 ? allSets.get(i - 1).MINER_CONTROLLER.get() : Items.DIAMOND)
@@ -383,5 +383,4 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
             Level.NETHER
         ).save(pWriter);
     }
-
 }

@@ -2,51 +2,32 @@ package com.leo.voidminers.network;
 
 import com.leo.voidminers.VoidMiners;
 import com.leo.voidminers.network.packet.SyncConfigS2CPacket;
-import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.network.simple.SimpleChannel;
-import net.minecraftforge.server.ServerLifecycleHooks;
-
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 public class ModNetwork {
 
-    private static final String PROTOCOL_VERSION = "1";
-    private static SimpleChannel CHANNEL;
-    private static int packetId = 0;
-    private static int id() {
-        return packetId++;
+    
+    public static void register(RegisterPayloadHandlersEvent event) {
+        PayloadRegistrar registrar = event.registrar(VoidMiners.MODID)
+            .versioned("1.0.0")
+            .optional();
+
+        registrar.playToClient(
+            SyncConfigS2CPacket.TYPE,
+            SyncConfigS2CPacket.STREAM_CODEC,
+            SyncConfigS2CPacket::handle
+        );
     }
 
-    /**
-     * Registers the network channel for the mod.
-     */
-    public static void register() {
-        CHANNEL = NetworkRegistry.ChannelBuilder
-            .named(ResourceLocation.fromNamespaceAndPath(VoidMiners.MODID, "messages"))
-            .networkProtocolVersion(() -> PROTOCOL_VERSION)
-            .clientAcceptedVersions(PROTOCOL_VERSION::equals)
-            .serverAcceptedVersions(PROTOCOL_VERSION::equals)
-            .simpleChannel();
-
-        CHANNEL.messageBuilder(SyncConfigS2CPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-            .decoder(SyncConfigS2CPacket::new)
-            .encoder(SyncConfigS2CPacket::toBytes)
-            .consumerMainThread(SyncConfigS2CPacket::handle)
-            .add();
-
+    public static void sendToAllPlayers(SyncConfigS2CPacket message) {
+        PacketDistributor.sendToAllPlayers(message);
     }
 
-    public static <T> void sendToAllPlayers(T message) {
-        if(CHANNEL == null) return;
-
-        CHANNEL.send(PacketDistributor.ALL.noArg(), message);
+    public static void sendToPlayer(ServerPlayer player, SyncConfigS2CPacket message) {
+        PacketDistributor.sendToPlayer(player, message);
     }
-
 }

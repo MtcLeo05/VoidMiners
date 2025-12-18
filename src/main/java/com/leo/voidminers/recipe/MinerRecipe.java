@@ -1,42 +1,36 @@
 package com.leo.voidminers.recipe;
 
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.leo.voidminers.VoidMiners;
-import net.minecraft.advancements.CriterionTriggerInstance;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.advancements.Criterion;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeBuilder;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.function.Consumer;
 
-public class MinerRecipe implements Recipe<Container> {
+public class MinerRecipe implements Recipe<RecipeInput> {
     private final WeightedStack output;
     private final int minTier;
     private final boolean allowHigherTiers;
-    private final ResourceLocation id;
     private final ResourceKey<Level> dimension;
 
-    public MinerRecipe(WeightedStack output, int minTier, boolean allowHigherTiers, ResourceLocation id, ResourceKey<Level> dimension) {
+    public MinerRecipe(WeightedStack output, int minTier, boolean allowHigherTiers, ResourceKey<Level> dimension) {
         this.output = output;
         this.minTier = minTier;
         this.allowHigherTiers = allowHigherTiers;
-        this.id = id;
         this.dimension = dimension;
     }
 
@@ -57,12 +51,12 @@ public class MinerRecipe implements Recipe<Container> {
     }
 
     @Override
-    public boolean matches(Container pContainer, Level pLevel) {
+    public boolean matches(RecipeInput pInput, Level pLevel) {
         return !pLevel.isClientSide();
     }
 
     @Override
-    public ItemStack assemble(Container pContainer, RegistryAccess pRegistryAccess) {
+    public ItemStack assemble(RecipeInput pInput, HolderLookup.Provider pRegistries) {
         return ItemStack.EMPTY;
     }
 
@@ -72,13 +66,8 @@ public class MinerRecipe implements Recipe<Container> {
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess pRegistryAccess) {
+    public ItemStack getResultItem(HolderLookup.Provider pRegistries) {
         return output.stack.isEmpty() ? ItemStack.EMPTY : output.stack;
-    }
-
-    @Override
-    public ResourceLocation getId() {
-        return id;
     }
 
     @Override
@@ -99,68 +88,48 @@ public class MinerRecipe implements Recipe<Container> {
     public static class Serializer implements RecipeSerializer<MinerRecipe> {
         public static final Serializer INSTANCE = new Serializer();
 
+        private static final MapCodec<MinerRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> 
+            instance.group(
+                WeightedStack.CODEC.fieldOf("output").forGetter(recipe -> recipe.output),
+                Codec.INT.fieldOf("minTier").forGetter(recipe -> recipe.minTier),
+                Codec.BOOL.optionalFieldOf("allowHigherTiers", true).forGetter(recipe -> recipe.allowHigherTiers),
+                ResourceKey.codec(Registries.DIMENSION).fieldOf("dimension").forGetter(recipe -> recipe.dimension)
+            ).apply(instance, MinerRecipe::new)
+        );
+
+        private static final StreamCodec<RegistryFriendlyByteBuf, MinerRecipe> STREAM_CODEC = StreamCodec.of(
+            Serializer::toNetwork,
+            Serializer::fromNetwork
+        );
+
         @Override
-        public MinerRecipe fromJson(ResourceLocation pRecipeId, JsonObject pSerializedRecipe) {
-            JsonObject jsonOutput = GsonHelper.getAsJsonObject(pSerializedRecipe, "output");
-
-            ItemStack stack;
-
-            if(jsonOutput.get("item").isJsonObject()) {
-                stack = CraftingHelper.getItemStack(jsonOutput.getAsJsonObject("item"), true, true);
-            } else {
-                stack = ForgeRegistries.ITEMS.getValue(
-                    ResourceLocation.parse(jsonOutput.get("item").getAsString())
-                ).getDefaultInstance();
-            }
-
-            WeightedStack output = new WeightedStack(
-                stack,
-                GsonHelper.getAsFloat(jsonOutput, "weight", 1)
-            );
-
-            int minTier = GsonHelper.getAsInt(pSerializedRecipe, "minTier");
-
-            boolean allowHigherTiers = true;
-
-            if(pSerializedRecipe.has("allowHigherTiers")) {
-                allowHigherTiers = GsonHelper.getAsBoolean(pSerializedRecipe, "allowHigherTiers");
-            }
-
-            String jsonDim = GsonHelper.getAsString(pSerializedRecipe, "dimension", "minecraft:overworld");
-
-            ResourceKey<Level> dimension = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(jsonDim));
-
-            return new MinerRecipe(output, minTier, allowHigherTiers, pRecipeId, dimension);
+        public MapCodec<MinerRecipe> codec() {
+            return CODEC;
         }
 
         @Override
-        public @Nullable MinerRecipe fromNetwork(ResourceLocation pRecipeId, FriendlyByteBuf pBuffer) {
-            ItemStack stack = pBuffer.readItem();
-            float weight = pBuffer.readFloat();
-
-            WeightedStack output = new WeightedStack(stack, weight);
-
-            int minTier = pBuffer.readInt();
-            boolean allowHigherTiers = pBuffer.readBoolean();
-
-            ResourceKey<Level> dimension = pBuffer.readResourceKey(Registries.DIMENSION);
-
-            return new MinerRecipe(output, minTier, allowHigherTiers, pRecipeId, dimension);
+        public StreamCodec<RegistryFriendlyByteBuf, MinerRecipe> streamCodec() {
+            return STREAM_CODEC;
         }
 
-        @Override
-        public void toNetwork(FriendlyByteBuf pBuffer, MinerRecipe pRecipe) {
-            pBuffer.writeItem(pRecipe.output.stack);
-            pBuffer.writeFloat(pRecipe.output.weight);
+        private static MinerRecipe fromNetwork(RegistryFriendlyByteBuf buffer) {
+            WeightedStack output = WeightedStack.STREAM_CODEC.decode(buffer);
+            int minTier = buffer.readInt();
+            boolean allowHigherTiers = buffer.readBoolean();
+            ResourceKey<Level> dimension = buffer.readResourceKey(Registries.DIMENSION);
 
-            pBuffer.writeInt(pRecipe.minTier);
-            pBuffer.writeBoolean(pRecipe.allowHigherTiers);
+            return new MinerRecipe(output, minTier, allowHigherTiers, dimension);
+        }
 
-            pBuffer.writeResourceKey(pRecipe.dimension);
+        private static void toNetwork(RegistryFriendlyByteBuf buffer, MinerRecipe recipe) {
+            WeightedStack.STREAM_CODEC.encode(buffer, recipe.output);
+            buffer.writeInt(recipe.minTier);
+            buffer.writeBoolean(recipe.allowHigherTiers);
+            buffer.writeResourceKey(recipe.dimension);
         }
     }
 
-    public static class Builder implements RecipeBuilder, FinishedRecipe {
+    public static class Builder implements RecipeBuilder {
         private final WeightedStack output;
         private final int minTier;
         private final boolean allowHigherTiers;
@@ -180,12 +149,16 @@ public class MinerRecipe implements Recipe<Container> {
         }
 
         public static Builder builder(WeightedStack output, int minTier, boolean allowHigherTiers, ResourceKey<Level> dimension) {
-            ResourceLocation recipeId = ResourceLocation.fromNamespaceAndPath(VoidMiners.MODID, dimension.location().getPath() + "/tier" + minTier + "_miner/" + ForgeRegistries.ITEMS.getKey(output.stack.getItem()).getPath());
+            ResourceLocation itemId = net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(output.stack.getItem());
+            ResourceLocation recipeId = ResourceLocation.fromNamespaceAndPath(
+                VoidMiners.MODID, 
+                dimension.location().getPath() + "/tier" + minTier + "_miner/" + itemId.getPath()
+            );
             return new Builder(output, minTier, allowHigherTiers, recipeId, dimension);
         }
 
         @Override
-        public RecipeBuilder unlockedBy(String pCriterionName, CriterionTriggerInstance pCriterionTrigger) {
+        public RecipeBuilder unlockedBy(String pName, Criterion<?> pCriterion) {
             return this;
         }
 
@@ -200,52 +173,13 @@ public class MinerRecipe implements Recipe<Container> {
         }
 
         @Override
-        public void save(Consumer<FinishedRecipe> finishedRecipeConsumer, ResourceLocation recipeId) {
-            finishedRecipeConsumer.accept(this);
+        public void save(RecipeOutput pRecipeOutput, ResourceLocation pId) {
+            MinerRecipe recipe = new MinerRecipe(this.output, this.minTier, this.allowHigherTiers, this.dimension);
+            pRecipeOutput.accept(pId, recipe, null);
         }
 
-        @Override
-        public void serializeRecipeData(JsonObject json) {
-            JsonObject outputItem = new JsonObject();
-
-            outputItem.addProperty("item", ForgeRegistries.ITEMS.getKey(this.output.stack.getItem()).toString());
-
-            if (this.output.stack.getCount() != 1) {
-                outputItem.addProperty("count", this.output.stack.getCount());
-            }
-            if (this.output.stack.getTag() != null) {
-                outputItem.addProperty("nbt", this.output.stack.getTag().toString());
-            }
-
-            outputItem.addProperty("weight", this.output.weight);
-
-            json.add("output", outputItem);
-
-            json.addProperty("minTier", this.minTier);
-            json.addProperty("allowHigherTiers", this.allowHigherTiers);
-            json.addProperty("dimension", dimension.location().toString());
-        }
-
-        @Override
-        public @NotNull ResourceLocation getId() {
-            return this.id;
-        }
-
-        @Override
-        public @NotNull RecipeSerializer<?> getType() {
-            return Serializer.INSTANCE;
-        }
-
-        @Nullable
-        @Override
-        public JsonObject serializeAdvancement() {
-            return null;
-        }
-
-        @Nullable
-        @Override
-        public ResourceLocation getAdvancementId() {
-            return null;
+        public void save(RecipeOutput pRecipeOutput) {
+            this.save(pRecipeOutput, this.id);
         }
     }
 }

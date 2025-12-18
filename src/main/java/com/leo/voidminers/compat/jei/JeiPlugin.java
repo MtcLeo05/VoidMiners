@@ -1,7 +1,6 @@
 package com.leo.voidminers.compat.jei;
 
 import com.leo.voidminers.VoidMiners;
-import com.leo.voidminers.config.ConfigLoader;
 import com.leo.voidminers.init.CrystalSet;
 import com.leo.voidminers.recipe.MinerRecipe;
 import mezz.jei.api.IModPlugin;
@@ -50,7 +49,11 @@ public class JeiPlugin implements IModPlugin {
     public void registerRecipes(IRecipeRegistration registration) {
         RecipeManager manager = Minecraft.getInstance().level.getRecipeManager();
 
-        List<MinerRecipe> minerRecipes = manager.getAllRecipesFor(MinerRecipe.Type.INSTANCE);
+        
+        List<MinerRecipe> minerRecipes = manager.getAllRecipesFor(MinerRecipe.Type.INSTANCE)
+            .stream()
+            .map(holder -> holder.value())
+            .toList();
 
         for (int i = 0; i < tiers.size(); i++) {
             addRecipeToTier(i, minerRecipes, registration);

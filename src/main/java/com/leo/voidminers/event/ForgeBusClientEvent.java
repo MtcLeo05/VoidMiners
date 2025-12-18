@@ -4,19 +4,18 @@ import com.leo.voidminers.VoidMiners;
 import com.leo.voidminers.block.ModifierBlock;
 import com.leo.voidminers.config.ConfigLoader;
 import com.leo.voidminers.init.ModItems;
-import com.leo.voidminers.util.MapUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
 import java.util.List;
 
-@Mod.EventBusSubscriber(modid = VoidMiners.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
+@EventBusSubscriber(modid = VoidMiners.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public class ForgeBusClientEvent {
 
     @SubscribeEvent
@@ -43,5 +42,4 @@ public class ForgeBusClientEvent {
         toolTip.add(Component.translatable("tooltip." + VoidMiners.MODID + ".speed", modConfig.speed()).withStyle(ChatFormatting.DARK_GREEN));
         toolTip.add(Component.translatable("tooltip." + VoidMiners.MODID + ".item", modConfig.item()).withStyle(ChatFormatting.DARK_BLUE));
     }
-
 }

@@ -10,7 +10,7 @@ import com.leo.voidminers.recipe.WeightedStack;
 import com.leo.voidminers.util.ListUtil;
 import com.leo.voidminers.util.MiscUtil;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
@@ -26,13 +26,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.ItemStackHandler;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 import org.mangorage.mangomultiblock.core.manager.MultiBlockManager;
 import org.mangorage.mangomultiblock.core.manager.RegisteredMultiBlockPattern;
@@ -53,7 +50,9 @@ public class ControllerBaseBE extends BlockEntity {
         @Override
         protected void onContentsChanged(int slot) {
             super.onContentsChanged(slot);
-            ControllerBaseBE.this.level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+            if (ControllerBaseBE.this.level != null) {
+                ControllerBaseBE.this.level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+            }
         }
     };
 
@@ -70,11 +69,14 @@ public class ControllerBaseBE extends BlockEntity {
     public boolean active;
     public boolean working;
 
-    private LazyOptional<ModEnergyStorage> lazyEnergyHandler = LazyOptional.empty();
-    private LazyOptional<ItemStackHandler> lazyItemHandler = LazyOptional.empty();
-
+    
     public ControllerBaseBE(BlockPos pPos, BlockState pBlockState) {
         super(ModBlockEntities.CONTROLLER_BASE_BE.get(), pPos, pBlockState);
+    }
+    
+    
+    public ControllerBaseBE(BlockEntityType<?> type, BlockPos pPos, BlockState pBlockState) {
+        super(type, pPos, pBlockState);
     }
 
     public void setup(ResourceLocation structure, String name) {
@@ -84,15 +86,12 @@ public class ControllerBaseBE extends BlockEntity {
     }
 
     public void setupEnergyStorage() {
-        // Only invalidate and recreate the energy capability; keep item capability intact
-        if (lazyEnergyHandler != null) {
-            lazyEnergyHandler.invalidate();
-        }
         int storage = ConfigLoader.getInstance().getMinerConfig(name).energyStorage();
 
         if (!ConfigLoader.getInstance().ALLOW_NO_ENERGY_MINERS && storage <= 0) storage = ENERGY_CAPACITY;
-        energyHandler = new ModEnergyStorage(storage, storage, 0, energyHandler.getEnergyStored());
-        lazyEnergyHandler = LazyOptional.of(() -> energyHandler);
+        
+        int currentEnergy = energyHandler != null ? energyHandler.getEnergyStored() : 0;
+        energyHandler = new ModEnergyStorage(storage, storage, 0, currentEnergy);
     }
 
     public int getBeamColor() {
@@ -123,25 +122,29 @@ public class ControllerBaseBE extends BlockEntity {
 
         toRet.add(Component.translatable("tooltip." + VoidMiners.MODID + ".controller.missing_structure") );
 
-        MiscUtil.getNeededBlocks(MiscUtil.structureMap.get(structure.toString())).forEach((string, integer) -> {
-            toRet.add(Component.literal(string + ": " + integer));
-        });
+        if (structure != null && MiscUtil.structureMap.containsKey(structure.toString())) {
+            MiscUtil.getNeededBlocks(MiscUtil.structureMap.get(structure.toString())).forEach((string, integer) -> {
+                toRet.add(Component.literal(string + ": " + integer));
+            });
+        }
 
         return toRet;
     }
 
     public void updateShowStructure() {
         showStructure = !showStructure;
-        level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+        if (level != null) {
+            level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+        }
     }
 
     @Override
-    protected void saveAdditional(CompoundTag pTag) {
-        super.saveAdditional(pTag);
+    protected void saveAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
+        super.saveAdditional(pTag, pRegistries);
 
         CompoundTag data = new CompoundTag();
-        if (energyHandler != null) data.put("energy", energyHandler.serializeNBT());
-        data.put("items", itemHandler.serializeNBT());
+        if (energyHandler != null) data.put("energy", energyHandler.serializeNBT(pRegistries));
+        data.put("items", itemHandler.serializeNBT(pRegistries));
         data.putInt("progress", this.progress);
         if (name != null) data.putString("name", this.name);
         data.putBoolean("active", active);
@@ -151,18 +154,18 @@ public class ControllerBaseBE extends BlockEntity {
     }
 
     @Override
-    public void load(CompoundTag pTag) {
-        super.load(pTag);
+    protected void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
+        super.loadAdditional(pTag, pRegistries);
         CompoundTag data = pTag.getCompound(VoidMiners.MODID);
         if (data.isEmpty())
             return;
 
         if (data.contains("energy")) {
-            energyHandler.deserializeNBT(data.get("energy"));
+            energyHandler.deserializeNBT(pRegistries, data.get("energy"));
         }
 
         if (data.contains("items")) {
-            itemHandler.deserializeNBT(data.getCompound("items"));
+            itemHandler.deserializeNBT(pRegistries, data.getCompound("items"));
         }
 
         if (data.contains("progress")) {
@@ -190,14 +193,12 @@ public class ControllerBaseBE extends BlockEntity {
     public void onLoad() {
         super.onLoad();
         setupEnergyStorage();
-        lazyEnergyHandler = LazyOptional.of(() -> energyHandler);
-        lazyItemHandler = LazyOptional.of(() -> itemHandler);
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag tag = super.getUpdateTag();
-        saveAdditional(tag);
+    public CompoundTag getUpdateTag(HolderLookup.Provider pRegistries) {
+        CompoundTag tag = super.getUpdateTag(pRegistries);
+        saveAdditional(tag, pRegistries);
         return tag;
     }
 
@@ -208,29 +209,17 @@ public class ControllerBaseBE extends BlockEntity {
     }
 
     @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap) {
-        if (cap == ForgeCapabilities.ENERGY) {
-            return lazyEnergyHandler.cast();
-        }
-
-        if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return lazyItemHandler.cast();
-        }
-
-        return super.getCapability(cap);
+    public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider pRegistries) {
+        super.handleUpdateTag(tag, pRegistries);
+        this.loadAdditional(tag, pRegistries);
     }
 
-    @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ENERGY) {
-            return lazyEnergyHandler.cast();
-        }
+    public ModEnergyStorage getEnergyStorage() {
+        return energyHandler;
+    }
 
-        if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return lazyItemHandler.cast();
-        }
-
-        return super.getCapability(cap, side);
+    public ItemStackHandler getItemHandler() {
+        return itemHandler;
     }
 
     public void tick(Level pLevel, BlockPos pPos, BlockState pState, ResourceLocation structure, String name) {
@@ -241,12 +230,16 @@ public class ControllerBaseBE extends BlockEntity {
         checkStructure(pLevel, pPos);
 
         active = foundStructure && hasViewOnBedrockOrVoid(pPos);
-        level.sendBlockUpdated(pPos, getBlockState(), getBlockState(), 3);
+        if (level != null) {
+            level.sendBlockUpdated(pPos, getBlockState(), getBlockState(), 3);
+        }
 
         if(!active) return;
 
         working = !isItemHandlerFull() && getRfTick() <= energyHandler.getEnergyStored();
-        level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+        if (level != null) {
+            level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+        }
 
         if (!working) {
             return;
@@ -282,16 +275,10 @@ public class ControllerBaseBE extends BlockEntity {
         sync();
     }
 
-    @Override
-    public void handleUpdateTag(CompoundTag tag) {
-        super.handleUpdateTag(tag);
-        this.load(tag);
-    }
-
     private void sync() {
         setChanged(getLevel(), getBlockPos(), getBlockState());
 
-        if(level.isClientSide) return;
+        if(level == null || level.isClientSide) return;
 
         level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_ALL);
     }
@@ -352,7 +339,7 @@ public class ControllerBaseBE extends BlockEntity {
     }
 
     private List<MinerRecipe> allRecipes() {
-        if (level.isClientSide) {
+        if (level == null || level.isClientSide) {
             return new ArrayList<>();
         }
 
@@ -362,6 +349,7 @@ public class ControllerBaseBE extends BlockEntity {
 
         return level.getRecipeManager().getAllRecipesFor(MinerRecipe.Type.INSTANCE)
             .stream()
+            .map(net.minecraft.world.item.crafting.RecipeHolder::value)
             .filter(recipe -> {
                 if (recipe.allowHigherTiers()) {
                     return recipe.minTier() <= MiscUtil.tierMap.get(structure.getPath());
@@ -371,7 +359,6 @@ public class ControllerBaseBE extends BlockEntity {
             })
             .filter(recipe -> recipe.dimension().equals(this.level.dimension()))
             .toList();
-
     }
 
     private boolean isItemValid(ItemStack stack, ItemStack handler) {
@@ -404,33 +391,71 @@ public class ControllerBaseBE extends BlockEntity {
     }
 
     public void checkStructure(Level pLevel, BlockPos pPos) {
+        // Solo debug en servidor para no duplicar mensajes
+        if (!pLevel.isClientSide) {
+            System.out.println("=== CHECKING STRUCTURE ===");
+            System.out.println("Controller Position: " + pPos);
+            System.out.println("Expected structure ID: " + structure);
+        }
+        
         RegisteredMultiBlockPattern pattern = MultiBlockManager.findAnyStructure(pLevel, pPos, Rotation.NONE);
+        
         if (pattern == null) {
+            if (!pLevel.isClientSide) {
+                System.out.println("❌ NO PATTERN FOUND - MultiBlockManager.findAnyStructure returned null");
+                System.out.println("   This means no registered multiblock matches at this position");
+            }
             foundStructure = false;
             return;
         }
+        
+        if (!pLevel.isClientSide) {
+            System.out.println("✓ Found a pattern with ID: " + pattern.ID());
+        }
 
         MultiblockMatchResult result = pattern.pattern().matchesWithResult(pLevel, pPos, Rotation.NONE);
-        if (result == null || !pattern.ID().equals(structure)) {
+        
+        if (result == null) {
+            if (!pLevel.isClientSide) {
+                System.out.println("❌ PATTERN MATCH FAILED");
+                System.out.println("   Pattern ID: " + pattern.ID());
+                System.out.println("   The structure shape doesn't match the registered pattern");
+                System.out.println("   Check if blocks are in correct positions");
+            }
+            foundStructure = false;
             return;
+        }
+        
+        if (!pattern.ID().equals(structure)) {
+            if (!pLevel.isClientSide) {
+                System.out.println("❌ PATTERN ID MISMATCH");
+                System.out.println("   Found pattern: " + pattern.ID());
+                System.out.println("   Expected: " + structure);
+                System.out.println("   Wrong controller block for this structure");
+            }
+            foundStructure = false;
+            return;
+        }
+        
+        if (!pLevel.isClientSide) {
+            System.out.println("✅ STRUCTURE VALID!");
+            System.out.println("   Total blocks in structure: " + result.blocks().size());
         }
 
         modifierMap.clear();
         foundStructure = true;
-        result.blocks().stream().filter(block -> block.getState().getBlock() instanceof ModifierBlock).forEach(block -> {
-            ConfigLoader.ModifierConfig modifier = ConfigLoader.getInstance().getModifierConfig(block.getState().getBlock());
-
-            if (!modifierMap.containsKey(block)) {
-                modifierMap.put(block, modifier);
-            }
-        });
-    }
-
-    @Override
-    public void invalidateCaps() {
-        super.invalidateCaps();
-        lazyEnergyHandler.invalidate();
-        lazyItemHandler.invalidate();
+        result.blocks().stream()
+            .filter(block -> block.getState().getBlock() instanceof ModifierBlock)
+            .forEach(block -> {
+                ConfigLoader.ModifierConfig modifier = ConfigLoader.getInstance().getModifierConfig(block.getState().getBlock());
+                if (!modifierMap.containsKey(block)) {
+                    modifierMap.put(block, modifier);
+                }
+            });
+        
+        if (!pLevel.isClientSide && !modifierMap.isEmpty()) {
+            System.out.println("   Found " + modifierMap.size() + " modifier(s)");
+        }
     }
 
     public ResourceLocation getStructure() {

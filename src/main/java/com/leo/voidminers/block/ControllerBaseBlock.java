@@ -5,7 +5,6 @@ import com.leo.voidminers.util.ShapeUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -34,13 +33,15 @@ public class ControllerBaseBlock extends BaseTransparentBlock implements EntityB
     }
 
     @Override
-    public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
+    protected void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pMoving) {
         if (pState.getBlock() != pNewState.getBlock()) {
             BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
-            ((ControllerBaseBE) blockEntity).drops();
+            if (blockEntity instanceof ControllerBaseBE controllerBE) {
+                controllerBE.drops();
+            }
         }
 
-        super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
+        super.onRemove(pState, pLevel, pPos, pNewState, pMoving);
     }
 
     @Nullable
@@ -50,24 +51,27 @@ public class ControllerBaseBlock extends BaseTransparentBlock implements EntityB
     }
 
     @Override
-    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
+    protected InteractionResult useWithoutItem(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, BlockHitResult pHitResult) {
         ControllerBaseBE blockEntity = (ControllerBaseBE) pLevel.getBlockEntity(pPos);
 
         if (pLevel.isClientSide) {
-            return InteractionResult.sidedSuccess(pLevel.isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         if (pPlayer.isCrouching()) {
-            blockEntity.updateShowStructure();
+            if (blockEntity != null) {
+                blockEntity.updateShowStructure();
+            }
             return InteractionResult.CONSUME;
         }
 
-        for (Component component : blockEntity.getInteractionTooltip()) {
-            pPlayer.displayClientMessage(component, false);
+        if (blockEntity != null) {
+            for (Component component : blockEntity.getInteractionTooltip()) {
+                pPlayer.displayClientMessage(component, false);
+            }
         }
 
         return InteractionResult.CONSUME;
-
     }
 
     @Override
@@ -79,7 +83,9 @@ public class ControllerBaseBlock extends BaseTransparentBlock implements EntityB
             controller = ((ControllerBaseBE) this.newBlockEntity(pPos, pState));
         }
 
-        controller.setup(structure, name);
+        if (controller != null) {
+            controller.setup(structure, name);
+        }
     }
 
     @Nullable
@@ -89,7 +95,11 @@ public class ControllerBaseBlock extends BaseTransparentBlock implements EntityB
             return null;
         }
 
-        return ((level, blockPos, blockState, be) -> ((ControllerBaseBE) be).tick(pLevel, blockPos, blockState, structure, name));
+        return ((level, blockPos, blockState, be) -> {
+            if (be instanceof ControllerBaseBE controllerBE) {
+                controllerBE.tick(pLevel, blockPos, blockState, structure, name);
+            }
+        });
     }
 
     @Override

@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.model.data.ModelData;
+import net.neoforged.neoforge.client.model.data.ModelData;
 import org.joml.Vector3f;
 
 import java.util.List;
@@ -33,7 +33,6 @@ public class ControllerRenderer implements BlockEntityRenderer<ControllerBaseBE>
             float f = (float) Math.floorMod(gameTime, 40) + pPartialTick;
 
             pose.pushPose();
-            /* Partially copied from the beacon renderer */
             pose.translate(0.5f, 0, 0.5f);
             pose.mulPose(Axis.YP.rotationDegrees(f * 2.25f - 45f));
 
@@ -58,7 +57,7 @@ public class ControllerRenderer implements BlockEntityRenderer<ControllerBaseBE>
         pose.pushPose();
         pose.mulPose(Axis.ZN.rotationDegrees(90));
 
-        //TODO Find a better way to do this, it's performance intensive doing 3 loops each render tick
+        
         List<List<List<BlockState>>> blocks = MiscUtil.structureMap.get(structure);
 
         for (int x = 0; x < blocks.size(); x++) {
@@ -117,37 +116,34 @@ public class ControllerRenderer implements BlockEntityRenderer<ControllerBaseBE>
     }
 
     public void renderQuad(VertexConsumer vC, PoseStack pose, Vector3f pos, int color, float length, float width) {
-        vC.vertex(pose.last().pose(), pos.x, pos.y, pos.z)
-            .color(color)
-            .uv(0, 0)
-            .overlayCoords(OverlayTexture.NO_OVERLAY)
-            .uv2(LightTexture.FULL_BRIGHT)
-            .normal(0, 0, 0)
-            .endVertex();
+        
+        vC.addVertex(pose.last().pose(), pos.x, pos.y, pos.z)
+            .setColor(color)
+            .setUv(0, 0)
+            .setOverlay(OverlayTexture.NO_OVERLAY)
+            .setLight(LightTexture.FULL_BRIGHT)
+            .setNormal(0, 0, 0);
 
-        vC.vertex(pose.last().pose(), pos.x + width, pos.y, pos.z)
-            .color(color)
-            .uv(1, 0)
-            .overlayCoords(OverlayTexture.NO_OVERLAY)
-            .uv2(LightTexture.FULL_BRIGHT)
-            .normal(0, 0, 0)
-            .endVertex();
+        vC.addVertex(pose.last().pose(), pos.x + width, pos.y, pos.z)
+            .setColor(color)
+            .setUv(1, 0)
+            .setOverlay(OverlayTexture.NO_OVERLAY)
+            .setLight(LightTexture.FULL_BRIGHT)
+            .setNormal(0, 0, 0);
 
-        vC.vertex(pose.last().pose(), pos.x + width, pos.y - length, pos.z)
-            .color(color)
-            .uv(1, 1)
-            .overlayCoords(OverlayTexture.NO_OVERLAY)
-            .uv2(LightTexture.FULL_BRIGHT)
-            .normal(0, 0, 0)
-            .endVertex();
+        vC.addVertex(pose.last().pose(), pos.x + width, pos.y - length, pos.z)
+            .setColor(color)
+            .setUv(1, 1)
+            .setOverlay(OverlayTexture.NO_OVERLAY)
+            .setLight(LightTexture.FULL_BRIGHT)
+            .setNormal(0, 0, 0);
 
-        vC.vertex(pose.last().pose(), pos.x, pos.y - length, pos.z)
-            .color(color)
-            .uv(0, 1)
-            .overlayCoords(OverlayTexture.NO_OVERLAY)
-            .uv2(LightTexture.FULL_BRIGHT)
-            .normal(0, 0, 0)
-            .endVertex();
+        vC.addVertex(pose.last().pose(), pos.x, pos.y - length, pos.z)
+            .setColor(color)
+            .setUv(0, 1)
+            .setOverlay(OverlayTexture.NO_OVERLAY)
+            .setLight(LightTexture.FULL_BRIGHT)
+            .setNormal(0, 0, 0);
     }
 
     @Override

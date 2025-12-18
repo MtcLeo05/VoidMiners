@@ -19,7 +19,10 @@ import java.util.function.Supplier;
 
 public class MinerMultiblocks {
 
-    public static final MultiBlockManager MANAGER = MultiBlockManager.getOrCreate(VoidMiners.MODID, "miners");
+    public static final MultiBlockManager MANAGER = MultiBlockManager.getOrCreate(VoidMiners.MODID, "voidminers");
+    
+    // IMPORTANTE: Flag para evitar registros duplicados
+    private static boolean INITIALIZED = false;
 
     public static final SimpleMultiBlockAislePatternBuilder RUBETINE = createAccessiblePattern(
         VoidMiners.MODID + ":rubetine",
@@ -640,8 +643,6 @@ public class MinerMultiblocks {
         )
     );
 
-
-    //TODO remove this hack when a better way to access the blocks is found
     public static SimpleMultiBlockAislePatternBuilder createAccessiblePattern(String structure, List<List<String>> stringPattern, Map<Character, Predicate<BlockInWorld>> lookup, Map<Character, Supplier<BlockState>> blockProvider) {
         SimpleMultiBlockAislePatternBuilder pattern = SimpleMultiBlockAislePatternBuilder.start();
         List<List<List<BlockState>>> blocks = new ArrayList<>();
@@ -688,8 +689,6 @@ public class MinerMultiblocks {
                     );
                 }
             }
-
-
         }
 
         return toReturn;
@@ -697,6 +696,13 @@ public class MinerMultiblocks {
 
 
     public static void init() {
+        if (INITIALIZED) {
+            VoidMiners.LOGGER.warn("MinerMultiblocks already initialized, skipping...");
+            return;
+        }
+        
+        VoidMiners.LOGGER.info("Initializing MinerMultiblocks...");
+        
         MANAGER.register("rubetine", RUBETINE.build());
         MANAGER.register("aurantium", AURANTIUM.build());
         MANAGER.register("citrinetine", CITRINETINE.build());
@@ -705,6 +711,8 @@ public class MinerMultiblocks {
         MANAGER.register("caerium", CAERIUM.build());
         MANAGER.register("amethystine", AMETHYSTINE.build());
         MANAGER.register("rosarium", ROSARIUM.build());
+        
+        INITIALIZED = true;
+        VoidMiners.LOGGER.info("MinerMultiblocks initialized successfully!");
     }
-
 }

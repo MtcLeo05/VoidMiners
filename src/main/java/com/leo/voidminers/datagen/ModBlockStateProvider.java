@@ -3,15 +3,15 @@ package com.leo.voidminers.datagen;
 import com.leo.voidminers.VoidMiners;
 import com.leo.voidminers.init.ModBlocks;
 import com.leo.voidminers.init.CrystalSet;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.client.model.generators.BlockModelBuilder;
-import net.minecraftforge.client.model.generators.BlockStateProvider;
-import net.minecraftforge.client.model.generators.ModelFile;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
+import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
+import net.neoforged.neoforge.client.model.generators.ModelFile;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class ModBlockStateProvider extends BlockStateProvider {
 
@@ -52,19 +52,19 @@ public class ModBlockStateProvider extends BlockStateProvider {
         }
     }
 
-    private void simpleBlockWithItem(RegistryObject<? extends Block> block) {
+    private void simpleBlockWithItem(DeferredHolder<Block, ? extends Block> block) {
         simpleBlockWithItem(block.get(), new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(VoidMiners.MODID, "block/" + block.getId().getPath())));
     }
 
-    private void simpleBlockWithItem(RegistryObject<? extends Block> block, String name) {
+    private void simpleBlockWithItem(DeferredHolder<Block, ? extends Block> block, String name) {
         simpleBlockWithItem(block.get(), new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(VoidMiners.MODID, "block/" + name)));
     }
 
-    private void simpleBlockItem(RegistryObject<? extends Block> block) {
+    private void simpleBlockItem(DeferredHolder<Block, ? extends Block> block) {
         simpleBlockItem(block.get(), new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(VoidMiners.MODID, "block/" + block.getId().getPath())));
     }
 
-    private void dualLayerBlockWithItem(RegistryObject<? extends Block> block, String layer0, String layer1) {
+    private void dualLayerBlockWithItem(DeferredHolder<Block, ? extends Block> block, String layer0, String layer1) {
         ModelFile.UncheckedModelFile parent = new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(VoidMiners.MODID, "block/_template/dual_layer"));
 
         BlockModelBuilder model = models().getBuilder(block.getId().getPath())
@@ -75,7 +75,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         simpleBlockWithItem(block.get(), model);
     }
 
-    private void tripleLayerBlockWithItem(RegistryObject<? extends Block> block, String layer0, String layer1, String layer2) {
+    private void tripleLayerBlockWithItem(DeferredHolder<Block, ? extends Block> block, String layer0, String layer1, String layer2) {
         ModelFile.UncheckedModelFile parent = new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(VoidMiners.MODID, "block/_template/triple_layer"));
 
         BlockModelBuilder model = models().getBuilder(block.getId().getPath())
@@ -87,7 +87,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         simpleBlockWithItem(block.get(), model);
     }
 
-    private void quadLayerBlockWithItem(RegistryObject<? extends Block> block, String layer0, String layer1, String layer2, String layer3) {
+    private void quadLayerBlockWithItem(DeferredHolder<Block, ? extends Block> block, String layer0, String layer1, String layer2, String layer3) {
         ModelFile.UncheckedModelFile parent = new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(VoidMiners.MODID, "block/_template/quad_layer"));
 
         BlockModelBuilder model = models().getBuilder(block.getId().getPath())
@@ -100,7 +100,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         simpleBlockWithItem(block.get(), model);
     }
 
-    private void simpleAllCubeWithItem(RegistryObject<Block> block, String name) {
+    private void simpleAllCubeWithItem(DeferredHolder<Block, Block> block, String name) {
         simpleBlockWithItem(block.get(), models().cubeAll(name(block.get()), stripSetName(block.getId()).withPrefix("block/" + name + "/")));
     }
 
@@ -109,7 +109,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
     }
 
     private ResourceLocation key(Block block) {
-        return ForgeRegistries.BLOCKS.getKey(block);
+        return BuiltInRegistries.BLOCK.getKey(block);
     }
 
     private static ResourceLocation stripSetName(ResourceLocation name) {

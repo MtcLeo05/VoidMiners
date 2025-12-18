@@ -1,56 +1,41 @@
 package com.leo.voidminers.network.packet;
 
+import com.leo.voidminers.VoidMiners;
 import com.leo.voidminers.config.ConfigLoader;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.network.NetworkEvent;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-/**
- * This Server to Client packet will transmit the configs from server to client
- */
-public class SyncConfigS2CPacket {
 
-    private final Map<String, ConfigLoader.MinerConfig> minerConfigs;
+public record SyncConfigS2CPacket(Map<String, ConfigLoader.MinerConfig> minerConfigs) implements CustomPacketPayload {
 
-    public SyncConfigS2CPacket(Map<String, ConfigLoader.MinerConfig> minerConfigs) {
-        this.minerConfigs = minerConfigs;
+    public static final CustomPacketPayload.Type<SyncConfigS2CPacket> TYPE = 
+        new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(VoidMiners.MODID, "sync_config"));
+
+    public static final StreamCodec<ByteBuf, SyncConfigS2CPacket> STREAM_CODEC = StreamCodec.composite(
+        ByteBufCodecs.map(
+            HashMap::new,
+            ByteBufCodecs.STRING_UTF8,
+            ConfigLoader.MinerConfig.STREAM_CODEC
+        ),
+        SyncConfigS2CPacket::minerConfigs,
+        SyncConfigS2CPacket::new
+    );
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 
-    public SyncConfigS2CPacket(FriendlyByteBuf buf) {
-        int entries = buf.readInt();
-
-        minerConfigs = new HashMap<>();
-
-        for (int i = 0; i < entries; i++) {
-            String key = buf.readUtf();
-            ConfigLoader.MinerConfig value = ConfigLoader.MinerConfig.fromBuf(buf);
-
-            minerConfigs.put(key, value);
-        }
-    }
-
-    public void toBytes(FriendlyByteBuf buf) {
-        buf.writeInt(minerConfigs.size());
-
-        minerConfigs.forEach((key, value) -> {
-            buf.writeUtf(key);
-            value.toBuf(buf);
+    public static void handle(SyncConfigS2CPacket packet, IPayloadContext context) {
+        context.enqueueWork(() -> {
+            ConfigLoader.getInstance().MINER_CONFIGS = packet.minerConfigs();
         });
-    }
-
-    public void handle(Supplier<NetworkEvent.Context> supplier) {
-        ConfigLoader.getInstance().MINER_CONFIGS = minerConfigs;
     }
 }
