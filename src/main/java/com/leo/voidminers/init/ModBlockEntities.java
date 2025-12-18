@@ -1,7 +1,7 @@
 package com.leo.voidminers.init;
 
 import com.leo.voidminers.VoidMiners;
-import com.leo.voidminers.block.entity.ControllerBaseBE;
+import com.leo.voidminers.world.block.entity.ControllerBaseBE;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.registries.DeferredRegister;

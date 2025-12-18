@@ -2,8 +2,8 @@ package com.leo.voidminers;
 
 import com.leo.voidminers.config.ConfigLoader;
 import com.leo.voidminers.init.*;
-import com.leo.voidminers.multiblock.MinerMultiblocks; 
-import com.leo.voidminers.network.ModNetwork;
+import com.leo.voidminers.world.multiblock.MinerMultiblocks;
+import com.leo.voidminers.common.network.ModNetwork;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -26,7 +26,6 @@ public class VoidMiners {
         ModItems.ITEMS.register(modEventBus);
         ModBlocks.BLOCKS.register(modEventBus);
         ModCreativeTabs.CREATIVE_MODE_TABS.register(modEventBus);
-        ModMenuTypes.MENU_TYPES.register(modEventBus);
         ModRecipes.SERIALIZERS.register(modEventBus);
         ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
 

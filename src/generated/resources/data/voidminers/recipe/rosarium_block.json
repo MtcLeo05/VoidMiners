@@ -1,0 +1,37 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "voidminers:rosarium"
+    },
+    {
+      "item": "voidminers:rosarium"
+    },
+    {
+      "item": "voidminers:rosarium"
+    },
+    {
+      "item": "voidminers:rosarium"
+    },
+    {
+      "item": "voidminers:rosarium"
+    },
+    {
+      "item": "voidminers:rosarium"
+    },
+    {
+      "item": "voidminers:rosarium"
+    },
+    {
+      "item": "voidminers:rosarium"
+    },
+    {
+      "item": "voidminers:rosarium"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "voidminers:rosarium_block"
+  }
+}

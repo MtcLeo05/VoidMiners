@@ -1,0 +1,12 @@
+{
+  "type": "voidminers:miner",
+  "dimension": "minecraft:the_nether",
+  "minTier": 4,
+  "output": {
+    "stack": {
+      "count": 1,
+      "id": "voidminers:azurine"
+    },
+    "weight": 4.0
+  }
+}

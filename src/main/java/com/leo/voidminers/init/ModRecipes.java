@@ -1,7 +1,7 @@
 package com.leo.voidminers.init;
 
 import com.leo.voidminers.VoidMiners;
-import com.leo.voidminers.recipe.MinerRecipe;
+import com.leo.voidminers.server.recipe.MinerRecipe;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.registries.DeferredRegister;

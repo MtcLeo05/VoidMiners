@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "voidminers:verdium"
+    },
+    "M": {
+      "item": "voidminers:citrinetine_speed_modifier"
+    },
+    "c": {
+      "item": "minecraft:sugar"
+    }
+  },
+  "pattern": [
+    "CcC",
+    "cMc",
+    "CcC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "voidminers:verdium_speed_modifier"
+  }
+}

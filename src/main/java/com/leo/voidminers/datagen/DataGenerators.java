@@ -11,7 +11,7 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 import java.util.concurrent.CompletableFuture;
 
-@EventBusSubscriber(modid = VoidMiners.MODID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = VoidMiners.MODID)
 public class DataGenerators {
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {

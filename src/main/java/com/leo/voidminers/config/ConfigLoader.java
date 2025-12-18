@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.Expose;
 import com.google.gson.stream.JsonReader;
+import com.leo.voidminers.VoidMiners;
 import com.leo.voidminers.util.MapUtil;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -101,7 +102,7 @@ public class ConfigLoader {
 
         try {
             if (!file.exists()) {
-                System.out.println("Configuration file does not exist. Creating a new one.");
+                VoidMiners.LOGGER.info("Configuration file does not exist. Creating a new one.");
                 saveDefaultConfig(file, gson);
             } else {
                 try (JsonReader jsonReader = new JsonReader(new FileReader(file))) {
@@ -112,7 +113,7 @@ public class ConfigLoader {
                 }
             }
         } catch (JsonSyntaxException | IOException e) {
-            System.err.println("Invalid configuration file. Regenerating default config.");
+            VoidMiners.LOGGER.error("Invalid configuration file. Regenerating default config.");
             saveDefaultConfig(file, gson);
         }
     }
@@ -122,7 +123,7 @@ public class ConfigLoader {
             if(INSTANCE == null) INSTANCE = new ConfigLoader();
 
             gson.toJson(INSTANCE, ConfigLoader.class, writer);
-            System.out.println("Default configuration file created successfully.");
+            VoidMiners.LOGGER.info("Default configuration file created successfully.");
         } catch (IOException e) {
             throw new RuntimeException("Failed to create default configuration file.", e);
         }

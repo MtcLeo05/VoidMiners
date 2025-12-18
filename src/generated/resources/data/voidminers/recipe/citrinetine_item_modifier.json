@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "voidminers:citrinetine"
+    },
+    "M": {
+      "item": "voidminers:aurantium_item_modifier"
+    },
+    "c": {
+      "item": "minecraft:diamond"
+    }
+  },
+  "pattern": [
+    "CcC",
+    "cMc",
+    "CcC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "voidminers:citrinetine_item_modifier"
+  }
+}

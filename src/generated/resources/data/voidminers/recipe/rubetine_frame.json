@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "voidminers:rubetine"
+    },
+    "F": {
+      "item": "voidminers:frame_base"
+    },
+    "O": {
+      "item": "minecraft:obsidian"
+    }
+  },
+  "pattern": [
+    "COC",
+    "OFO",
+    "COC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "voidminers:rubetine_frame"
+  }
+}

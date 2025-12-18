@@ -1,0 +1,12 @@
+{
+  "type": "voidminers:miner",
+  "dimension": "minecraft:overworld",
+  "minTier": 4,
+  "output": {
+    "stack": {
+      "count": 1,
+      "id": "voidminers:azurine"
+    },
+    "weight": 2.0
+  }
+}
