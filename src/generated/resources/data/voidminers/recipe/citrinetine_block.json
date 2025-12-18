@@ -1,0 +1,37 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "voidminers:citrinetine"
+    },
+    {
+      "item": "voidminers:citrinetine"
+    },
+    {
+      "item": "voidminers:citrinetine"
+    },
+    {
+      "item": "voidminers:citrinetine"
+    },
+    {
+      "item": "voidminers:citrinetine"
+    },
+    {
+      "item": "voidminers:citrinetine"
+    },
+    {
+      "item": "voidminers:citrinetine"
+    },
+    {
+      "item": "voidminers:citrinetine"
+    },
+    {
+      "item": "voidminers:citrinetine"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "voidminers:citrinetine_block"
+  }
+}

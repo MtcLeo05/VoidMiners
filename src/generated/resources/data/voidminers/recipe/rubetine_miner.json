@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "voidminers:rubetine_block"
+    },
+    "C": {
+      "item": "minecraft:diamond"
+    },
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "O": {
+      "item": "minecraft:obsidian"
+    }
+  },
+  "pattern": [
+    "GGG",
+    "GCG",
+    "BOB"
+  ],
+  "result": {
+    "count": 1,
+    "id": "voidminers:rubetine_miner"
+  }
+}

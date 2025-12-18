@@ -1,0 +1,37 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "voidminers:azurine"
+    },
+    {
+      "item": "voidminers:azurine"
+    },
+    {
+      "item": "voidminers:azurine"
+    },
+    {
+      "item": "voidminers:azurine"
+    },
+    {
+      "item": "voidminers:azurine"
+    },
+    {
+      "item": "voidminers:azurine"
+    },
+    {
+      "item": "voidminers:azurine"
+    },
+    {
+      "item": "voidminers:azurine"
+    },
+    {
+      "item": "voidminers:azurine"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "voidminers:azurine_block"
+  }
+}

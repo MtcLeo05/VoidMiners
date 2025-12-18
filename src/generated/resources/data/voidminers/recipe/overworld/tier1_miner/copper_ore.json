@@ -1,0 +1,12 @@
+{
+  "type": "voidminers:miner",
+  "dimension": "minecraft:overworld",
+  "minTier": 1,
+  "output": {
+    "stack": {
+      "count": 1,
+      "id": "minecraft:copper_ore"
+    },
+    "weight": 12.0
+  }
+}

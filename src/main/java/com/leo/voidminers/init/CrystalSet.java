@@ -1,14 +1,14 @@
 package com.leo.voidminers.init;
 
 import com.leo.voidminers.VoidMiners;
-import com.leo.voidminers.block.ControllerBaseBlock;
-import com.leo.voidminers.block.ModifierBlock;
+import com.leo.voidminers.world.block.ControllerBaseBlock;
+import com.leo.voidminers.world.block.ModifierBlock;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,17 +23,19 @@ public class CrystalSet {
     public static CrystalSet AMETHYSTINE;
     public static CrystalSet ROSARIUM;
 
-
     public final String name;
-    public final RegistryObject<Item> CRYSTAL;
-    public final RegistryObject<Block> CRYSTAL_BLOCK;
-    public final RegistryObject<Block> MINER_CONTROLLER;
-    public final RegistryObject<Block> FRAME;
-    public final RegistryObject<Block> SPEED_MOD;
-    public final RegistryObject<Block> ENERGY_MOD;
-    public final RegistryObject<Block> ITEM_MOD;
+    public final DeferredHolder<Item, Item> CRYSTAL;
+    public final DeferredHolder<Block, Block> CRYSTAL_BLOCK;
+    public final DeferredHolder<Block, ? extends Block> MINER_CONTROLLER;
+    public final DeferredHolder<Block, Block> FRAME;
+    public final DeferredHolder<Block, ? extends Block> SPEED_MOD;
+    public final DeferredHolder<Block, ? extends Block> ENERGY_MOD;
+    public final DeferredHolder<Block, ? extends Block> ITEM_MOD;
 
-    CrystalSet(String name, RegistryObject<Item> crystal, RegistryObject<Block> crystalBlock, RegistryObject<Block> minerController, RegistryObject<Block> frame, RegistryObject<Block> energyMod, RegistryObject<Block> speedMod, RegistryObject<Block> itemMod) {
+    CrystalSet(String name, DeferredHolder<Item, Item> crystal, DeferredHolder<Block, Block> crystalBlock, 
+               DeferredHolder<Block, ? extends Block> minerController, DeferredHolder<Block, Block> frame, 
+               DeferredHolder<Block, ? extends Block> energyMod, DeferredHolder<Block, ? extends Block> speedMod, 
+               DeferredHolder<Block, ? extends Block> itemMod) {
         this.name = name;
         CRYSTAL = crystal;
         CRYSTAL_BLOCK = crystalBlock;
@@ -44,11 +46,11 @@ public class CrystalSet {
         ITEM_MOD = itemMod;
     }
 
-    public static RegistryObject<Item> fastCreateItem(String name, Rarity rarity) {
+    public static DeferredHolder<Item, Item> fastCreateItem(String name, Rarity rarity) {
         return ModItems.ITEMS.register(name, () -> new Item(new Item.Properties().rarity(rarity)));
     }
 
-    public static RegistryObject<Block> fastCreateBlock(String name, float hardness, float resistance, Rarity rarity) {
+    public static DeferredHolder<Block, Block> fastCreateBlock(String name, float hardness, float resistance, Rarity rarity) {
         return ModBlocks.registerBlock(name,
             () -> new Block(
                 BlockBehaviour.Properties.of()
@@ -59,7 +61,7 @@ public class CrystalSet {
         );
     }
 
-    public static RegistryObject<Block> fastCreateModifier(String name, float hardness, float resistance, Rarity rarity, ModifierType type) {
+    public static DeferredHolder<Block, ModifierBlock> fastCreateModifier(String name, float hardness, float resistance, Rarity rarity, ModifierType type) {
         return ModBlocks.registerBlock(name + "_" + type.type + "_modifier",
             () -> new ModifierBlock(
                 BlockBehaviour.Properties.of()
@@ -71,7 +73,7 @@ public class CrystalSet {
         );
     }
 
-    public static RegistryObject<Block> fastCreateController(String name, float hardness, float resistance, Rarity rarity, ResourceLocation structure) {
+    public static DeferredHolder<Block, ControllerBaseBlock> fastCreateController(String name, float hardness, float resistance, Rarity rarity, ResourceLocation structure) {
         return ModBlocks.registerBlock(name + "_miner",
             () -> new ControllerBaseBlock(
                 BlockBehaviour.Properties.of()
@@ -110,7 +112,6 @@ public class CrystalSet {
 
     public static List<CrystalSet> sets() {
         List<CrystalSet> sets = new ArrayList<>();
-
         sets.add(RUBETINE);
         sets.add(AURANTIUM);
         sets.add(CITRINETINE);
@@ -119,7 +120,6 @@ public class CrystalSet {
         sets.add(CAERIUM);
         sets.add(AMETHYSTINE);
         sets.add(ROSARIUM);
-
         return sets;
     }
 

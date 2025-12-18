@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "voidminers:rosarium"
+    },
+    "F": {
+      "item": "voidminers:amethystine_frame"
+    },
+    "O": {
+      "item": "minecraft:obsidian"
+    }
+  },
+  "pattern": [
+    "COC",
+    "OFO",
+    "COC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "voidminers:rosarium_frame"
+  }
+}

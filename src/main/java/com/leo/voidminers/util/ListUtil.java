@@ -1,6 +1,6 @@
 package com.leo.voidminers.util;
 
-import com.leo.voidminers.recipe.WeightedStack;
+import com.leo.voidminers.server.recipe.WeightedStack;
 
 import java.util.ArrayList;
 import java.util.List;

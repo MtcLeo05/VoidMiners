@@ -5,13 +5,14 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.Expose;
 import com.google.gson.stream.JsonReader;
+import com.leo.voidminers.VoidMiners;
 import com.leo.voidminers.util.MapUtil;
-import net.minecraft.network.FriendlyByteBuf;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.pattern.BlockInWorld;
-import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.fml.loading.FMLPaths;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -101,7 +102,7 @@ public class ConfigLoader {
 
         try {
             if (!file.exists()) {
-                System.out.println("Configuration file does not exist. Creating a new one.");
+                VoidMiners.LOGGER.info("Configuration file does not exist. Creating a new one.");
                 saveDefaultConfig(file, gson);
             } else {
                 try (JsonReader jsonReader = new JsonReader(new FileReader(file))) {
@@ -112,7 +113,7 @@ public class ConfigLoader {
                 }
             }
         } catch (JsonSyntaxException | IOException e) {
-            System.err.println("Invalid configuration file. Regenerating default config.");
+            VoidMiners.LOGGER.error("Invalid configuration file. Regenerating default config.");
             saveDefaultConfig(file, gson);
         }
     }
@@ -122,7 +123,7 @@ public class ConfigLoader {
             if(INSTANCE == null) INSTANCE = new ConfigLoader();
 
             gson.toJson(INSTANCE, ConfigLoader.class, writer);
-            System.out.println("Default configuration file created successfully.");
+            VoidMiners.LOGGER.info("Default configuration file created successfully.");
         } catch (IOException e) {
             throw new RuntimeException("Failed to create default configuration file.", e);
         }
@@ -137,7 +138,7 @@ public class ConfigLoader {
     }
 
     public ModifierConfig getModifierConfig(Block block) {
-        String blockName = ForgeRegistries.BLOCKS.getKey(block).getPath();
+        String blockName = BuiltInRegistries.BLOCK.getKey(block).getPath();
         String minerTier = blockName.split("_")[0];
         String modifierType = blockName.split("_")[1];
 
@@ -146,52 +147,32 @@ public class ConfigLoader {
 
     public record MinerConfig(@Expose int energyStorage, @Expose int duration, @Expose int energyTick, @Expose Map<String, ModifierConfig> modifiers) {
 
-        public static MinerConfig fromBuf(FriendlyByteBuf buf) {
-            int energyStorage = buf.readInt();
-            int duration = buf.readInt();
-            int energy = buf.readInt();
-
-            int entries = buf.readInt();
-
-            Map<String, ModifierConfig> modifiers = new HashMap<>();
-
-            for (int i = 0; i < entries; i++) {
-                modifiers.put(
-                    buf.readUtf(),
-                    ModifierConfig.fromBuf(buf)
-                );
-            }
-
-            return new MinerConfig(energyStorage, duration, energy, modifiers);
-        }
-
-        public void toBuf(FriendlyByteBuf buf) {
-            buf.writeInt(energyStorage);
-            buf.writeInt(duration);
-            buf.writeInt(energyTick);
-
-            buf.writeInt(modifiers.size());
-
-            modifiers.forEach((key, value) -> {
-                buf.writeUtf(key);
-                value.toBuf(buf);
-            });
-        }
+        public static final StreamCodec<ByteBuf, MinerConfig> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.INT,
+            MinerConfig::energyStorage,
+            ByteBufCodecs.INT,
+            MinerConfig::duration,
+            ByteBufCodecs.INT,
+            MinerConfig::energyTick,
+            ByteBufCodecs.map(
+                HashMap::new,
+                ByteBufCodecs.STRING_UTF8,
+                ModifierConfig.STREAM_CODEC
+            ),
+            MinerConfig::modifiers,
+            MinerConfig::new
+        );
     }
 
     public record ModifierConfig(@Expose float energy, @Expose float speed, @Expose float item) {
-        public static ModifierConfig fromBuf(FriendlyByteBuf buf) {
-            float energy = buf.readFloat();
-            float speed = buf.readFloat();
-            float item = buf.readFloat();
-
-            return new ModifierConfig(energy, speed, item);
-        }
-
-        public void toBuf(FriendlyByteBuf buf) {
-            buf.writeFloat(energy);
-            buf.writeFloat(speed);
-            buf.writeFloat(item);
-        }
+        public static final StreamCodec<ByteBuf, ModifierConfig> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.FLOAT,
+            ModifierConfig::energy,
+            ByteBufCodecs.FLOAT,
+            ModifierConfig::speed,
+            ByteBufCodecs.FLOAT,
+            ModifierConfig::item,
+            ModifierConfig::new
+        );
     }
 }

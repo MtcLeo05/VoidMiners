@@ -1,0 +1,12 @@
+{
+  "type": "voidminers:miner",
+  "dimension": "minecraft:overworld",
+  "minTier": 2,
+  "output": {
+    "stack": {
+      "count": 1,
+      "id": "voidminers:citrinetine"
+    },
+    "weight": 2.0
+  }
+}

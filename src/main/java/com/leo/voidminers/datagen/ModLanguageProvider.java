@@ -5,7 +5,7 @@ import com.leo.voidminers.init.ModBlocks;
 import com.leo.voidminers.init.ModItems;
 import com.leo.voidminers.init.CrystalSet;
 import net.minecraft.data.PackOutput;
-import net.minecraftforge.common.data.LanguageProvider;
+import net.neoforged.neoforge.common.data.LanguageProvider;
 
 public class ModLanguageProvider extends LanguageProvider {
 

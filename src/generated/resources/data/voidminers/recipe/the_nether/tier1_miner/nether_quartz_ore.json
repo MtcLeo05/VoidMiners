@@ -1,0 +1,12 @@
+{
+  "type": "voidminers:miner",
+  "dimension": "minecraft:the_nether",
+  "minTier": 1,
+  "output": {
+    "stack": {
+      "count": 1,
+      "id": "minecraft:nether_quartz_ore"
+    },
+    "weight": 10.0
+  }
+}

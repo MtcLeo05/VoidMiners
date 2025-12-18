@@ -1,0 +1,37 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "voidminers:amethystine"
+    },
+    {
+      "item": "voidminers:amethystine"
+    },
+    {
+      "item": "voidminers:amethystine"
+    },
+    {
+      "item": "voidminers:amethystine"
+    },
+    {
+      "item": "voidminers:amethystine"
+    },
+    {
+      "item": "voidminers:amethystine"
+    },
+    {
+      "item": "voidminers:amethystine"
+    },
+    {
+      "item": "voidminers:amethystine"
+    },
+    {
+      "item": "voidminers:amethystine"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "voidminers:amethystine_block"
+  }
+}

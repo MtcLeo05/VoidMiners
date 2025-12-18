@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "voidminers:azurine"
+    },
+    "M": {
+      "item": "voidminers:verdium_item_modifier"
+    },
+    "c": {
+      "item": "minecraft:diamond"
+    }
+  },
+  "pattern": [
+    "CcC",
+    "cMc",
+    "CcC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "voidminers:azurine_item_modifier"
+  }
+}

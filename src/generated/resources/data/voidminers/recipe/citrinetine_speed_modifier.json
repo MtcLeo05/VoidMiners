@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "voidminers:citrinetine"
+    },
+    "M": {
+      "item": "voidminers:aurantium_speed_modifier"
+    },
+    "c": {
+      "item": "minecraft:sugar"
+    }
+  },
+  "pattern": [
+    "CcC",
+    "cMc",
+    "CcC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "voidminers:citrinetine_speed_modifier"
+  }
+}
