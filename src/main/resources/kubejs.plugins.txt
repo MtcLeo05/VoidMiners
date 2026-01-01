@@ -1,1 +1,1 @@
-com.leo.voidminers.common.compat.kubejs.VoidMinersKubeJSPlugin
+nadiendev.voidminers.common.compat.kubejs.VoidMinersKubeJSPlugin

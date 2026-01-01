@@ -77,9 +77,9 @@
   "tooltip.voidminers.structure.weight": "Weight: %d",
   "tooltip.voidminerscreative_only": "Creative Only",
   "voidminers.itemGroup.items": "Items",
-  "jade.voidminers.tier": "Tier: %s",
-  "jade.voidminers.energy": "Energy: %s / %s FE",
-  "jade.voidminers.status.working": "Status: Working",
-  "jade.voidminers.status.idle": "Status: Idle",
-  "jade.voidminers.progress": "Progress: %s%%"
+  "jade.voidminers.tier": "Nivel: %s",
+  "jade.voidminers.energy": "Energía: %s / %s FE",
+  "jade.voidminers.status.working": "Estado: Trabajando",
+  "jade.voidminers.status.idle": "Estado: Inactivo",
+  "jade.voidminers.progress": "Progreso: %s%%"
 }
