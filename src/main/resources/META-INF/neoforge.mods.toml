@@ -5,9 +5,9 @@ license="${mod_license}"
 [[mods]]
 modId="${mod_id}"
 version="${mod_version}"
-displayName="${mod_name}"
+displayName="Void Miners Remastered"
 updateJSONURL=""
-displayURL="https://github.com/MtcLeo05/VoidMiners"
+displayURL="https://github.com/SrNadien/VoidMiners"
 logoFile=""
 credits=""
 authors="${mod_authors}"
@@ -27,4 +27,11 @@ description='''${mod_description}'''
     type="required"
     versionRange="${minecraft_version_range}"
     ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="kubejs"
+    type="optional"
+   versionRange="[${kubejs_version},)"
+    ordering="AFTER"
     side="BOTH"

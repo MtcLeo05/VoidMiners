@@ -76,5 +76,10 @@
   "tooltip.voidminers.speed": "Модификатор скорости: %dx",
   "tooltip.voidminers.structure.weight": "Масса: %d",
   "tooltip.voidminerscreative_only": "Только в творческом режиме",
-  "voidminers.itemGroup.items": "Предметы"
+  "voidminers.itemGroup.items": "Предметы",
+  "jade.voidminers.tier": "Tier: %s",
+  "jade.voidminers.energy": "Energy: %s / %s FE",
+  "jade.voidminers.status.working": "Status: Working",
+  "jade.voidminers.status.idle": "Status: Idle",
+  "jade.voidminers.progress": "Progress: %s%%"
 }
